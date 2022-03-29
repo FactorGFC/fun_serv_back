@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Mis Aplicaciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Origen</th>
+      <th>App id</th>
+      <th>Secret key</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @my_apps.each do |my_app| %>
+      <tr>
+        <td><%= my_app.title %></td>
+        <td><%= my_app.javascript_origins %></td>
+        <td><%= my_app.app_id %></td>
+        <td><%= my_app.secret_key %></td>
+        <td><%= link_to 'Editar', edit_my_app_path(my_app) %></td>
+        <td><%= link_to 'Eliminar', my_app, method: :delete, data: { confirm: '¿Estas seguro?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'Nueva Aplicación', new_my_app_path %>

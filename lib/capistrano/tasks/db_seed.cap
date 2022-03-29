@@ -1,0 +1,9 @@
+namespace :deploy do
+  desc "seed the data base"
+  task :db_seed do
+    run_locally do
+      #execute "RAILS_ENV=#{fetch(:rails_env)} bundle exec rake db:seed"
+      execute "rake db:seed"
+    end
+  end
+end

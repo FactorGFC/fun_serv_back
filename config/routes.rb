@@ -1,0 +1,75 @@
+# frozen_string_literal: true
+
+Rails.application.routes.draw do
+  get '/login', to: 'sessions#create'
+  delete '/logout', to: 'sessions#destroy'
+  get '/my_apps', to: 'welcome#app', constraints: ->(solicitud) { !solicitud.session[:user_id].blank? }
+  #get '/', to: 'welcome#index'
+  get '/', to: 'welcome#ok'
+  resources :my_apps, except: %i[show index]
+  resources :apidocs, only: [:index]
+  namespace :api, defaults: { format: 'json' } do
+    namespace :v1 do
+      resources :users do
+        resources :user_privileges, except: %i[new edit]
+      end
+      resources :roles
+      resources :options
+      resources :role_options, only: %i[update destroy create]
+      resources :user_options, only: %i[update destroy create]
+      resources :lists
+      resources :general_parameters
+      resources :people
+      resources :legal_entities
+      resources :contributors do
+        resources :contributor_addresses, except: %i[new edit]
+        resources :customers, except: %i[new edit]
+        resources :funders, except: %i[new edit]
+        resources :contributor_documents, except: %i[new edit]
+      end
+      resources :countries, only: %i[show index] do
+        resources :states, only: %i[show index]
+      end
+      resources :states, only: %i[show index] do
+        resources :cities
+        resources :municipalities
+      end
+      resources :ext_services                  
+      resources :file_types
+      resources :documents
+      resources :file_type_documents, only: %i[update destroy create]
+      resources :terms
+      resources :payment_periods
+      resources :credit_ratings
+      resources :rates
+      resources :project_requests
+      resources :projects
+      resources :ext_rates
+      resources :funding_requests do
+        resources :investments, except: %i[new edit]
+      end
+      resources :customer_credits do
+        resources :sim_customer_payments, except: %i[new edit]
+      end
+      resources :investments do
+        resources :sim_funder_yields, except: %i[new edit]
+      end      
+      #get '/funding_requests/layout_base/:funding_request_id', to: 'funding_requests#funding_request_layout'
+      #get '/funding_requests/company_id/:company_id/currency/:currency/funding_invoices', to: 'funding_requests#funding_invoices'                  
+      #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'
+      #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
+      #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
+      #get '/user_registration', to: 'user_registration#create'
+      post '/user_registration', to: 'user_registration#create'
+      get '/restructure_credit_term', to: 'restructure_credits#term'
+      get '/restructure_credit_payment', to: 'restructure_credits#payment'
+      get '/sim_credit', to: 'sim_customer_credits#sim_credit'
+      get '/lists/domain/:domain', to: 'lists#domain', as: 'lists_domain_filter'      
+      get '/postal_codes/pc/:pc', to: 'postal_codes#pc', as: 'postal_code_filter'
+      get '/authenticate', to: 'api_sessions#create'
+      get '/reset_password', to: 'api_sessions#reset_password'
+      get '/get_reset_token', to: 'api_sessions#get_reset_token'
+      match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
+    end
+  end
+end

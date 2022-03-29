@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Factor GFC</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <head>
+      <nav class="blue-grey">
+        <div class="nav-wrapper">
+          <ul class="hide-on-med-and-down">
+            <% if user_signed_in? %>
+              <li>
+                <%= link_to "Mis Aplicaciones", "/my_apps" %>   
+              </li>
+              <li>
+                <%= link_to "Nueva aplicación", new_my_app_path %>
+              </li>
+              <li class= "derecha2">
+                  Bienvenido: <%= current_user.email %> 
+              </li>
+              <li class= "derecha">
+                  <%= link_to "Cerrar sesión", "/logout", method: :delete%> 
+              </li>
+            <% end %>   
+          </ul>
+              
+        </div>
+      </nav>
+    </head>
+    <div class="container">
+      <div class="card big-padding">
+      <%= yield %>
+      </div>
+    </div>
+    
+  </body>
+  <style>
+    .li{color: red}
+  </style>
+</html>
+

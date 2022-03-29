@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @my_app.user_id %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @my_app.title %>
+</p>
+
+<p>
+  <strong>App:</strong>
+  <%= @my_app.app_id %>
+</p>
+
+<p>
+  <strong>Javascript origins:</strong>
+  <%= @my_app.javascript_origins %>
+</p>
+
+<p>
+  <strong>Secret key:</strong>
+  <%= @my_app.secret_key %>
+</p>
+
+<%= link_to 'Edit', edit_my_app_path(@my_app) %> |
+<%= link_to 'Back', my_apps_path %>

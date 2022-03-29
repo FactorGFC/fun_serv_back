@@ -1,0 +1,20 @@
+    <h1>Bienvenido Developer</h1>
+      <p class="notice" style="color:#FF0000"><%= flash[:notice] %></p>
+    <div class="small-container center-block">
+      <h2>Iniciar sesión</h2>
+        <%= form_with(url: "/login", method: "get", local: true) do |f|%>
+        <div class="field">
+          <%= f.label :email, "Correo electrónico" %><br />
+          <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :password, "Contraseña" %><br />
+          <%= f.password_field :password, autocomplete: "current-password" %>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "Ingresar", class:"btn btn-primary" %>
+        </div>
+      <% end %>      
+    </div>
