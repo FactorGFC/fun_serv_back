@@ -3,7 +3,7 @@
 class Api::V1::FileTypesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::FileTypesApi
-
+  
   before_action :authenticate
   before_action :set_file_type, only: %i[show update destroy]
 
@@ -43,6 +43,6 @@ class Api::V1::FileTypesController < Api::V1::MasterApiController
   end
 
   def file_types_params
-    params.require(:file_type).permit(:name, :description, :customer_type, :funder_type)
+    params.require(:file_type).permit(:name, :description, :customer_type)
   end
 end

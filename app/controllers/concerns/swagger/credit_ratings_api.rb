@@ -21,7 +21,7 @@ module Swagger::CreditRatingsApi
       end
       # GET /credit_ratings/
       operation :get do
-        key :description, 'Trae todos los servicios externos'
+        key :description, 'Trae todas las calificaciones del credito'
         key :operationId, :find_credit_ratings
         key :produces, ['application/json']
         key :tags, [:CreditRating]

@@ -13,13 +13,13 @@ class Api::V1::RatesController < Api::V1::MasterApiController
 
   def show; end
 
-  def create        
+  def create
     @rate = Rate.new(rates_params)
     if @rate.save
       render 'api/v1/rates/show'
     else
       error_array!(@rate.errors.full_messages, :unprocessable_entity)
-    end    
+    end
   end
 
   def update

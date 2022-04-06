@@ -3,7 +3,7 @@
 class Api::V1::GeneralParametersController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::GeneralParametersApi
-
+  
   before_action :authenticate
   before_action :set_general_parameter, only: %i[show update destroy]
 

@@ -68,6 +68,18 @@ module Swagger::SimCustomerPaymentSchema
         key :type, :string
         key :format, 'date-time'
       end
+      property :insurance do
+        key :type, :number
+        key :format, :float
+      end
+      property :commision do
+        key :type, :number
+        key :format, :float
+      end
+      property :decimal do
+        key :type, :number
+        key :format, :float
+      end
     end
   end
 end

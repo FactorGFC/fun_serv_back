@@ -23,7 +23,7 @@ RSpec.describe Api::V1::ListsController, type: :request do
 
   describe 'GET /lists/domain/:domain' do
     before :each do
-      @domain = 'usuario_tipo'
+      @domain = 'usuario.tipo'
       FactoryBot.create(:list, domain: @domain)
       FactoryBot.create(:list, domain: @domain)
       FactoryBot.create(:list, domain: @domain)

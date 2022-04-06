@@ -30,17 +30,18 @@ class Api::V1::ApiSessionsController < Api::V1::MasterApiController
     else
       @reset_password_token = @user.tokens.create(my_app: @my_app)
       if @user.update(reset_password_token: @reset_password_token.token)
-        if @mailer_mode == 'TEST'
-          @mailer_mail_to = @mailer_test_email
-        else
-          @mailer_mail_to = @user.email
-        end
+        @mailer_mail_to = if @mailer_mode == 'TEST'
+                            @mailer_test_email
+                          else
+                            @user.email
+                          end
         @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
         SendMailMailer.send_email(@mailer_mail_to,
                                   @user.name,
-                                  "FactorGFC - Cambio de contraseña",
-                                  "Recibimos una solicitud para cambiar tu contraseña",
-                                  "para cambiar tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/#{@reset_password_token.token}. Por motivos de seguridad la liga solo estará vigente 24 horas.").deliver_now
+                                  'FactorGFC - Cambio de contraseña',
+                                  'Recibimos una solicitud para cambiar tu contraseña',
+                                  "para cambiar tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/#{@reset_password_token.token}. 
+                                  Por motivos de seguridad la liga solo estará vigente 24 horas.").deliver_now
         render 'api/v1/users_reset_password/show'
       else
         render json: @user.errors, status: :unprocessable_entity

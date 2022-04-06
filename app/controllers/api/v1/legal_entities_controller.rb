@@ -3,7 +3,7 @@
 class Api::V1::LegalEntitiesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::LegalEntitiesApi
-
+  
   before_action :authenticate
   before_action :set_legal_entity, only: %i[show update destroy]
 
@@ -39,8 +39,8 @@ class Api::V1::LegalEntitiesController < Api::V1::MasterApiController
   end
 
   def legal_entities_params
-    params.require(:legal_entity).permit(:fiscal_regime, 
-      :rfc, :rug, :business_name, :phone, :mobile, :email, 
-      :business_email, :main_activity, :fiel, :extra1, :extra2, :extra3)
+    params.require(:legal_entity).permit(:fiscal_regime,
+                                         :rfc, :rug, :business_name, :phone, :mobile, :email,
+                                         :business_email, :main_activity, :fiel, :extra1, :extra2, :extra3)
   end
 end

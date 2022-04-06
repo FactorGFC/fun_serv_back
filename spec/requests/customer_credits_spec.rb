@@ -36,8 +36,9 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
 
     it 'manda los atributos del credito al cliente' do
       json = JSON.parse(response.body)
-      expect(json['data']['attributes'].keys).to contain_exactly('id', 'total_requested', 'capital', 'interests', 'iva', 'total_debt', 'fixed_payment', 'total_payments', 'balance', 'status', 'start_date', 'end_date', 'attached',
-                                                                 'customer_id', 'project_id', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at', 'project_request_id', 'restructure_term')
+      expect(json['data']['attributes'].keys).to contain_exactly('id', 'total_requested', 'capital', 'interests', 'iva', 'total_debt', 'fixed_payment', 'total_payments', 'balance', 'status',
+                                                                 'start_date', 'end_date', 'attached', 'rate', 'debt_time', 'destination', 'amount_allowed', 'time_allowed', 'customer_id', 'term_id', 
+                                                                 'credit_rating_id', 'payment_period_id', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at', 'restructure_term', 'iva_percent')
     end
   end
 
@@ -48,17 +49,25 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @customer = FactoryBot.create(:customer)
-        @project = FactoryBot.create(:project)
+        @term = FactoryBot.create(:term)
+        @payment_period = FactoryBot.create(:payment_period)
+        @credit_rating = FactoryBot.create(:credit_rating)
+
         post '/api/v1/customer_credits', params: { token: @token.token, secret_key: @my_app.secret_key,
-                                               customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00', total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01', attached: 'https://anexo.pdf',
-                                               customer_id: @customer.id, project_id: @project.id } }
+                                                   customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
+                                                                      total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01',
+                                                                      attached: 'https://anexo.pdf', rate: '18.5', customer_id: @customer.id, payment_period_id: @payment_period.id,
+                                                                      term_id: @term.id, credit_rating_id: @credit_rating.id } }
       end
       it { expect(response).to have_http_status(200) }
+
       it 'crea un nuevo credito al cliente' do
         expect do
           post '/api/v1/customer_credits', params: { token: @token.token, secret_key: @my_app.secret_key,
-            customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00', total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01', attached: 'https://anexo.pdf',
-                               customer_id: @customer.id, project_id: @project.id } }
+                                                     customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
+                                                                        total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01',
+                                                                        attached: 'https://anexo.pdf', rate: '18.5', credit_rating_id: @credit_rating.id, customer_id: @customer.id,
+                                                                        payment_period_id: @payment_period.id, term_id: @term.id } }
         end.to change(CustomerCredit, :count).by(1)
       end
       it 'responde con la cadena creada' do
@@ -80,10 +89,11 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now - 10.minutes, user: @user, my_app: @my_app)
         @customer = FactoryBot.create(:customer)
-        @project = FactoryBot.create(:project)
+
         post '/api/v1/customer_credits', params: { token: @token.token, secret_key: @my_app.secret_key,
-          customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00', total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01', attached: 'https://anexo.pdf',
-                             customer_id: @customer.id, project_id: @project.id } }
+                                                   customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00',
+                                                                      total_debt: '266000.00', total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01',
+                                                                      end_date: '2021-04-01', attached: 'https://anexo.pdf', rate: '18.5', customer_id: @customer.id } }
       end
       it { expect(response).to have_http_status(401) }
 
@@ -99,22 +109,25 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @customer = FactoryBot.create(:customer)
-        @project = FactoryBot.create(:project)
+
         post '/api/v1/customer_credits', params: { token: @token.token, secret_key: @my_app.secret_key,
-          customer_credit: { capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00', total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01', attached: 'https://anexo.pdf',
-                             customer_id: @customer.id, project_id: @project.id } }
+                                                   customer_credit: { capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
+                                                                      total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01',
+                                                                      end_date: '2021-04-01', attached: 'https://anexo.pdf', rate: '18.5',
+                                                                      customer_id: @customer.id } }
       end
 
       it { expect(response).to have_http_status(422) }
 
       it 'responde con los errores al guardar el credito al cliente' do
         json = JSON.parse(response.body)
-        #puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
+        # puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
         expect(json['errors']).to_not be_empty
       end
     end
-  end  
+  end
 
+  # Aqui ya no hay que cambiar nada
   describe 'PATCH /customer_credits/:id' do
     context 'con un token valido' do
       before :each do
@@ -123,7 +136,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @customer_credit = FactoryBot.create(:customer_credit)
         patch api_v1_customer_credit_path(@customer_credit), params: { token: @token.token, secret_key: @my_app.secret_key,
-                                                               customer_credit: { status: 'PA' } }
+                                                                       customer_credit: { status: 'PA' } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -137,7 +150,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
         @customer_credit = FactoryBot.create(:customer_credit)
         patch api_v1_customer_credit_path(@customer_credit), params: { token: @token.token, secret_key: my_app.secret_key,
-                                                               customer_credit: { status: 'PA' } }
+                                                                       customer_credit: { status: 'PA' } }
       end
       it { expect(response).to have_http_status(401) }
     end

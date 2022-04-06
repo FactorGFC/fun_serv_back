@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: states
@@ -23,6 +25,7 @@ class State < ApplicationRecord
   belongs_to :country
   has_many :cities
   has_many :municipalities
+
   validates :name, presence: true
   validates :state_key, presence: true
 end

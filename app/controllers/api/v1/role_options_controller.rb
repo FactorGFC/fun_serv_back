@@ -3,7 +3,7 @@
 class Api::V1::RoleOptionsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::RoleOptionsApi
-
+  
   before_action :authenticate
   before_action :set_role_option, only: %i[update destroy]
   def create

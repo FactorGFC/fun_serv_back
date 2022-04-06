@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: contributors
@@ -48,6 +49,18 @@ FactoryBot.define do
       extra3 { "MyString3" }
       customers { build_list :customer, 1 }
     end
+    factory :contributor_with_company do
+      contributor_type { "Persona física" }
+      bank { "Bancomer" }
+      account_number { 123456789 }
+      clabe { 1234567891234567 }
+      association :person, factory: :person
+      association :legal_entity, factory: :legal_entity
+      extra1 { "MyString1" }
+      extra2 { "MyString1" }
+      extra3 { "MyString3" }
+      companies { build_list :company, 1 }
+    end
     factory :sequence_contributor do
       contributor_type { "Persona física" }
       bank { "Bancomer" }
@@ -87,17 +100,6 @@ FactoryBot.define do
       extra1 { "MyString1" }
       extra2 { "MyString1" }
       extra3 { "MyString3" }
-    end
-    factory :contributor_with_funder do
-      contributor_type { "Persona moral" }
-      bank { "Bancomer" }
-      account_number { 123456789 }
-      clabe { 1234567891234567 }
-      association :legal_entity, factory: :legal_entity
-      extra1 { "MyString1" }
-      extra2 { "MyString1" }
-      extra3 { "MyString3" }
-      funders { build_list :funder, 1 }
     end
   end
 end

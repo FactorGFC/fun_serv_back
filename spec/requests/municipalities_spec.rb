@@ -56,9 +56,9 @@ RSpec.describe Api::V1::MunicipalitiesController, type: :request do
       it 'cambia el número de municipios +1' do
         expect do
           post api_v1_state_municipalities_path(@state),
-          params: { municipality: { municipality_key: '85', name: 'Delicias' },
+               params: { municipality: { municipality_key: '85', name: 'Delicias' },
                          token: @token.token, secret_key: my_app.secret_key }
-        end        .to change(Municipality, :count).by(1)
+        end.to change(Municipality, :count).by(1)
       end
       it 'responde con el municipio creado' do
         json = JSON.parse(response.body)
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::MunicipalitiesController, type: :request do
     context 'con usuario inválido' do
       before :each do
         post api_v1_state_municipalities_path(@state),
-        params: { municipality: { municipality_key: '85', name: 'Delicias' },
+             params: { municipality: { municipality_key: '85', name: 'Delicias' },
                        token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
       end
 
@@ -77,9 +77,9 @@ RSpec.describe Api::V1::MunicipalitiesController, type: :request do
       it 'cambia el número de municipios +0' do
         expect do
           post api_v1_state_municipalities_path(@state),
-          params: { municipality: { municipality_key: '85', name: 'Delicias' },
+               params: { municipality: { municipality_key: '85', name: 'Delicias' },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
-        end .to change(Municipality, :count).by(0)
+        end.to change(Municipality, :count).by(0)
       end
     end
   end

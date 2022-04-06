@@ -22,11 +22,11 @@
 #  fk_rails_...  (my_app_id => my_apps.id)
 #  fk_rails_...  (user_id => users.id)
 #
-
 class Token < ApplicationRecord
   belongs_to :user
   belongs_to :my_app
-  before_create :generate_token
+
+before_create :generate_token
   def is_valid?
     DateTime.now < expires_at
   end

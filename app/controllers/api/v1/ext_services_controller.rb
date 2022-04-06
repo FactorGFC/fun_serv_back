@@ -3,7 +3,6 @@
 class Api::V1::ExtServicesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::ExtServicesApi
-
   before_action :authenticate
   before_action :set_ext_service, only: %i[show update destroy]
 

@@ -41,7 +41,7 @@ RSpec.describe Api::V1::UserOptionsController, type: :request do
           post api_v1_user_options_path,
                params: { user_id: @user.id, option_id: @option.id,
                          token: 'dfsfsdfasdfsdf', secret_key: my_app.secret_key }
-        end .to change(UserOption, :count).by(0)
+        end.to change(UserOption, :count).by(0)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::UserOptionsController, type: :request do
           post api_v1_user_options_path,
                params: { user_id: @user.id, option_id: @option.id,
                          token: @token.token, secret_key: my_app.secret_key }
-        end .to change(UserOption, :count).by(0)
+        end.to change(UserOption, :count).by(0)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::UserOptionsController, type: :request do
           post api_v1_user_options_path,
                params: { user_id: @user.id, option_id: @option.id,
                          token: @token.token, secret_key: 'asdfggdf43543gsfs' }
-        end .to change(UserOption, :count).by(0)
+        end.to change(UserOption, :count).by(0)
       end
     end
   end

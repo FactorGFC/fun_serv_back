@@ -10,6 +10,8 @@ RSpec.describe Api::V1::CustomersController, type: :request do
     @file_type = FactoryBot.create(:file_type)
     @document = FactoryBot.create(:document)
     @file_type_document = FactoryBot.create(:file_type_document, file_type: @file_type, document: @document)
+    @company = FactoryBot.create(:company)
+    
   end
 
   describe 'GET /contributors/:contributor_id/customers' do
@@ -25,8 +27,13 @@ RSpec.describe Api::V1::CustomersController, type: :request do
     it 'manda los datos del cliente' do
       json_array = JSON.parse(response.body)
       @customer = json_array['data'][0]
-      expect(@customer['attributes'].keys).to contain_exactly('id', 'attached', 'customer_type', 'extra1', 'extra2',
-                                                              'extra3', 'name', 'status', 'created_at', 'updated_at', 'contributor_id', 'user_id', 'file_type_id')
+      expect(@customer['attributes'].keys).to contain_exactly('id', 'attached', 'customer_type', 'extra1', 'extra2', 'salary', 'salary_period', 'other_income',
+                                                              'net_expenses', 'family_expenses', 'house_rent', 'credit_cp', 'credit_lp',
+                                                              'extra3', 'name', 'status', 'created_at', 'updated_at', 'immediate_superior', 'seniority',
+                                                              'ontime_bonus', 'assist_bonus', 'food_vouchers', 'total_income', 'total_savings_found',
+                                                              'christmas_bonus', 'taxes', 'imms', 'savings_found', 'savings_found_loand', 'savings_bank',
+                                                              'insurance_discount', 'child_support', 'extra_expenses', 'infonavit', 
+                                                              'contributor_id', 'user_id', 'file_type_id', 'company_id')
     end
   end
 
@@ -51,24 +58,26 @@ RSpec.describe Api::V1::CustomersController, type: :request do
     context 'con usuario válido' do
       before :each do
         @contributor = FactoryBot.create(:contributor)
+        @company 
         post api_v1_contributor_customers_path(@contributor),
-             params: { customer: { name: 'Perdro Perez', customer_type: 'CF', status: 'AC',
-                                   user_id: user.id },
+             params: { customer: { name: 'Perdro Perez', customer_type: 'CF', status: 'AC', salary: '12000.00', salary_period: 'Semanal',
+                                   user_id: user.id, company_id: @company.id},
                        token: @token.token, secret_key: my_app.secret_key }
       end
       it { expect(response).to have_http_status(200) }
+      
       it 'cambia el número de clientes +1' do
         expect do
           @contributor = FactoryBot.create(:contributor)
           post api_v1_contributor_customers_path(@contributor),
-               params: { customer: { name: 'Perdro Perez', customer_type: 'CF', status: 'AC',
-                                     user_id: user.id },
+               params: { customer: { name: 'Perdro Perez', customer_type: 'CF', status: 'AC', salary: '12000.00', salary_period: 'Semanal',
+                                     user_id: user.id, company_id: @company.id },
                          token: @token.token, secret_key: my_app.secret_key }
         end.to change(Customer, :count).by(1)
       end
       it 'responde con la cliente creada' do
         json = JSON.parse(response.body)
-        # puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#{json}"
+       # puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#{json}"
         expect(json['data']['attributes']['name']).to eq('Perdro Perez')
       end
     end
@@ -77,7 +86,7 @@ RSpec.describe Api::V1::CustomersController, type: :request do
       before :each do
         @contributor = FactoryBot.create(:contributor)
         post api_v1_contributor_customers_path(@contributor),
-             params: { customer: { name: 'Perdro Perez', customer_type: 'Persona', status: 'AC',
+             params: { customer: { name: 'Perdro Perez', customer_type: 'Persona', status: 'AC', salary: '12000.00', salary_period: 'Semanal',
                                    user_id: user.id },
                        token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
       end
@@ -87,7 +96,7 @@ RSpec.describe Api::V1::CustomersController, type: :request do
         expect do
           @contributor = FactoryBot.create(:contributor)
           post api_v1_contributor_customers_path(@contributor),
-               params: { customer: { name: 'Perdro Perez', customer_type: 'Persona', status: 'AC',
+               params: { customer: { name: 'Perdro Perez', customer_type: 'Persona', status: 'AC', salary: '12000.00', salary_period: 'Semanal',
                                      user_id: user.id },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
         end.to change(Customer, :count).by(0)

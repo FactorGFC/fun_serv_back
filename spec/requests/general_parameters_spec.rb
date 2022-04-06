@@ -24,7 +24,8 @@ RSpec.describe Api::V1::GeneralParametersController, type: :request do
   describe 'GET /general_parameters/:id' do
     before :each do
       @general_parameter = FactoryBot.create(:general_parameter)
-      get "/api/v1/general_parameters/#{@general_parameter.id}", params: { token: token.token, secret_key: my_app.secret_key }
+      get "/api/v1/general_parameters/#{@general_parameter.id}",
+          params: { token: token.token, secret_key: my_app.secret_key }
     end
 
     it { expect(response).to have_http_status(200) }
@@ -88,7 +89,8 @@ RSpec.describe Api::V1::GeneralParametersController, type: :request do
         @user = FactoryBot.create(:sequence_user)
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
-        post '/api/v1/general_parameters', params: { token: @token.token, secret_key: @my_app.secret_key, general_parameter: { key: 'superusuario' } }
+        post '/api/v1/general_parameters',
+             params: { token: @token.token, secret_key: @my_app.secret_key, general_parameter: { key: 'superusuario' } }
       end
 
       it { expect(response).to have_http_status(422) }
@@ -106,7 +108,9 @@ RSpec.describe Api::V1::GeneralParametersController, type: :request do
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @general_parameter = FactoryBot.create(:general_parameter)
-        patch api_v1_general_parameter_path(@general_parameter), params: { token: @token.token, secret_key: @my_app.secret_key, general_parameter: { description: 'Descripción actualizada' } }
+        patch api_v1_general_parameter_path(@general_parameter),
+              params: { token: @token.token, secret_key: @my_app.secret_key,
+                        general_parameter: { description: 'Descripción actualizada' } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -117,9 +121,12 @@ RSpec.describe Api::V1::GeneralParametersController, type: :request do
     end
     context 'con un token invalido' do
       before :each do
-        @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
+        @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes,
+                                           user: FactoryBot.create(:sequence_user))
         @general_parameter = FactoryBot.create(:general_parameter)
-        patch api_v1_general_parameter_path(@general_parameter), params: { token: @token.token, secret_key: my_app.secret_key, general_parameter: { description: 'Descripción actualizada' } }
+        patch api_v1_general_parameter_path(@general_parameter),
+              params: { token: @token.token, secret_key: my_app.secret_key,
+                        general_parameter: { description: 'Descripción actualizada' } }
       end
       it { expect(response).to have_http_status(401) }
     end

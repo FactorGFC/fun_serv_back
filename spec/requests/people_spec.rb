@@ -39,6 +39,7 @@ RSpec.describe Api::V1::PeopleController, type: :request do
       expect(json['data']['attributes'].keys).to contain_exactly('id', 'fiscal_regime', 'rfc', 'curp', 'imss', 'first_name',
                                                                  'last_name', 'second_last_name', 'gender', 'nationality',
                                                                  'birth_country', 'birthplace', 'birthdate', 'martial_status',
+                                                                 'martial_regime', 'minior_dependents', 'senior_dependents', 'housing_type',
                                                                  'id_type', 'identification', 'phone', 'mobile', 'email',
                                                                  'fiel', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at')
     end
@@ -134,7 +135,7 @@ RSpec.describe Api::V1::PeopleController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @person = FactoryBot.create(:person)
         patch api_v1_person_path(@person), params: { token: @token.token, secret_key: @my_app.secret_key,
-                                                                         person: { first_name: 'Pedro' } }
+                                                     person: { first_name: 'Pedro' } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -148,7 +149,7 @@ RSpec.describe Api::V1::PeopleController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
         @person = FactoryBot.create(:person)
         patch api_v1_person_path(@person), params: { token: @token.token, secret_key: my_app.secret_key,
-                                                                         person: { first_name: 'Pedro' } }
+                                                     person: { first_name: 'Pedro' } }
       end
       it { expect(response).to have_http_status(401) }
     end

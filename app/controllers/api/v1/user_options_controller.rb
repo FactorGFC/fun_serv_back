@@ -3,7 +3,7 @@
 class Api::V1::UserOptionsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::UserOptionsApi
-
+  
   before_action :authenticate
   before_action :set_user_option, only: %i[update destroy]
   def create

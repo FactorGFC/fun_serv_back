@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: ext_rates
@@ -6,6 +8,7 @@
 #  description :string           not null
 #  end_date    :date
 #  key         :string           not null
+#  max_value   :decimal(15, 4)
 #  rate_type   :string           not null
 #  start_date  :date             not null
 #  value       :decimal(15, 4)   not null
@@ -21,4 +24,12 @@ class ExtRate < ApplicationRecord
   validates :start_date, presence: true
   validates :value, presence: true, numericality: true
   validates :key, uniqueness: { scope: :start_date }
+
+  def self.get_ext_rate_value(key)
+    @ext_rate = ExtRate.where(key: key)
+    unless @ext_rate.empty?
+      @ext_rate_value = @ext_rate[0].value
+      @ext_rate_value
+    end
+  end
 end

@@ -41,7 +41,7 @@ RSpec.describe Api::V1::FileTypeDocumentsController, type: :request do
           post api_v1_file_type_documents_path,
                params: { file_type_id: @file_type.id, document_id: @document.id,
                          token: 'dfsfsdfasdfsdf', secret_key: my_app.secret_key }
-        end .to change(FileTypeDocument, :count).by(0)
+        end.to change(FileTypeDocument, :count).by(0)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::FileTypeDocumentsController, type: :request do
           post api_v1_file_type_documents_path,
                params: { file_type_id: @file_type.id, document_id: @document.id,
                          token: @token.token, secret_key: my_app.secret_key }
-        end .to change(FileTypeDocument, :count).by(0)
+        end.to change(FileTypeDocument, :count).by(0)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::FileTypeDocumentsController, type: :request do
           post api_v1_file_type_documents_path,
                params: { file_type_id: @file_type.id, document_id: @document.id,
                          token: @token.token, secret_key: 'asdfggdf43543gsfs' }
-        end .to change(FileTypeDocument, :count).by(0)
+        end.to change(FileTypeDocument, :count).by(0)
       end
     end
   end

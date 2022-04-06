@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: cities
@@ -17,8 +19,8 @@
 #  fk_rails_...  (state_id => states.id)
 #
 class City < ApplicationRecord
-  include Swagger::Blocks
-  include Swagger::CitySchema
-  belongs_to :state
-  validates :name, presence: true
+    include Swagger::Blocks
+    include Swagger::CitySchema
+	belongs_to :state
+    validates :name, presence: true
 end

@@ -3,7 +3,7 @@
 class Api::V1::CustomersController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::CustomersApi
-
+  
   before_action :authenticate
   before_action :set_customer, only: %i[show update destroy]
   before_action :set_contributor
@@ -14,15 +14,19 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
   end
 
   # GET /contributors/:contributor_id/customers/2
-  def show;  end
+  def show; end
 
   # POST /contributors/1/customers
   def create
-    @customer = @contributor.customers.new(customer_params)    
-    ActiveRecord::Base.transaction do    
+    @customer = @contributor.customers.new(customer_params)
+    ActiveRecord::Base.transaction do
       unless @customer.customer_type.blank?
         @file_types = FileType.where(customer_type: @customer.customer_type)
-        unless @file_types.blank?
+        if @file_types.blank?
+          @error_desc = []
+          @error_desc.push("No se encontró un tipo de expediente para el tipo de cliente: #{@customer.customer_type}")
+          error_array!(@error_desc, :not_found)
+        else
           create_contributor_documents
           @customer.file_type_id = @file_types[0].id
           if @customer.save
@@ -30,13 +34,9 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
           else
             render json: { error: @customer.errors }, status: :unprocessable_entity
           end
-        else
-          @error_desc = []
-          @error_desc.push("No se encontró un tipo de expediente para el tipo de cliente: #{@customer.customer_type}")
-          error_array!(@error_desc, :not_found)  
         end
-      end      
-    end  
+      end
+    end
   end
 
   # PATCH PUT /contributors/:contributor_id/customers/2
@@ -57,7 +57,14 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
   private
 
   def customer_params
-    params.require(:customer).permit(:attached, :customer_type, :name, :status, :user_id)
+    params.require(:customer).permit(:attached, :customer_type, :name, :status, :user_id,
+                                     :salary_period, :salary, :other_income, :net_expenses,
+                                     :family_expenses, :house_rent, :credit_cp, :credit_lp,
+                                     :immediate_superior, :seniority, :ontime_bonus, :assist_bonus,
+                                     :food_vouchers, :total_income, :total_savings_food,
+                                     :chrismas_bonus, :taxes, :imms, :savings_found,
+                                     :savings_found_loand, :savings_bank, :insurance_discount,
+                                     :child_support, :extra_expenses, :infonavit, :company_id)
   end
 
   def set_contributor
@@ -81,7 +88,7 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
     @file_type_documents.each do |file_type_document|
       @documents = Document.where(id: file_type_document.document_id)
       unless @documents.blank?
-        ContributorDocument.custom_update_or_create(@contributor.id, file_type_document.id, @documents[0].name, 'PI') #PI - Por ingresar, estatus inicial
+        ContributorDocument.custom_update_or_create(@contributor.id, file_type_document.id, @documents[0].name, 'PI') # PI - Por ingresar, estatus inicial
       end
     end
   end

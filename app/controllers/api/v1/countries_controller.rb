@@ -3,7 +3,7 @@
 class Api::V1::CountriesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::CountriesApi
-
+  
   before_action :authenticate
   before_action :set_country, only: %i[show]
 

@@ -1,11 +1,15 @@
 # frozen_string_literal: true
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+end
+# frozen_string_literal: true
 
 Rails.application.routes.draw do
   get '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
   get '/my_apps', to: 'welcome#app', constraints: ->(solicitud) { !solicitud.session[:user_id].blank? }
-  #get '/', to: 'welcome#index'
-  get '/', to: 'welcome#ok'
+  get '/', to: 'welcome#index'
+
   resources :my_apps, except: %i[show index]
   resources :apidocs, only: [:index]
   namespace :api, defaults: { format: 'json' } do
@@ -23,9 +27,9 @@ Rails.application.routes.draw do
       resources :legal_entities
       resources :contributors do
         resources :contributor_addresses, except: %i[new edit]
-        resources :customers, except: %i[new edit]
-        resources :funders, except: %i[new edit]
+        resources :customers, except: %i[new edit] 
         resources :contributor_documents, except: %i[new edit]
+        resources :companies, except: %i[new edit]
       end
       resources :countries, only: %i[show index] do
         resources :states, only: %i[show index]
@@ -42,18 +46,15 @@ Rails.application.routes.draw do
       resources :payment_periods
       resources :credit_ratings
       resources :rates
-      resources :project_requests
-      resources :projects
       resources :ext_rates
-      resources :funding_requests do
-        resources :investments, except: %i[new edit]
-      end
+      resources :customer_personal_references
+      resources :credit_analyses
+
+
       resources :customer_credits do
         resources :sim_customer_payments, except: %i[new edit]
       end
-      resources :investments do
-        resources :sim_funder_yields, except: %i[new edit]
-      end      
+   
       #get '/funding_requests/layout_base/:funding_request_id', to: 'funding_requests#funding_request_layout'
       #get '/funding_requests/company_id/:company_id/currency/:currency/funding_invoices', to: 'funding_requests#funding_invoices'                  
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'

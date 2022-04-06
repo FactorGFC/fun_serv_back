@@ -36,7 +36,7 @@ RSpec.describe Api::V1::ExtRatesController, type: :request do
 
     it 'manda los atributos de la tarifa' do
       json = JSON.parse(response.body)
-      expect(json['data']['attributes'].keys).to contain_exactly('id', 'key', 'description', 'start_date', 'end_date', 'value', 'rate_type', 'created_at', 'updated_at')
+      expect(json['data']['attributes'].keys).to contain_exactly('id', 'key', 'description', 'start_date', 'end_date', 'value', 'rate_type', 'max_value', 'created_at', 'updated_at')
     end
   end
 
@@ -78,10 +78,10 @@ RSpec.describe Api::V1::ExtRatesController, type: :request do
         @user = FactoryBot.create(:sequence_user)
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now - 10.minutes, user: @user, my_app: @my_app)
-        post '/api/v1/ext_rates', params: { token: @token.token, secret_key: @my_app.secret_key,  ext_rate: { 
+        post '/api/v1/ext_rates', params: { token: @token.token, secret_key: @my_app.secret_key,  ext_rate: {
           key: 'tiie_28dias', description: 'Tasa de interés interbancaria a 28 días', start_date: '2020-06-02',
           end_date: '2020-06-02', value: '5.7347', rate_type: 'porcentaje'
-          } }
+        } }
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe Api::V1::ExtRatesController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @ext_rate = FactoryBot.create(:ext_rate)
         patch api_v1_ext_rate_path(@ext_rate), params: { token: @token.token, secret_key: @my_app.secret_key,
-                                                 ext_rate: { description: 'Tasa de interés interbancaria a 28 días' } }
+                                                         ext_rate: { description: 'Tasa de interés interbancaria a 28 días' } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -123,7 +123,7 @@ RSpec.describe Api::V1::ExtRatesController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
         @ext_rate = FactoryBot.create(:ext_rate)
         patch api_v1_ext_rate_path(@ext_rate), params: { token: @token.token, secret_key: my_app.secret_key,
-                                                 ext_rate: { description: 'Tasa de interés interbancaria a 28 días' } }
+                                                         ext_rate: { description: 'Tasa de interés interbancaria a 28 días' } }
       end
       it { expect(response).to have_http_status(401) }
     end

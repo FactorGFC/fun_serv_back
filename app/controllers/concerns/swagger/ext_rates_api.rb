@@ -194,6 +194,14 @@ module Swagger::ExtRatesApi
           key :enum, ['TIIE_28D','LIBOR_1M','IVA']
         end
 
+        parameter name: :max_value do
+          key :in, :query
+          key :description, 'Valor maximo de una tarifa'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
         parameter name: :token do
           key :in, :query
           key :description, 'Token del inicio de la sesión del usuario'

@@ -27,6 +27,8 @@ require 'rails_helper'
 
 RSpec.describe Token, type: :model do
   it { should belong_to(:my_app) }
+  #se agregp esta validacion a ver si funciona  
+  #it { should validate_presence_of :status }
   it 'should return valid when is not expired' do
     token = FactoryBot.create(:token, expires_at: DateTime.now + 1.minute, user: FactoryBot.create(:sequence_user))
     expect(token.is_valid?).to eq(true)

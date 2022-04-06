@@ -142,7 +142,7 @@ module Swagger::CustomerCreditsApi
 
       # POST /customer_credits
       operation :post do
-        key :description, 'Crea un nuevo credito de cliente'
+        key :description, 'Crea un nuevo credito de empleado'
         key :operationId, :create_customer_credit
         key :produces, ['application/json']
         key :tags, [:CustomerCredit]
@@ -243,22 +243,172 @@ module Swagger::CustomerCreditsApi
           key :type, :string
         end
 
+        parameter name: :rate do
+          key :in, :query
+          key :description, 'Tasa del credito'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :debt_rate do
+          key :in, :query
+          key :description, 'Indice de endeudamiento del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :cash_flow do
+          key :in, :query
+          key :description, 'Flujo (egresos vs ingresos) del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :credit_status do
+          key :in, :query
+          key :description, 'Calificacion de buro de credito del empleado'
+          key :required, false
+          key :type, :string
+        end
+
+        parameter name: :previus_credit do
+          key :in, :query
+          key :description, 'Credito solicitado mas de 3 meses de sueldo'
+          key :required, false
+          key :type, :string
+          key :enum, ['SI', 'NO']
+        end
+
+        parameter name: :discounts do
+          key :in, :query
+          key :description, 'Descuentos exceden 30%'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :destination do
+          key :in, :query
+          key :description, 'Destino del credito'
+          key :required, false
+          key :type, :string
+        end
+
+        parameter name: :debt_horizon do
+          key :in, :query
+          key :description, 'Duracion de la deuda en años'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :amount_allowed do
+          key :in, :query
+          key :description, 'Mounto autorizado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :time_allowed do
+          key :in, :query
+          key :description, 'Plazo autorizado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :report_date do
+          key :in, :query
+          key :description, 'Fecha del reporte de Buro de credito'
+          key :required, false
+          key :type, :string
+          key :format, :date
+        end
+
+        parameter name: :mop_key do
+          key :in, :query
+          key :description, 'Clave MOP del Buro de credito'
+          key :required, false
+          key :type, :string
+
+        end
+
+        parameter name: :last_key do
+          key :in, :query
+          key :description, 'Ultima clave reportada de Buro de credito'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :lowest_key do
+          key :in, :query
+          key :description, 'Clave mas baja reportada de Buro de credito'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :balance_due do
+          key :in, :query
+          key :description, 'Deuda del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :payment_capacity do
+          key :in, :query
+          key :description, 'Capacidad de pago del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :iva_percent do
+          key :in, :query
+          key :description, 'Porcentaje de iva'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
         parameter name: :customer_id do
           key :in, :query
-          key :description, 'Cliente - FK CUSTOMERS'
-          key :required, true
-          key :type, :string
-          key :format, :uuid 
-        end
-        
-        parameter name: :project_id do
-          key :in, :query
-          key :description, 'Projecto origen del crédito - FK PROJECTS'
+          key :description, 'Empleado - FK CUSTOMERS'
           key :required, true
           key :type, :string
           key :format, :uuid 
         end
 
+        parameter name: :credit_rating_id do
+          key :in, :query
+          key :description, 'Calificacion - FK CREDIT_RATING'
+          key :required, true
+          key :type, :string
+          key :format, :uuid 
+        end
+
+        parameter name: :term_id do
+          key :in, :query
+          key :description, 'Plazo - FK TERM'
+          key :required, true
+          key :type, :string
+          key :format, :uuid 
+        end
+
+        parameter name: :payment_period_id do
+          key :in, :query
+          key :description, 'Periodo de pago - FK PAYMENT_PERIOD'
+          key :required, true
+          key :type, :string
+          key :format, :uuid 
+        end
+        
         parameter name: :token do
           key :in, :query
           key :description, 'Token del inicio de la sesión del usuario'

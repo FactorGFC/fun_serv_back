@@ -240,7 +240,7 @@ module Swagger::SimCustomerPaymentsApi
           key :description, 'Estatus del pago LV. SIM_CUSTOMER_PAYMENTS_STATUS'
           key :required, true
           key :type, :string
-          key :enum, ['Pendiente', 'Pagado', 'Cancelado']
+          key :enum, ['PENDIENTE', 'PAGADO', 'CANCELADO']
         end
 
         parameter name: :attached do
@@ -248,6 +248,30 @@ module Swagger::SimCustomerPaymentsApi
           key :description, 'Documento anexo del pago'
           key :required, false
           key :type, :string
+        end
+
+        parameter name: :insurance do
+          key :in, :query
+          key :description, 'Seguro del crédito'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :commission do
+          key :in, :query
+          key :description, 'Comisión a pagar por crédito'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :aditional_payment do
+          key :in, :query
+          key :description, 'Pago adicional que se quiera realizar al crédito'
+          key :required, true
+          key :type, :number
+          key :format, :float
         end
 
         parameter name: :token do

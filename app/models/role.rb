@@ -10,7 +10,6 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
-
 class Role < ApplicationRecord
   include Swagger::Blocks
   include Swagger::RoleSchema

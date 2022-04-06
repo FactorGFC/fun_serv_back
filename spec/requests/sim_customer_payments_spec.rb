@@ -25,7 +25,9 @@ RSpec.describe Api::V1::SimCustomerPaymentsController, type: :request do
     it 'manda los datos del pago del crédito' do
       json_array = JSON.parse(response.body)
       @sim_customer_payment = json_array['data'][0]
-      expect(@sim_customer_payment['attributes'].keys).to contain_exactly('id', 'pay_number', 'current_debt', 'remaining_debt', 'payment', 'capital', 'interests', 'iva', 'payment_date', 'status', 'attached', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at', 'customer_credit_id')
+      expect(@sim_customer_payment['attributes'].keys).to contain_exactly('id', 'pay_number', 'current_debt', 'remaining_debt', 'payment', 'capital', 'interests', 'iva', 'payment_date',
+                                                                          'status', 'attached', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at', 'insurance', 'commission',
+                                                                          'aditional_payment', 'customer_credit_id')
     end
   end
 
@@ -50,7 +52,9 @@ RSpec.describe Api::V1::SimCustomerPaymentsController, type: :request do
       before :each do
         @customer_credit = FactoryBot.create(:customer_credit)
         post api_v1_customer_credit_sim_customer_payments_path(@customer_credit),
-             params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00', iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf', customer_credit_id: @customer_credit.id },
+             params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00',
+                                               iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf',
+                                               customer_credit_id: @customer_credit.id },
                        token: @token.token, secret_key: my_app.secret_key }
       end
       it { expect(response).to have_http_status(200) }
@@ -58,22 +62,26 @@ RSpec.describe Api::V1::SimCustomerPaymentsController, type: :request do
         expect do
           @customer_credit = FactoryBot.create(:customer_credit)
           post api_v1_customer_credit_sim_customer_payments_path(@customer_credit),
-             params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00', iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf', customer_credit_id: @customer_credit.id },
-                          token: @token.token, secret_key: my_app.secret_key }
-        end        .to change(SimCustomerPayment, :count).by(1)
+               params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00',
+                                                 iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf',
+                                                 customer_credit_id: @customer_credit.id },
+                         token: @token.token, secret_key: my_app.secret_key }
+        end.to change(SimCustomerPayment, :count).by(1)
       end
       it 'responde con el pago creado' do
         json = JSON.parse(response.body)
-        #puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>> json respond: #{json.inspect}"
+        # puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>> json respond: #{json.inspect}"
         expect(json['data']['attributes']['status']).to eq('AC')
       end
     end
 
     context 'con usuario inválido' do
       before :each do
-          @customer_credit = FactoryBot.create(:customer_credit)
-          post api_v1_customer_credit_sim_customer_payments_path(@customer_credit),
-          params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00', iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf', customer_credit_id: @customer_credit.id },
+        @customer_credit = FactoryBot.create(:customer_credit)
+        post api_v1_customer_credit_sim_customer_payments_path(@customer_credit),
+             params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00',
+                                               iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf',
+                                               customer_credit_id: @customer_credit.id },
                        token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
       end
 
@@ -82,9 +90,11 @@ RSpec.describe Api::V1::SimCustomerPaymentsController, type: :request do
         expect do
           @customer_credit = FactoryBot.create(:customer_credit)
           post api_v1_customer_credit_sim_customer_payments_path(@customer_credit),
-             params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00', iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf', customer_credit_id: @customer_credit.id },
+               params: { sim_customer_payment: { pay_number: 1, current_debt: '100000.00', remaining_debt: '100000.00', payment: '50000.00', capital: '3000.00', interests: '1500.00',
+                                                 iva: '500.00', payment_date: '2021-03-01', status: 'AC', attached: 'http://localhost/sim_customer_payment.pdf',
+                                                 customer_credit_id: @customer_credit.id },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
-        end .to change(SimCustomerPayment, :count).by(0)
+        end.to change(SimCustomerPayment, :count).by(0)
       end
     end
   end

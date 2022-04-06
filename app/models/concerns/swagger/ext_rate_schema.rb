@@ -30,6 +30,10 @@ module Swagger::ExtRateSchema
       property :rate_type do
         key :type, :string
       end
+      property :max_value do
+        key :type, :number
+        key :format, :float
+      end
       property :created_at do
         key :type, :string
         key :format, 'date-time'

@@ -1,57 +1,79 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: customer_credits
 #
-#  id                 :uuid             not null, primary key
-#  attached           :string
-#  balance            :decimal(15, 4)   not null
-#  capital            :decimal(15, 4)   not null
-#  end_date           :date             not null
-#  extra1             :string
-#  extra2             :string
-#  extra3             :string
-#  fixed_payment      :decimal(15, 4)   not null
-#  interests          :decimal(15, 4)   not null
-#  iva                :decimal(15, 4)   not null
-#  restructure_term   :integer
-#  start_date         :date             not null
-#  status             :string           not null
-#  total_debt         :decimal(15, 4)   not null
-#  total_payments     :decimal(15, 4)   not null
-#  total_requested    :decimal(15, 4)   not null
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  customer_id        :uuid             not null
-#  project_id         :uuid
-#  project_request_id :uuid
+#  id                :uuid             not null, primary key
+#  amount_allowed    :decimal(15, 4)
+#  attached          :string
+#  balance           :decimal(15, 4)   not null
+#  capital           :decimal(15, 4)   not null
+#  debt_time         :decimal(15, 4)
+#  destination       :string
+#  end_date          :date             not null
+#  extra1            :string
+#  extra2            :string
+#  extra3            :string
+#  fixed_payment     :decimal(15, 4)   not null
+#  interests         :decimal(15, 4)   not null
+#  iva               :decimal(15, 4)   not null
+#  iva_percent       :decimal(15, 4)
+#  rate              :decimal(, )      not null
+#  restructure_term  :integer
+#  start_date        :date             not null
+#  status            :string           not null
+#  time_allowed      :decimal(15, 4)
+#  total_debt        :decimal(15, 4)   not null
+#  total_payments    :decimal(15, 4)   not null
+#  total_requested   :decimal(15, 4)   not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  credit_rating_id  :uuid
+#  customer_id       :uuid             not null
+#  payment_period_id :uuid
+#  term_id           :uuid
 #
 # Indexes
 #
-#  index_customer_credits_on_customer_id         (customer_id)
-#  index_customer_credits_on_project_id          (project_id)
-#  index_customer_credits_on_project_request_id  (project_request_id)
+#  index_customer_credits_on_credit_rating_id   (credit_rating_id)
+#  index_customer_credits_on_customer_id        (customer_id)
+#  index_customer_credits_on_payment_period_id  (payment_period_id)
+#  index_customer_credits_on_term_id            (term_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (credit_rating_id => credit_ratings.id)
 #  fk_rails_...  (customer_id => customers.id)
-#  fk_rails_...  (project_id => projects.id)
-#  fk_rails_...  (project_request_id => project_requests.id)
+#  fk_rails_...  (payment_period_id => payment_periods.id)
+#  fk_rails_...  (term_id => terms.id)
 #
 class CustomerCredit < ApplicationRecord
   include Swagger::Blocks
   include Swagger::CustomerCreditSchema
   belongs_to :customer
-  belongs_to :project, optional: true
-  belongs_to :project_request, optional: true
+  belongs_to :payment_period 
+  belongs_to :term
+  belongs_to :credit_rating
+  
   has_many :sim_customer_payments, dependent: :destroy
   #has_many :current_customer_payments
   has_many :current_payments, -> { current_customer_payments }, class_name: 'SimCustomerPayment'
   has_many :pending_payments, -> { pending_customer_payments }, class_name: 'SimCustomerPayment'
+  has_many :credit_analysis
   
-
   validates :start_date, presence: true
   validates :status, presence: true
   validates :total_requested, presence: true
+  validates :capital, presence: true
+  validates :interests, presence: true
+  validates :iva, presence: true
+  validates :total_debt, presence: true
+  validates :total_payments, presence: true
+  validates :balance, presence: true
+  validates :fixed_payment, presence: true
+  validates :rate, presence: true
+  
   before_save :calculate_balance_credit
 
   def calculate_balance_credit

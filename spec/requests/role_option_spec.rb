@@ -41,7 +41,7 @@ RSpec.describe Api::V1::RoleOptionsController, type: :request do
           post api_v1_role_options_path,
                params: { role_id: @role.id, option_id: @option.id,
                          token: 'dfsfsdfasdfsdf', secret_key: my_app.secret_key }
-        end .to change(RoleOption, :count).by(0)
+        end.to change(RoleOption, :count).by(0)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::RoleOptionsController, type: :request do
           post api_v1_role_options_path,
                params: { role_id: @role.id, option_id: @option.id,
                          token: @token.token, secret_key: my_app.secret_key }
-        end .to change(RoleOption, :count).by(0)
+        end.to change(RoleOption, :count).by(0)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::RoleOptionsController, type: :request do
           post api_v1_role_options_path,
                params: { role_id: @role.id, option_id: @option.id,
                          token: @token.token, secret_key: 'asdfggdf43543gsfs' }
-        end .to change(RoleOption, :count).by(0)
+        end.to change(RoleOption, :count).by(0)
       end
     end
   end

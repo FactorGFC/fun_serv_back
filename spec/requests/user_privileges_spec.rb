@@ -50,16 +50,16 @@ RSpec.describe Api::V1::UserPrivilegesController, type: :request do
     context 'con usuario válido' do
       before :each do
         post api_v1_user_user_privileges_path(@user),
-             params: { user_privilege: { description: 'Privilegio para editar', key:'PASS_USR_UPDATE',value: 'SI' },
+             params: { user_privilege: { description: 'Privilegio para editar', key: 'PASS_USR_UPDATE', value: 'SI' },
                        token: @token.token, secret_key: my_app.secret_key }
       end
       it { expect(response).to have_http_status(200) }
       it 'cambia el número de privilegios +1' do
         expect do
           post api_v1_user_user_privileges_path(@user),
-               params: { user_privilege: { description: 'Privilegio para borrar', key:'PASS_USR_UPDATE', value: 'SI' },
+               params: { user_privilege: { description: 'Privilegio para borrar', key: 'PASS_USR_UPDATE', value: 'SI' },
                          token: @token.token, secret_key: my_app.secret_key }
-        end        .to change(UserPrivilege, :count).by(1)
+        end.to change(UserPrivilege, :count).by(1)
       end
       it 'responde con el privilegio creado' do
         json = JSON.parse(response.body)
@@ -80,7 +80,7 @@ RSpec.describe Api::V1::UserPrivilegesController, type: :request do
           post api_v1_user_user_privileges_path(@user),
                params: { user_privilege: { description: 'Privilegio para editar', value: 'SI' },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
-        end .to change(UserPrivilege, :count).by(0)
+        end.to change(UserPrivilege, :count).by(0)
       end
     end
   end

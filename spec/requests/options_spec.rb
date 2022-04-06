@@ -47,7 +47,8 @@ RSpec.describe Api::V1::OptionsController, type: :request do
       it { expect(response).to have_http_status(200) }
       it 'crea una nueva opción' do
         expect do
-          post '/api/v1/options', params: { token: @token.token, secret_key: @my_app.secret_key, option: { name: 'Opción1', description: 'Acceso a todos los módulos', expires_at: DateTime.now } }
+          post '/api/v1/options',
+               params: { token: @token.token, secret_key: @my_app.secret_key, option: { name: 'Opción1', description: 'Acceso a todos los módulos', expires_at: DateTime.now } }
         end.to change(Option, :count).by(1)
       end
       it 'responde con la cadena creada' do

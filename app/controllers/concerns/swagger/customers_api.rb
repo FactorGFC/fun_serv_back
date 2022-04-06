@@ -177,7 +177,6 @@ module Swagger::CustomersApi
           key :description, 'Tipo de cliente'
           key :required, true
           key :type, :string
-          key :enum, ['PARTICULAR','EMPRESA']
         end
 
         parameter name: :name do
@@ -195,9 +194,271 @@ module Swagger::CustomersApi
           key :enum, ['ACTIVO','INACTIVO', 'BLOQUEADO']
         end
 
+        parameter name: :salary do
+          key :in, :query
+          key :description, 'Sueldo del empleado'
+          key :required, true
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :salary_period do
+          key :in, :query
+          key :description, 'Periodo del sueldo'
+          key :required, true
+          key :type, :string
+        end
+
+        parameter name: :other_income do
+          key :in, :query
+          key :description, 'Otros ingresos del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :net_expenses do
+          key :in, :query
+          key :description, 'Gastos totales del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :family_expenses do
+          key :in, :query
+          key :description, 'Gastos familiares del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :house_rent do
+          key :in, :query
+          key :description, 'Gasto de renta del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :credit_cp do
+          key :in, :query
+          key :description, 'Creditos de tarjetas de credito bancarias del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :credit_lp do
+          key :in, :query
+          key :description, 'Total de creditos personales del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :immediate_superior do
+          key :in, :query
+          key :description, 'Jefe inmediato del empleado'
+          key :required, false
+          key :type, :string
+        end
+
+        parameter name: :seniority do
+          key :in, :query
+          key :description, 'Antiguedad del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :ontime_bonus do
+          key :in, :query
+          key :description, 'Bonus de puntualidad'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :assist_bonus do
+          key :in, :query
+          key :description, 'Bono de asistencia'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :food_vouchers do
+          key :in, :query
+          key :description, 'Vales de despensa'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :total_income do
+          key :in, :query
+          key :description, 'Total de ingresos del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :total_savings_found do
+          key :in, :query
+          key :description, 'Total fondo de ahorro'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :christmas_bonus do
+          key :in, :query
+          key :description, 'Aguinaldo'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :taxes do
+          key :in, :query
+          key :description, 'Impuestos'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :imms do
+          key :in, :query
+          key :description, 'Descuento del IMMS'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :savings_found do
+          key :in, :query
+          key :description, 'Fondo de ahorro'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :savings_found_loand do
+          key :in, :query
+          key :description, 'Prestamo de fondo de ahorro'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :savings_bank do
+          key :in, :query
+          key :description, 'Caja de ahorro'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :insurance_discount do
+          key :in, :query
+          key :description, 'Desuento de seguro'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :child_support do
+          key :in, :query
+          key :description, 'Pension alimenticia'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :extra_expenses do
+          key :in, :query
+          key :description, 'Descuento extraordinario'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :infonavit do
+          key :in, :query
+          key :description, 'Descuento de Infonavit'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :departamental_credit do
+          key :in, :query
+          key :description, 'Creditos de tarjetas departamentales'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :car_credit do
+          key :in, :query
+          key :description, 'Credito Automotriz'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :mortagage_loan do
+          key :in, :query
+          key :description, 'Credito hipotecario'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :other_credits do
+          key :in, :query
+          key :description, 'Otros creditos'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :accured_liabilities do
+          key :in, :query
+          key :description, 'Total de pasivos'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :debt do
+          key :in, :query
+          key :description, 'Deuda del empleado'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
+        parameter name: :net_flow do
+          key :in, :query
+          key :description, 'Flujo neto'
+          key :required, false
+          key :type, :number
+          key :format, :float
+        end
+
         parameter name: :user_id do
           key :in, :query
           key :description, 'ID del usuario. FK USERS'
+          key :required, true
+          key :type, :string
+          key :format, :uuid
+        end
+
+        parameter name: :file_type_id do
+          key :in, :query
+          key :description, 'ID del archivo del empleadp. FK FILE_TYPES'
           key :required, true
           key :type, :string
           key :format, :uuid

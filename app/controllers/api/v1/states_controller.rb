@@ -3,7 +3,7 @@
 class Api::V1::StatesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::StatesApi
-
+  
   before_action :authenticate
   before_action :set_state, only: %i[show]
   before_action :set_country

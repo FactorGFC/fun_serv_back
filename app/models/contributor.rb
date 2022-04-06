@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: contributors
@@ -30,11 +32,11 @@ class Contributor < ApplicationRecord
   include Swagger::ContributorSchema
   has_many :contributor_addresses
   has_many :customers
-  has_many :funders
+  has_many :companies
   has_many :contributor_documents
   belongs_to :person, optional: true
-  validates_uniqueness_of :person, allow_nil: true
   belongs_to :legal_entity, optional: true
+  validates_uniqueness_of :person, allow_nil: true
   validates_uniqueness_of :legal_entity, allow_nil: true
   validates :contributor_type, presence: true
   validates :account_number, length: { maximum: 18 }

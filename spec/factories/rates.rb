@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: rates
@@ -12,8 +13,8 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  credit_rating_id  :uuid
-#  payment_period_id :uuid             not null
-#  term_id           :uuid             not null
+#  payment_period_id :uuid
+#  term_id           :uuid
 #
 # Indexes
 #

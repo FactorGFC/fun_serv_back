@@ -3,7 +3,7 @@
 class Api::V1::ExtRatesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::ExtRatesApi
-
+  
   before_action :authenticate
   before_action :set_ext_rate, only: %i[show update destroy]
 
@@ -39,6 +39,6 @@ class Api::V1::ExtRatesController < Api::V1::MasterApiController
   end
 
   def ext_rates_params
-    params.require(:ext_rate).permit(:key, :description, :start_date, :end_date, :value, :rate_type)
+    params.require(:ext_rate).permit(:key, :description, :start_date, :end_date, :value, :rate_type, :max_value)
   end
 end

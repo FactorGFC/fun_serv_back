@@ -1,19 +1,23 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: sim_customer_payments
 #
 #  id                 :uuid             not null, primary key
+#  aditional_payment  :decimal(15, 4)
 #  attached           :string
 #  capital            :decimal(15, 4)   not null
+#  commission         :decimal(15, 4)
 #  current_debt       :decimal(15, 4)   not null
 #  extra1             :string
 #  extra2             :string
 #  extra3             :string
+#  insurance          :decimal(15, 4)
 #  interests          :decimal(15, 4)   not null
 #  iva                :decimal(15, 4)   not null
 #  pay_number         :integer          not null
 #  payment            :decimal(15, 4)   not null
-#  payment_date       :date
+#  payment_date       :date             not null
 #  remaining_debt     :decimal(15, 4)   not null
 #  status             :string           not null
 #  created_at         :datetime         not null
@@ -40,6 +44,9 @@ FactoryBot.define do
     payment_date { "2021-03-01" }
     status { "AC" }
     attached { "https://payment8768.pdf" }
+    insurance { "675.28" }
+    commission { "623.00" }
+    aditional_payment { "" }
     extra1 { "MyString" }
     extra2 { "MyString" }
     extra3 { "MyString" }

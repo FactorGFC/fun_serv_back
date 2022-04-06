@@ -243,11 +243,42 @@ module Swagger::PeopleApi
           key :enum, ['CASADO','SOLTERO']
         end
 
+        parameter name: :martial_regime do
+          key :in, :query
+          key :description, 'Regimen matrimonial de la persona física'
+          key :required, false
+          key :type, :string
+          key :enum, ['BIENES SEPARADOS','BIENES MANCOMUNADOS']
+        end
+
+        parameter name: :minior_dependents do
+          key :in, :query
+          key :description, 'Dependientes menores de edad de la persona física'
+          key :required, false
+          key :type, :integer
+        end
+
+        parameter name: :senior_depentenents do
+          key :in, :query
+          key :description, 'Dependientes mayores de edad de la persona física'
+          key :required, false
+          key :type, :integer
+        end
+
+        parameter name: :housing_type do
+          key :in, :query
+          key :description, 'Tipo de vivienda de la persona física'
+          key :required, false
+          key :type, :string
+          key :enum, ['CASA PROPIA','RENTA']
+        end
+
         parameter name: :id_type do
           key :in, :query
           key :description, 'Tipo de identificación de la persona física'
           key :required, false
           key :type, :string
+          key :enum, ['INE','LICENCIA','PASAPORTE']
         end
 
         parameter name: :identification do
