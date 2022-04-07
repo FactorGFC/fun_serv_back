@@ -1,8 +1,8 @@
-name: CI/CD - Glo Prod
+name: CI/CD - Nomina dev
 on:  
   push:
     branches:
-      - glo_prod
+      - dev
   #pull_request:
   #  branches:
   #    - fg_master
@@ -70,8 +70,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: funder_backend
-          environment_name: Funderbackend-prod
+          application_name: nomina_back
+          environment_name: Nominaback-env
           version_label: ${{ github.SHA }}
           version_description: ${{ github.event.head_commit.message }}
           region: us-east-1
