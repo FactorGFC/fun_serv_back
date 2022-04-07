@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::PaymentPeriodsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::PaymentPeriodsApi

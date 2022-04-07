@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: user_options
@@ -18,13 +20,11 @@
 #  fk_rails_...  (option_id => options.id)
 #  fk_rails_...  (user_id => users.id)
 #
-
 class UserOption < ApplicationRecord
   include Swagger::Blocks
   include Swagger::UserOptionSchema
   belongs_to :user
   belongs_to :option
-
   validates :user, presence: true
   validates :option, presence: true
 

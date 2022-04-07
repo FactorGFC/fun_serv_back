@@ -3,7 +3,7 @@
 class Api::V1::ListsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::ListsApi
-
+  
   before_action :authenticate
   before_action :set_list, only: %i[show update destroy]
 
@@ -29,7 +29,7 @@ class Api::V1::ListsController < Api::V1::MasterApiController
 
   def destroy
     @list.destroy
-    render json: { message: 'Fué eliminada La lista indicada' }
+    render json: { message: 'Fué eliminada la lista indicada' }
   end
 
   def domain

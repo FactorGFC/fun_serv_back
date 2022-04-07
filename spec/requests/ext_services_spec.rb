@@ -44,14 +44,16 @@ RSpec.describe Api::V1::ExtServicesController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         post '/api/v1/ext_services', params: { token: @token.token, secret_key: @my_app.secret_key, ext_service:
                                                     { supplier: 'Tu identidad', user: 'Factor GFC', api_key: 'sfd446fgdfgd4345dfgd343',
-                                                      token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine', rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
+                                                      token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine',
+                                                      rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
       end
       it { expect(response).to have_http_status(200) }
       it 'crea un nuevo servicio externo' do
         expect do
           post '/api/v1/ext_services', params: { token: @token.token, secret_key: @my_app.secret_key, ext_service:
                                                       { supplier: 'Tu identidad', user: 'Factor GFC', api_key: 'sfd446fgdfgd4345dfgd343',
-                                                        token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine', rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
+                                                        token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine',
+                                                        rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
         end.to change(ExtService, :count).by(1)
       end
       it 'responde con la cadena creada' do
@@ -74,7 +76,8 @@ RSpec.describe Api::V1::ExtServicesController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now - 10.minutes, user: @user, my_app: @my_app)
         post '/api/v1/ext_services', params: { token: @token.token, secret_key: @my_app.secret_key, ext_service:
                                                     { supplier: 'Tu identidad', user: 'Factor GFC', api_key: 'sfd446fgdfgd4345dfgd343',
-                                                      token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine', rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
+                                                      token: 'sfd4dfgdfg54fd54345dfgd343', url: 'https://tuidentidad.com/api/Business/ine',
+                                                      rule: 'se le manda una fotografía del INE y devuelve todos los datos' } }
       end
     end
   end

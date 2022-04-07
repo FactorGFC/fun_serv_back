@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: general_parameters
@@ -13,7 +15,6 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
-
 class GeneralParameter < ApplicationRecord
   include Swagger::Blocks
   include Swagger::GeneralParameterSchema

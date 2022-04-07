@@ -3,7 +3,7 @@
 class Api::V1::ContributorDocumentsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::ContributorDocumentsApi
-
+  
   before_action :authenticate
   before_action :set_contributor_document, only: %i[show update destroy]
   before_action :set_contributor
@@ -44,7 +44,7 @@ class Api::V1::ContributorDocumentsController < Api::V1::MasterApiController
   private
 
   def contributor_document_params
-    params.require(:contributor_document).permit( :name, :status, :notes, :url, :file_type_document_id)
+    params.require(:contributor_document).permit(:name, :status, :notes, :url, :file_type_document_id)
   end
 
   def set_contributor

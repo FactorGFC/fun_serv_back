@@ -18,6 +18,7 @@ RSpec.describe Api::V1::ContributorAddressesController, type: :request do
       get "/api/v1/contributors/#{@contributor.id}/contributor_addresses", params: { token: @token.token, secret_key: my_app.secret_key }
     end
     it { expect(response).to have_http_status(200) }
+
     it 'manda el domicmilio asociado' do
       json = JSON.parse(response.body)
       expect(json['data'].length).to eq(ContributorAddress.count)
@@ -26,7 +27,8 @@ RSpec.describe Api::V1::ContributorAddressesController, type: :request do
     it 'manda los datos del domicilio' do
       json_array = JSON.parse(response.body)
       @contributor_address = json_array['data'][0]
-      expect(@contributor_address['attributes'].keys).to contain_exactly('id', 'address_reference', 'address_type', 'external_number', 'apartment_number', 'postal_code', 'street', 'suburb', 'suburb_type', 'contributor_id', 'municipality_id', 'state_id', 'created_at', 'updated_at')
+      expect(@contributor_address['attributes'].keys).to contain_exactly('id', 'address_reference', 'address_type', 'external_number', 'apartment_number', 'postal_code', 'street', 'suburb',
+                                                                         'suburb_type', 'contributor_id', 'municipality_id', 'state_id', 'created_at', 'updated_at')
     end
   end
 
@@ -63,7 +65,7 @@ RSpec.describe Api::V1::ContributorAddressesController, type: :request do
                                                 apartment_number: 'A', suburb_type: 'Urbano', suburb: 'Portales', postal_code: 31_115,
                                                 address_reference: 'Entre 1 y 2', municipality_id: @municipality.id, state_id: @state.id },
                          token: @token.token, secret_key: my_app.secret_key }
-        end        .to change(ContributorAddress, :count).by(1)
+        end.to change(ContributorAddress, :count).by(1)
       end
       it 'responde con el domicilio creado' do
         json = JSON.parse(response.body)
@@ -88,7 +90,7 @@ RSpec.describe Api::V1::ContributorAddressesController, type: :request do
                                                 apartment_number: 'A', suburb_type: 'Urbano', suburb: 'Portales', postal_code: 31_115,
                                                 address_reference: 'Entre 1 y 2', municipality_id: @municipality.id, state_id: @state.id },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
-        end .to change(ContributorAddress, :count).by(0)
+        end.to change(ContributorAddress, :count).by(0)
       end
     end
   end

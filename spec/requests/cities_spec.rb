@@ -58,7 +58,7 @@ RSpec.describe Api::V1::CitiesController, type: :request do
           post api_v1_state_cities_path(@state),
                params: { city: { name: 'Delicias' },
                          token: @token.token, secret_key: my_app.secret_key }
-        end        .to change(City, :count).by(1)
+        end.to change(City, :count).by(1)
       end
       it 'responde con la ciudad creada' do
         json = JSON.parse(response.body)
@@ -79,7 +79,7 @@ RSpec.describe Api::V1::CitiesController, type: :request do
           post api_v1_state_cities_path(@state),
                params: { city: { name: 'Delicias' },
                          token: 'sf4fsfd453f34fqgf55gd', secret_key: my_app.secret_key }
-        end .to change(City, :count).by(0)
+        end.to change(City, :count).by(0)
       end
     end
   end

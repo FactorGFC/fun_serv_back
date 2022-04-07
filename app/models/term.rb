@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: terms
@@ -18,12 +20,12 @@ class Term < ApplicationRecord
   include Swagger::Blocks
   include Swagger::TermSchema
   has_many :rates
-  has_many :project_requests
-  has_many :projects
+  has_many :customer_credits
 
   validates :credit_limit, presence: true
   validates :description, presence: true
   validates :key, presence: true
   validates :term_type, presence: true
   validates :value, presence: true
+
 end

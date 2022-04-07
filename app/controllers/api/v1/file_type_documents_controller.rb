@@ -3,7 +3,7 @@
 class Api::V1::FileTypeDocumentsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::FileTypeDocumentsApi
-
+  
   before_action :authenticate
   before_action :set_file_type_document, only: %i[update destroy]
   def create

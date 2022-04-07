@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: contributor_documents
@@ -30,7 +32,6 @@ class ContributorDocument < ApplicationRecord
   include Swagger::ContributorDocumentSchema
   belongs_to :contributor
   belongs_to :file_type_document
-
   validates :name, presence: true
   validates :status, presence: true
   def self.custom_update_or_create(contributor, file_type_document, name, status)

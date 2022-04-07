@@ -3,7 +3,7 @@
 class Api::V1::OptionsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::OptionsApi
-
+  
   before_action :authenticate
   before_action :set_option, only: %i[show update destroy]
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: contributor_addresses
@@ -32,12 +34,13 @@
 class ContributorAddress < ApplicationRecord
   include Swagger::Blocks
   include Swagger::ContributorAddressSchema
-  belongs_to :state
   belongs_to :municipality
   belongs_to :contributor
+  belongs_to :state
   has_many :people, through: :contributors
   has_many :legal_entities, through: :contributors
   validates :street, presence: true
+  validates :address_type, presence: true
   validates :external_number, presence: true
   validates :suburb, presence: true
   validates :postal_code, presence: true

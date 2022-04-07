@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_24_230002) do
+ActiveRecord::Schema.define(version: 2022_03_30_015944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -22,6 +22,22 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_cities_on_state_id"
+  end
+
+  create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "business_name", null: false
+    t.date "start_date", null: false
+    t.decimal "credit_limit", precision: 15, scale: 4
+    t.decimal "credit_available", precision: 15, scale: 4
+    t.decimal "balance", precision: 15, scale: 4
+    t.string "document"
+    t.string "sector"
+    t.string "subsector"
+    t.decimal "company_rate"
+    t.uuid "contributor_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["contributor_id"], name: "index_companies_on_contributor_id"
   end
 
   create_table "contributor_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -67,10 +83,10 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "extra1"
     t.string "extra2"
     t.string "extra3"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.uuid "person_id"
     t.uuid "legal_entity_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["legal_entity_id"], name: "index_contributors_on_legal_entity_id"
     t.index ["person_id"], name: "index_contributors_on_person_id"
   end
@@ -81,6 +97,32 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.integer "phonecode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "credit_analyses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "debt_rate", precision: 15, scale: 4
+    t.decimal "cash_flow", precision: 15, scale: 4
+    t.string "credit_status", null: false
+    t.string "previus_credit"
+    t.decimal "discounts", precision: 15, scale: 4
+    t.decimal "debt_horizon", precision: 15, scale: 4
+    t.date "report_date", null: false
+    t.string "mop_key", null: false
+    t.decimal "last_key", precision: 15, scale: 4, null: false
+    t.string "balance_due"
+    t.decimal "payment_capacity", precision: 15, scale: 4
+    t.decimal "lowest_key", precision: 15, scale: 4, null: false
+    t.decimal "departamental_credit", precision: 15, scale: 4
+    t.decimal "car_credit", precision: 15, scale: 4
+    t.decimal "mortagage_loan", precision: 15, scale: 4
+    t.decimal "other_credits", precision: 15, scale: 4
+    t.decimal "accured_liabilities", precision: 15, scale: 4
+    t.decimal "debt", precision: 15, scale: 4
+    t.decimal "net_flow", precision: 15, scale: 4
+    t.uuid "customer_credit_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["customer_credit_id"], name: "index_credit_analyses_on_customer_credit_id"
   end
 
   create_table "credit_ratings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -103,38 +145,86 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.decimal "total_debt", precision: 15, scale: 4, null: false
     t.decimal "total_payments", precision: 15, scale: 4, null: false
     t.decimal "balance", precision: 15, scale: 4, null: false
+    t.decimal "fixed_payment", precision: 15, scale: 4, null: false
     t.string "status", null: false
     t.date "start_date", null: false
     t.date "end_date", null: false
+    t.integer "restructure_term"
     t.string "attached"
     t.string "extra1"
     t.string "extra2"
     t.string "extra3"
     t.uuid "customer_id", null: false
-    t.uuid "project_id"
+    t.uuid "payment_period_id"
+    t.uuid "term_id"
+    t.uuid "credit_rating_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.decimal "fixed_payment", precision: 15, scale: 4, null: false
-    t.integer "restructure_term"
-    t.uuid "project_request_id"
+    t.decimal "rate", null: false
+    t.decimal "debt_time", precision: 15, scale: 4
+    t.string "destination"
+    t.decimal "amount_allowed", precision: 15, scale: 4
+    t.decimal "time_allowed", precision: 15, scale: 4
+    t.decimal "iva_percent", precision: 15, scale: 4
+    t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"
-    t.index ["project_id"], name: "index_customer_credits_on_project_id"
-    t.index ["project_request_id"], name: "index_customer_credits_on_project_request_id"
+    t.index ["payment_period_id"], name: "index_customer_credits_on_payment_period_id"
+    t.index ["term_id"], name: "index_customer_credits_on_term_id"
+  end
+
+  create_table "customer_personal_references", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "second_last_name", null: false
+    t.string "address"
+    t.string "phone"
+    t.string "reference_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "customer_id", null: false
+    t.index ["customer_id"], name: "index_customer_personal_references_on_customer_id"
   end
 
   create_table "customers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
+    t.decimal "salary", precision: 15, scale: 4, null: false
+    t.string "salary_period", null: false
     t.string "customer_type", null: false
     t.string "status", null: false
+    t.decimal "other_income", precision: 15, scale: 4
+    t.decimal "net_expenses", precision: 15, scale: 4
+    t.decimal "family_expenses", precision: 15, scale: 4
+    t.decimal "house_rent", precision: 15, scale: 4
+    t.decimal "credit_cp", precision: 15, scale: 4
+    t.decimal "credit_lp", precision: 15, scale: 4
     t.string "attached"
     t.string "extra1"
     t.string "extra2"
     t.string "extra3"
     t.uuid "contributor_id", null: false
-    t.uuid "user_id", null: false
+    t.uuid "user_id"
+    t.uuid "file_type_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "file_type_id"
+    t.string "immediate_superior"
+    t.decimal "seniority", precision: 15, scale: 4
+    t.decimal "ontime_bonus", precision: 15, scale: 4
+    t.decimal "assist_bonus", precision: 15, scale: 4
+    t.decimal "food_vouchers", precision: 15, scale: 4
+    t.decimal "total_income", precision: 15, scale: 4
+    t.decimal "total_savings_found", precision: 15, scale: 4
+    t.decimal "christmas_bonus", precision: 15, scale: 4
+    t.decimal "taxes", precision: 15, scale: 4
+    t.decimal "imms", precision: 15, scale: 4
+    t.decimal "savings_found", precision: 15, scale: 4
+    t.decimal "savings_found_loand", precision: 15, scale: 4
+    t.decimal "savings_bank", precision: 15, scale: 4
+    t.decimal "insurance_discount", precision: 15, scale: 4
+    t.decimal "child_support", precision: 15, scale: 4
+    t.decimal "extra_expenses", precision: 15, scale: 4
+    t.decimal "infonavit", precision: 15, scale: 4
+    t.uuid "company_id"
+    t.index ["company_id"], name: "index_customers_on_company_id"
     t.index ["contributor_id"], name: "index_customers_on_contributor_id"
     t.index ["file_type_id"], name: "index_customers_on_file_type_id"
     t.index ["user_id"], name: "index_customers_on_user_id"
@@ -163,6 +253,7 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "rate_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.decimal "max_value", precision: 15, scale: 4
   end
 
   create_table "ext_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -195,47 +286,11 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "name", null: false
     t.string "description", null: false
     t.string "customer_type"
-    t.string "funder_type"
     t.string "extra1"
     t.string "extra2"
     t.string "extra3"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "funders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.string "funder_type", null: false
-    t.string "status", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "contributor_id", null: false
-    t.uuid "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.uuid "file_type_id"
-    t.index ["contributor_id"], name: "index_funders_on_contributor_id"
-    t.index ["file_type_id"], name: "index_funders_on_file_type_id"
-    t.index ["user_id"], name: "index_funders_on_user_id"
-  end
-
-  create_table "funding_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "total_requested", precision: 15, scale: 4, null: false
-    t.decimal "total_investments", precision: 15, scale: 4, null: false
-    t.decimal "balance", precision: 15, scale: 4, null: false
-    t.date "funding_request_date", null: false
-    t.date "funding_due_date", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "project_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "status", null: false
-    t.index ["project_id"], name: "index_funding_requests_on_project_id"
   end
 
   create_table "general_parameters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -248,24 +303,6 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "documentation"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "investments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "total", precision: 15, scale: 4, null: false
-    t.decimal "rate", precision: 15, scale: 4, null: false
-    t.date "investment_date", null: false
-    t.string "status", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "funding_request_id", null: false
-    t.uuid "funder_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.decimal "yield_fixed_payment", precision: 15, scale: 4, null: false
-    t.index ["funder_id"], name: "index_investments_on_funder_id"
-    t.index ["funding_request_id"], name: "index_investments_on_funding_request_id"
   end
 
   create_table "legal_entities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -351,6 +388,10 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "birthplace"
     t.date "birthdate", null: false
     t.string "martial_status"
+    t.string "martial_regime"
+    t.integer "minior_dependents"
+    t.integer "senior_dependents"
+    t.string "housing_type"
     t.string "id_type"
     t.bigint "identification", null: false
     t.string "phone"
@@ -375,63 +416,6 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.index ["pc"], name: "index_postal_codes_on_pc"
   end
 
-  create_table "project_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "project_type", null: false
-    t.string "folio", null: false
-    t.string "currency", null: false
-    t.decimal "total", precision: 15, scale: 4, null: false
-    t.date "request_date", null: false
-    t.string "status", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "customer_id", null: false
-    t.uuid "user_id", null: false
-    t.uuid "term_id", null: false
-    t.uuid "payment_period_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.decimal "rate", precision: 15, scale: 4
-    t.index ["customer_id"], name: "index_project_requests_on_customer_id"
-    t.index ["payment_period_id"], name: "index_project_requests_on_payment_period_id"
-    t.index ["term_id"], name: "index_project_requests_on_term_id"
-    t.index ["user_id"], name: "index_project_requests_on_user_id"
-  end
-
-  create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "project_type", null: false
-    t.string "folio", null: false
-    t.decimal "client_rate", precision: 15, scale: 4, null: false
-    t.decimal "funder_rate", precision: 15, scale: 4, null: false
-    t.decimal "ext_rate", precision: 15, scale: 4, null: false
-    t.decimal "total", precision: 15, scale: 4, null: false
-    t.decimal "interests", precision: 15, scale: 4, null: false
-    t.decimal "financial_cost", precision: 15, scale: 4, null: false
-    t.string "currency", null: false
-    t.date "entry_date", null: false
-    t.date "used_date"
-    t.string "status", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "customer_id", null: false
-    t.uuid "user_id", null: false
-    t.uuid "project_request_id", null: false
-    t.uuid "term_id", null: false
-    t.uuid "payment_period_id", null: false
-    t.uuid "credit_rating_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["credit_rating_id"], name: "index_projects_on_credit_rating_id"
-    t.index ["customer_id"], name: "index_projects_on_customer_id"
-    t.index ["payment_period_id"], name: "index_projects_on_payment_period_id"
-    t.index ["project_request_id"], name: "index_projects_on_project_request_id"
-    t.index ["term_id"], name: "index_projects_on_term_id"
-    t.index ["user_id"], name: "index_projects_on_user_id"
-  end
-
   create_table "rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "key", null: false
     t.string "description", null: false
@@ -439,8 +423,8 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "extra1"
     t.string "extra2"
     t.string "extra3"
-    t.uuid "term_id", null: false
-    t.uuid "payment_period_id", null: false
+    t.uuid "term_id"
+    t.uuid "payment_period_id"
     t.uuid "credit_rating_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -450,10 +434,10 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
   end
 
   create_table "role_options", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "role_id", null: false
-    t.uuid "option_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "role_id", null: false
+    t.uuid "option_id", null: false
     t.index ["option_id"], name: "index_role_options_on_option_id"
     t.index ["role_id"], name: "index_role_options_on_role_id"
   end
@@ -467,11 +451,13 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
 
   create_table "sim_customer_payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "pay_number", null: false
+    t.decimal "current_debt", precision: 15, scale: 4, null: false
     t.decimal "remaining_debt", precision: 15, scale: 4, null: false
     t.decimal "payment", precision: 15, scale: 4, null: false
     t.decimal "capital", precision: 15, scale: 4, null: false
     t.decimal "interests", precision: 15, scale: 4, null: false
     t.decimal "iva", precision: 15, scale: 4, null: false
+    t.date "payment_date", null: false
     t.string "status", null: false
     t.string "attached"
     t.string "extra1"
@@ -480,40 +466,18 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.uuid "customer_credit_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.date "payment_date"
-    t.decimal "current_debt", precision: 15, scale: 4, null: false
+    t.decimal "insurance", precision: 15, scale: 4
+    t.decimal "commission", precision: 15, scale: 4
+    t.decimal "aditional_payment", precision: 15, scale: 4
     t.index ["customer_credit_id"], name: "index_sim_customer_payments_on_customer_credit_id"
-  end
-
-  create_table "sim_funder_yields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "yield_number", null: false
-    t.decimal "capital", precision: 15, scale: 4, null: false
-    t.decimal "gross_yield", precision: 15, scale: 4, null: false
-    t.decimal "isr", precision: 15, scale: 4, null: false
-    t.decimal "net_yield", precision: 15, scale: 4, null: false
-    t.decimal "total", precision: 15, scale: 4, null: false
-    t.date "payment_date", null: false
-    t.string "status", null: false
-    t.string "attached"
-    t.string "extra1"
-    t.string "extra2"
-    t.string "extra3"
-    t.uuid "funder_id", null: false
-    t.uuid "investment_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.decimal "remaining_capital", precision: 15, scale: 4, null: false
-    t.decimal "current_capital", precision: 15, scale: 4, null: false
-    t.index ["funder_id"], name: "index_sim_funder_yields_on_funder_id"
-    t.index ["investment_id"], name: "index_sim_funder_yields_on_investment_id"
   end
 
   create_table "states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
+    t.string "state_key", null: false
     t.uuid "country_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "state_key", null: false
     t.index ["country_id"], name: "index_states_on_country_id"
   end
 
@@ -533,10 +497,10 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
   create_table "tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "expires_at"
     t.uuid "user_id", null: false
+    t.uuid "my_app_id"
     t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "my_app_id"
     t.index ["my_app_id"], name: "index_tokens_on_my_app_id"
     t.index ["user_id"], name: "index_tokens_on_user_id"
   end
@@ -552,12 +516,12 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
 
   create_table "user_privileges", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "description", null: false
+    t.string "key", null: false
     t.string "value", null: false
     t.string "documentation"
     t.uuid "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "key", null: false
     t.index ["user_id"], name: "index_user_privileges_on_user_id"
   end
 
@@ -568,14 +532,15 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
     t.string "job"
     t.string "gender"
     t.string "status"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "reset_password_token"
     t.uuid "role_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["role_id"], name: "index_users_on_role_id"
   end
 
   add_foreign_key "cities", "states"
+  add_foreign_key "companies", "contributors"
   add_foreign_key "contributor_addresses", "contributors"
   add_foreign_key "contributor_addresses", "municipalities"
   add_foreign_key "contributor_addresses", "states"
@@ -583,41 +548,27 @@ ActiveRecord::Schema.define(version: 2021_06_24_230002) do
   add_foreign_key "contributor_documents", "file_type_documents"
   add_foreign_key "contributors", "legal_entities"
   add_foreign_key "contributors", "people"
+  add_foreign_key "credit_analyses", "customer_credits"
+  add_foreign_key "customer_credits", "credit_ratings"
   add_foreign_key "customer_credits", "customers"
-  add_foreign_key "customer_credits", "project_requests"
-  add_foreign_key "customer_credits", "projects"
+  add_foreign_key "customer_credits", "payment_periods"
+  add_foreign_key "customer_credits", "terms"
+  add_foreign_key "customer_personal_references", "customers"
+  add_foreign_key "customers", "companies"
   add_foreign_key "customers", "contributors"
   add_foreign_key "customers", "file_types"
   add_foreign_key "customers", "users"
   add_foreign_key "documents", "ext_services"
   add_foreign_key "file_type_documents", "documents"
   add_foreign_key "file_type_documents", "file_types"
-  add_foreign_key "funders", "contributors"
-  add_foreign_key "funders", "file_types"
-  add_foreign_key "funders", "users"
-  add_foreign_key "funding_requests", "projects"
-  add_foreign_key "investments", "funders"
-  add_foreign_key "investments", "funding_requests"
   add_foreign_key "municipalities", "states"
   add_foreign_key "my_apps", "users"
-  add_foreign_key "project_requests", "customers"
-  add_foreign_key "project_requests", "payment_periods"
-  add_foreign_key "project_requests", "terms"
-  add_foreign_key "project_requests", "users"
-  add_foreign_key "projects", "credit_ratings"
-  add_foreign_key "projects", "customers"
-  add_foreign_key "projects", "payment_periods"
-  add_foreign_key "projects", "project_requests"
-  add_foreign_key "projects", "terms"
-  add_foreign_key "projects", "users"
   add_foreign_key "rates", "credit_ratings"
   add_foreign_key "rates", "payment_periods"
   add_foreign_key "rates", "terms"
   add_foreign_key "role_options", "options"
   add_foreign_key "role_options", "roles"
   add_foreign_key "sim_customer_payments", "customer_credits"
-  add_foreign_key "sim_funder_yields", "funders"
-  add_foreign_key "sim_funder_yields", "investments"
   add_foreign_key "states", "countries"
   add_foreign_key "tokens", "my_apps"
   add_foreign_key "tokens", "users"

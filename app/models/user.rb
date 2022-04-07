@@ -24,15 +24,11 @@
 #
 #  fk_rails_...  (role_id => roles.id)
 #
-
 class User < ApplicationRecord
   include Swagger::Blocks
   include Swagger::UserSchema
   include Swagger::ApiSessionSchema
-  validates :email, presence: true, email: true, uniqueness: true
-  validates :password, presence: true, on: :create
-  validates :name, presence: true
-  has_many :tokens, dependent: :destroy
+ has_many :tokens, dependent: :destroy
   has_many :my_polls
   has_many :my_apps, dependent: :destroy
   has_many :user_polls
@@ -41,9 +37,10 @@ class User < ApplicationRecord
   has_many :options, through: :user_options
   has_many :user_privileges
   has_many :customers
-  has_many :funders
-  has_many :project_requests
-  has_many :projects
+  validates :email, presence: true, email: true, uniqueness: true
+  validates :password, presence: true, on: :create
+  validates :name, presence: true
+  #ver que hace esto
   has_secure_password
 
   def self.from_omniauth(data)
@@ -56,4 +53,5 @@ class User < ApplicationRecord
   def self.authenticate(password)
     BCrypt::Password.new(@user.password_digest) == password
   end
+
 end

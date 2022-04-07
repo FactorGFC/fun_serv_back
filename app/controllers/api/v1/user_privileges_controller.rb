@@ -3,7 +3,7 @@
 class Api::V1::UserPrivilegesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::UserPrivilegesApi
-
+  
   before_action :authenticate
   before_action :set_user_privilege, only: %i[show update destroy]
   before_action :set_user

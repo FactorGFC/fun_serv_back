@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: payment_periods
@@ -17,8 +19,7 @@ class PaymentPeriod < ApplicationRecord
   include Swagger::Blocks
   include Swagger::PaymentPeriodSchema
   has_many :rates
-  has_many :project_requests
-  has_many :projects
+  has_many :customer_credits
 
   validates :description, presence: true
   validates :key, presence: true

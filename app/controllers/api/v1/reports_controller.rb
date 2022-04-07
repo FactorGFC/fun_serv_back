@@ -18,7 +18,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
   def daily_operations
     @query = "SELECT ab.*
-    FROM((SELECT req.folio folio_solicitud, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, req.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - req.used_date dias, TO_CHAR(rei.total_used, 'FM9,999,999,990.00') importe, inv.currency moneda, rei.ext_rate tasa_interbancaria, rei.int_rate sobre_tasa, rei.total_rate tasa_factor, TO_CHAR(rei.interests, 'FM9,999,999,990.00') intereses_factor, TO_CHAR(rei.total_used - rei.interests, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(req.total_used - req.interests, 'FM9,999,999,990.00') por_disposicion_solicitud, req.folio id_solicitud 
+    FROM((SELECT req.folio folio_solicitud, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, req.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - req.used_date dias, TO_CHAR(rei.total_used, 'FM9,999,999,990.00') importe, inv.currency moneda, rei.ext_rate tasa_interbancaria, rei.int_rate sobre_tasa, rei.total_rate tasa_factor, TO_CHAR(rei.interests, 'FM9,999,999,990.00') intereses_factor, TO_CHAR(rei.total_used - rei.interests, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(req.total_used - req.interests, 'FM9,999,999,990.00') por_disposicion_solicitud, req.folio id_solicitud
       FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com
       WHERE inv.id = rei.invoice_id
       AND req.id = rei.request_id
@@ -28,7 +28,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
       AND req.status = 'APROBADA'
       AND req.used_date = ':used_date'
        ) UNION ALL
-       (SELECT null, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, inv.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - inv.used_date dias, TO_CHAR(inv.total, 'FM9,999,999,990.00') importe, inv.currency moneda, '0.00' tasa_interbancaria, '0.00' sobre_tasa, '0.00' tasa_factor, '0.00' intereses_factor, TO_CHAR(inv.total, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(inv.total, 'FM9,999,999,990.00') por_dispocision_solicitud, null id_solicitud 
+       (SELECT null, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, inv.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - inv.used_date dias, TO_CHAR(inv.total, 'FM9,999,999,990.00') importe, inv.currency moneda, '0.00' tasa_interbancaria, '0.00' sobre_tasa, '0.00' tasa_factor, '0.00' intereses_factor, TO_CHAR(inv.total, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(inv.total, 'FM9,999,999,990.00') por_dispocision_solicitud, null id_solicitud
       FROM invoices inv, suppliers sup, companies com
       WHERE inv.supplier_id = sup.id
       AND inv.company_id = com.id
@@ -36,7 +36,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
       AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
       AND inv.used_date = ':used_date'
        ) UNION ALL
-       (SELECT req.folio folio_solicitud, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, inv.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - inv.used_date dias, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') importe, inv.currency moneda, '0.00' tasa_interbancaria, '0.00' sobre_tasa, '0.00' tasa_factor, '0.00' intereses_factor, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') por_dispocision_solicitud, 'Saldo pendiente de solicitud: '||req.folio id_solicitud 
+       (SELECT req.folio folio_solicitud, inv.invoice_folio folio_factura, sup.business_name proveedor, com.business_name deudor, inv.used_date fecha_operacion, inv.due_date fecha_vencimiento, inv.due_date - inv.used_date dias, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') importe, inv.currency moneda, '0.00' tasa_interbancaria, '0.00' sobre_tasa, '0.00' tasa_factor, '0.00' intereses_factor, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') importe_sin_intereses, TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00') por_dispocision_solicitud, 'Saldo pendiente de solicitud: '||req.folio id_solicitud
       FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com
       WHERE inv.id = rei.invoice_id
       AND req.id = rei.request_id
@@ -48,15 +48,15 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
       ) ab;"
     @query = @query.gsub ':used_date', params[:used_date].to_s
     @daily_operations = execute_statement(@query)
-    #@daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
-    #render 'api/v1/reports/show_daily_operations'
+    # @daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
+    # render 'api/v1/reports/show_daily_operations'
     render json: @daily_operations
   end
 
   def layout_banorte
     @query_supplier = "SELECT ':pr_folio' payment_report_folio, TO_CHAR(ROW_NUMBER () OVER (ORDER BY ab.cuenta_destino), '09') oper, ab.*
               FROM((SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
+                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
                   CASE
                     WHEN con.bank = 'BANORTE'
                     THEN con.account_number
@@ -80,8 +80,8 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   AND req.status = 'APROBADA'
                   AND req.used_date = ':used_date'
                 ) UNION ALL
-                (SELECT con.extra1 clave_id, 
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
+                (SELECT con.extra1 clave_id,
+                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
                   CASE
                     WHEN con.bank = 'BANORTE'
                     THEN con.account_number
@@ -103,8 +103,8 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
                   AND inv.used_date = ':used_date'
                 ) UNION ALL
-                (SELECT con.extra1 clave_id, 
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
+                (SELECT con.extra1 clave_id,
+                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
                   CASE
                     WHEN con.bank = 'BANORTE'
                     THEN con.account_number
@@ -130,7 +130,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
     @query_funder = "SELECT ':pr_folio' payment_report_folio, TO_CHAR(ROW_NUMBER () OVER (ORDER BY ab.cuenta_destino), '09') oper, ab.*
                 FROM((SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
+                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
                   CASE
                   WHEN con.bank = 'BANORTE'
                   THEN con.account_number
@@ -154,30 +154,28 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   AND inv.status IN ('LIQUIDADA', 'CON SALDO LIQUIDADA')
                   AND fri.status = 'FONDEADA'
                   AND inv.used_date = ':used_date'
-                ) 
+                )
                 ) ab;"
-    if params[:type].blank?
-      @query = @query_supplier
-    else
-      if params[:type] == 'funder'
-        @query = @query_funder
-      else
-        @query = @query_supplier
-      end
-    end
+    @query = if params[:type].blank?
+               @query_supplier
+             elsif params[:type] == 'funder'
+               @query_funder
+             else
+               @query_supplier
+             end
     t = Time.now
     @folio = t.to_i
-    @pr_folio = "PR#{@folio.to_s}"
+    @pr_folio = "PR#{@folio}"
     @query = @query.gsub ':used_date', params[:used_date].to_s
     @query = @query.gsub ':pr_folio', @pr_folio
     @layout_banorte = execute_statement(@query)
     unless @layout_banorte.blank?
-      @layout_banorte.each do |report_row|          
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(payment_report_folio: report_row["payment_report_folio"].to_s)
+      @layout_banorte.each do |report_row|
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
-    render json: @layout_banorte        
+    render json: @layout_banorte
   end
 
   def layout_bancrea
@@ -220,7 +218,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                         END cuenta_abono,
                         TO_CHAR(inv.total, 'FM9999999990.00') importe,
                         inv.invoice_folio referencia,
-                        'PAGO DE FACTURAS A: ' || sup.business_name,  
+                        'PAGO DE FACTURAS A: ' || sup.business_name,
                         0 iva
                         FROM invoices inv, suppliers sup, companies com, contributors con
                         WHERE inv.supplier_id = sup.id
@@ -243,7 +241,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                         END cuenta_abono,
                         TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe,
                         inv.invoice_folio referencia,
-                        'PAGO DE SALDO DE FACTURAS A: ' || sup.business_name,  
+                        'PAGO DE SALDO DE FACTURAS A: ' || sup.business_name,
                         0 iva
                         FROM invoices inv, suppliers sup, companies com, contributors con
                         WHERE inv.supplier_id = sup.id
@@ -294,7 +292,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 END cuenta_abono,
                 TO_CHAR(inv.total, 'FM9999999990.00') importe,
                 inv.invoice_folio referencia,
-                'PAGO DE FACTURAS A: ' || sup.business_name,  
+                'PAGO DE FACTURAS A: ' || sup.business_name,
                 0 iva
                 FROM invoices inv, suppliers sup, companies com, contributors con
                 WHERE inv.supplier_id = sup.id
@@ -329,7 +327,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 )
               ) ab;"
 
-  @query_resumen_funder = "SELECT ':pr_folio' payment_report_folio, to_char(to_date(':used_date','YYYY-MM-DD'),'DDMMYYYY') fecha_registro, (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANCREA') cuenta_origen, sum(TO_NUMBER(ab.importe, 'FM9999999990.00')) importe_total, count(ab.importe) total_registros
+    @query_resumen_funder = "SELECT ':pr_folio' payment_report_folio, to_char(to_date(':used_date','YYYY-MM-DD'),'DDMMYYYY') fecha_registro, (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANCREA') cuenta_origen, sum(TO_NUMBER(ab.importe, 'FM9999999990.00')) importe_total, count(ab.importe) total_registros
                           FROM((SELECT to_char(inv.used_date,'DDMMYYYY') fecha_registro, to_char(inv.used_date,'DDMMYYYY') fecha_aplicacion,
                                 CASE
                                 WHEN con.bank = 'BANCREA'
@@ -358,7 +356,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                                 )
                                 ) ab;"
 
-@query_funder = "SELECT ':pr_folio' payment_report_folio, ab.*
+    @query_funder = "SELECT ':pr_folio' payment_report_folio, ab.*
                 FROM((SELECT to_char(inv.used_date,'DDMMYYYY') fecha_registro, to_char(inv.used_date,'DDMMYYYY') fecha_aplicacion,
                       CASE
                       WHEN con.bank = 'BANCREA'
@@ -390,18 +388,16 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     if params[:type].blank?
       @query_resumen = @query_resumen_supplier
       @query = @query_supplier
+    elsif params[:type] == 'funder'
+      @query_resumen = @query_resumen_funder
+      @query = @query_funder
     else
-      if params[:type] == 'funder'
-        @query_resumen = @query_resumen_funder
-        @query = @query_funder
-      else
-        @query_resumen = @query_resumen_supplier
-        @query = @query_supplier
-      end
+      @query_resumen = @query_resumen_supplier
+      @query = @query_supplier
     end
     t = Time.now
     @folio = t.to_i
-    @pr_folio = "PR#{@folio.to_s}"
+    @pr_folio = "PR#{@folio}"
     @query_resumen = @query_resumen.gsub ':used_date', params[:used_date].to_s
     @query_resumen = @query_resumen.gsub ':pr_folio', @pr_folio
     @layout_bancrea_resumen = execute_statement(@query_resumen)
@@ -409,12 +405,12 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @query = @query.gsub ':pr_folio', @pr_folio
     @layout_bancrea = execute_statement(@query)
     unless @layout_bancrea.blank?
-      @layout_bancrea.each do |report_row|          
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(payment_report_folio: report_row["payment_report_folio"].to_s)
+      @layout_bancrea.each do |report_row|
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
-    render json: { resumen: @layout_bancrea_resumen, detalles: @layout_bancrea}
+    render json: { resumen: @layout_bancrea_resumen, detalles: @layout_bancrea }
   end
 
   def layout_banregio
@@ -498,30 +494,28 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                               AND inv.status IN ('LIQUIDADA', 'CON SALDO LIQUIDADA')
                               AND fri.status = 'FONDEADA'
                               AND req.used_date = ':used_date'
-                            ) 
-                            ) ab;"              
-    if params[:type].blank?
-      @query = @query_supplier
-    else
-      if params[:type] == 'funder'
-        @query = @query_funder
-      else
-        @query = @query_supplier
-      end
-    end
+                            )
+                            ) ab;"
+    @query = if params[:type].blank?
+               @query_supplier
+             elsif params[:type] == 'funder'
+               @query_funder
+             else
+               @query_supplier
+             end
     t = Time.now
     @folio = t.to_i
-    @pr_folio = "PR#{@folio.to_s}"
+    @pr_folio = "PR#{@folio}"
     @query = @query.gsub ':used_date', params[:used_date].to_s
     @query = @query.gsub ':pr_folio', @pr_folio
     @layout_banregio = execute_statement(@query)
     unless @layout_banregio.blank?
-      @layout_banregio.each do |report_row|          
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(payment_report_folio: report_row["payment_report_folio"].to_s)
+      @layout_banregio.each do |report_row|
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
-    render json: @layout_banregio        
+    render json: @layout_banregio
   end
 
   def layout_base
@@ -557,7 +551,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                       AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
                       AND inv.currency = ':currency'
                       AND inv.used_date = ':used_date'
-                      )						
+                      )
                     ) ab;"
 
     @query_supplier = "SELECT ':pr_folio' payment_report_folio, ab.*
@@ -602,7 +596,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 WHEN inv.currency = 'DÓLARES'
                 THEN 'USD'
                 WHEN inv.currency = 'DOLARES'
-                THEN 'USD' 
+                THEN 'USD'
                 END divisa
                 FROM invoices inv, suppliers sup, companies com, contributors con
                 WHERE inv.supplier_id = sup.id
@@ -628,7 +622,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 WHEN inv.currency = 'DÓLARES'
                 THEN 'USD'
                 WHEN inv.currency = 'DOLARES'
-                THEN 'USD' 
+                THEN 'USD'
                 END divisa
                 FROM invoices inv, suppliers sup, companies com, contributors con
                 WHERE inv.supplier_id = sup.id
@@ -673,7 +667,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                       AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
                       AND inv.currency = ':currency'
                       AND inv.used_date = ':used_date'
-                      )						
+                      )
                     ) ab;"
 
     @query_funder = "SELECT ':pr_folio' payment_report_folio, ab.*
@@ -718,7 +712,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 WHEN inv.currency = 'DÓLARES'
                 THEN 'USD'
                 WHEN inv.currency = 'DOLARES'
-                THEN 'USD' 
+                THEN 'USD'
                 END divisa
                 FROM invoices inv, suppliers sup, companies com, contributors con
                 WHERE inv.supplier_id = sup.id
@@ -744,7 +738,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 WHEN inv.currency = 'DÓLARES'
                 THEN 'USD'
                 WHEN inv.currency = 'DOLARES'
-                THEN 'USD' 
+                THEN 'USD'
                 END divisa
                 FROM invoices inv, suppliers sup, companies com, contributors con
                 WHERE inv.supplier_id = sup.id
@@ -756,18 +750,16 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 AND inv.used_date = ':used_date'
                 )
               ) ab;"
-    
+
     if params[:type].blank?
       @query_titulo = @query_titulo_supplier
       @query = @query_supplier
+    elsif params[:type] == 'funder'
+      @query_titulo = @query_titulo_funder
+      @query = @query_funder
     else
-      if params[:type] == 'funder'
-        @query_titulo = @query_titulo_funder
-        @query = @query_funder
-      else
-        @query_titulo = @query_titulo_supplier
-        @query = @query_supplier
-      end
+      @query_titulo = @query_titulo_supplier
+      @query = @query_supplier
     end
     @query_titulo = @query_titulo.gsub ':used_date', params[:used_date].to_s
     @query_titulo = @query_titulo.gsub ':currency', params[:currency].to_s
@@ -778,15 +770,15 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @query = @query.gsub ':currency', params[:currency].to_s
     @layout_base = execute_statement(@query)
     unless @layout_base.blank?
-      @layout_base.each do |report_row|          
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(payment_report_folio: report_row["payment_report_folio"].to_s)
+      @layout_base.each do |report_row|
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
     render json: @layout_base
   end
 
-  def layout_scotiabank #Este banco esta pendiente conforme a lo que vi en la conferencia con ellos Falta agregar lo de las facturas con saldo
+  def layout_scotiabank # Este banco esta pendiente conforme a lo que vi en la conferencia con ellos Falta agregar lo de las facturas con saldo
     @query = "SELECT ':pr_folio' payment_report_folio, 'EE' tipo_archivo, 'DP' tipo_registro, '04' tipo_movimiento, ab.*
               FROM((SELECT con.extra1 clave_id,
                 CASE
@@ -795,7 +787,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   WHEN inv.currency = 'DÓLARES'
                   THEN '01'
                   WHEN inv.currency = 'DOLARES'
-                  THEN '01' 
+                  THEN '01'
                   END cve_moneda_pago,
                 TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe,
                 TO_CHAR(req.used_date,'YYYYMMDD') fecha_aplicacion,
@@ -839,7 +831,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   WHEN inv.currency = 'DÓLARES'
                   THEN '01'
                   WHEN inv.currency = 'DOLARES'
-                  THEN '01' 
+                  THEN '01'
                   END cve_moneda_pago,
                 TO_CHAR(inv.total, 'FM9999999990.00') importe,
                 TO_CHAR(inv.used_date,'YYYYMMDD') fecha_aplicacion,
@@ -878,15 +870,15 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
     t = Time.now
     @folio = t.to_i
-    @pr_folio = "PR#{@folio.to_s}"
+    @pr_folio = "PR#{@folio}"
     @query = @query.gsub ':used_date', params[:used_date].to_s
     @query = @query.gsub ':pr_folio', @pr_folio
     @query = @query.gsub ':currency', params[:currency].to_s
     @layout_scotiabank = execute_statement(@query)
     unless @layout_scotiabank.blank?
-      @layout_scotiabank.each do |report_row|          
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(payment_report_folio: report_row["payment_report_folio"].to_s)
+      @layout_scotiabank.each do |report_row|
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
     render json: @layout_scotiabank
@@ -913,21 +905,21 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   AND inv.status = 'EJECUTADA'
                   AND inv.due_date = ':due_date'
                   AND com.id = :company_id
-                ) 
+                )
                 ) ab;"
     @due_date = params[:report_date].to_date
     @due_date += 1 until @due_date.strftime('%u').to_i == 5
     t = Time.now
     @folio = t.to_i
-    @cr_folio = "CR#{@folio.to_s}"
+    @cr_folio = "CR#{@folio}"
     @query = @query.gsub ':due_date', @due_date.to_s
     @query = @query.gsub ':company_id', params[:company_id].to_s
     @query = @query.gsub ':cr_folio', @cr_folio
     @company_payments = execute_statement(@query)
     unless @company_payments.blank?
       @company_payments.each do |report_row|
-        @invoice = Invoice.where(id: report_row["id_factura"].to_s)
-        @invoice.update(charge_report_folio: report_row["charge_report_folio"].to_s)
+        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @invoice.update(charge_report_folio: report_row['charge_report_folio'].to_s)
       end
     end
     render json: @company_payments
@@ -959,12 +951,12 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               WHEN rei.total_used ISNULL
               THEN '0.00'
               ELSE TO_CHAR(inv.total - rei.total_used, 'FM9,999,999,990.00')
-              END disponible,              
+              END disponible,
               CASE
               WHEN rei.interests ISNULL
               THEN '0.00'
               ELSE TO_CHAR(rei.interests, 'FM9,999,999,990.00')
-              END intereses,              
+              END intereses,
               rei.ext_rate tasa_interbancaria,
               rei.int_rate sobretasa,
               rei.total_rate tasa_total,
@@ -997,11 +989,11 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def dashboard_admin
-    @query = "SELECT TO_CHAR(SUM(pay.amount), 'FM9,999,999,990.00'), com.business_name cadena, con.extra2 numero_proveedores, 
+    @query = "SELECT TO_CHAR(SUM(pay.amount), 'FM9,999,999,990.00'), com.business_name cadena, con.extra2 numero_proveedores,
                     (SELECT COUNT(suppl.id) FROM companies compa, suppliers suppl, supplier_segments suseg
                     WHERE compa.id = suseg.company_id
                     AND suppl.id = suseg.supplier_id
-                    AND compa.business_name = com.business_name) afiliados, 
+                    AND compa.business_name = com.business_name) afiliados,
               TO_CHAR(SUM(rei.interests), 'FM9,999,999,990.00') total_intereses, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, (count(rei.invoice_id) * 100)/count(inv.id) porcentaje_descuento, TO_CHAR((SUM(rei.total_used - rei.interests) / ((extract(week from (SELECT MAX(pay.payment_date) FROM payments pay)::date) + 1)-extract(week from (SELECT MIN(pay.payment_date) FROM payments pay)::date))), 'FM9,999,999,990.00') promedio_operacion_semana, TO_CHAR(com.credit_limit, 'FM9,999,999,990.00') limite_credito, TO_CHAR(com.credit_available, 'FM9,999,999,990.00') credito_disponible, TO_CHAR(com.balance, 'FM9,999,999,990.00') saldo
               FROM companies com, suppliers sup, supplier_segments sus, contributors con, invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
@@ -1018,7 +1010,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @dashboard_admin = execute_statement(@query)
     render json: @dashboard_admin
   end
-  
+
   def dashboard_admin_invoices
     @query = "SELECT com.business_name cadena, sup.business_name proveedor, inv.status estatus, COUNT(inv.id) numero_facturas
               FROM invoices inv, companies com, suppliers sup
@@ -1176,7 +1168,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def payment_companies
-    @query = "SELECT 
+    @query = "SELECT
                 com.id id_cadena,
                 com.business_name nombre_cadena,
                 con.id id_contribuyente,
@@ -1261,7 +1253,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               WHEN rei.total_used ISNULL
               THEN TO_CHAR(inv.total, 'FM9,999,999,990.00')
               WHEN inv.total != inv.total_used AND inv.status != 'PENDIENTE'
-              THEN TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00')	
+              THEN TO_CHAR(inv.total - inv.total_used, 'FM9,999,999,990.00')
               ELSE TO_CHAR(rei.total_used - rei.interests, 'FM9,999,999,990.00')
               END importe_neto,
               CASE
@@ -1460,7 +1452,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                     ELSE 'TRUE'
                     END es_proveedor
               FROM contributors con
-              LEFT JOIN companies com ON (com.contributor_id = con.id)              
+              LEFT JOIN companies com ON (com.contributor_id = con.id)
               LEFT JOIN suppliers sup ON (sup.contributor_id = con.id)
               LEFT JOIN legal_entities len ON (len.id = con.legal_entity_id)
               LEFT JOIN people peo ON (peo.id = con.person_id);"
@@ -1563,7 +1555,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                 AND inv.company_payment_id ISNULL
                 AND inv.due_date BETWEEN first_monday_of_month()+14 AND first_monday_of_month() +20
                 AND inv.currency = 'PESOS'),
-                
+
               (SELECT first_monday_of_month()+21 s4_del), (SELECT first_monday_of_month() +27 s4_al),(
                 SELECT
                 TO_CHAR(COALESCE(SUM(CASE
@@ -1624,7 +1616,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               LEFT JOIN requests req ON (rei.request_id = req.id AND req.status NOT IN ('EJECUTADA', 'LIQUIDADA', 'CANCELADA') AND req.used_date BETWEEN first_monday_of_month() AND first_monday_of_month() +27)
               JOIN suppliers sup ON (inv.supplier_id = sup.id)
               JOIN companies com ON (inv.company_id = com.id)
-              WHERE inv.status NOT IN ('EJECUTADA', 'LIQUIDADA', 'CANCELADA') 
+              WHERE inv.status NOT IN ('EJECUTADA', 'LIQUIDADA', 'CANCELADA')
               AND inv.supplier_payment_id ISNULL
               AND (inv.used_date BETWEEN first_monday_of_month() AND first_monday_of_month() +27 OR req.used_date BETWEEN first_monday_of_month() AND first_monday_of_month() +27)
               AND inv.currency = 'PESOS';"
@@ -1675,7 +1667,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @query = "SELECT sup.business_name proveedor, com.business_name cadena, inv.invoice_folio folio_factura, inv.uuid uuid_factura, TO_CHAR(inv.total, 'FM9,999,999,990.00') total_factura, inv.invoice_date fecha_factura, inv.entry_date fecha_alta, inv.due_date fecha_vencimiento
     FROM invoices inv, suppliers sup, companies com
     WHERE inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.id NOT IN(select invoice_id from request_invoices)
     AND inv.due_date BETWEEN TO_DATE(to_char(date_trunc('week',current_date),'YYYY-MM-DD'), 'YYYY-MM-DD') AND TO_DATE(to_char(date_trunc('week',current_date),'YYYY-MM-DD'), 'YYYY-MM-DD') +6
     AND inv.status not in ('EJECUTADA', 'LIQUIDADA', 'CANCELADA')
@@ -1691,7 +1683,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     FROM suppliers sup, companies com, invoices inv
     LEFT JOIN company_projects pro ON (inv.company_project_id = pro.id)
     WHERE inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.id NOT IN(select invoice_id from request_invoices)
     AND inv.status not in ('EJECUTADA', 'LIQUIDADA', 'CANCELADA')
     AND inv.id NOT IN(select invoice_id from payment_invoices)
@@ -1703,12 +1695,12 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
   def dashboard_supplier_inv_request
     @query = "SELECT sup.business_name proveedor, com.business_name cadena, inv.invoice_folio folio_factura, inv.uuid uuid_factura, TO_CHAR(inv.total, 'FM9,999,999,990.00') total_factura, TO_CHAR(rei.total_used, 'FM9,999,999,990.00') total_operado, TO_CHAR(rei.interests, 'FM9,999,999,990.00') intereses, TO_CHAR(rei.total_used - rei.interests, 'FM9,999,999,990.00') total_neto, inv.invoice_date fecha_factura, inv.entry_date fecha_alta, req.folio folio_solicitud, req.used_date fecha_operacion, pro.key clave_proyecto, pro.name nombre_proyecto
-    FROM requests req, request_invoices rei, suppliers sup, companies com, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, invoices inv
     LEFT JOIN company_projects pro ON (inv.company_project_id = pro.id)
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.status in ('EJECUTADA', 'LIQUIDADA')
     AND inv.id IN(select invoice_id from payment_invoices)
     AND sup.id = :supplier_id;"
@@ -1719,11 +1711,11 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
   def dashboard_supplier_used_int_rate_month
     @query = "SELECT TO_CHAR(COALESCE(SUM(rei.total_used), 0.00), 'FM9,999,999,990.00') total_operado, TO_CHAR(COALESCE(SUM(rei.interests), 0.00), 'FM9,999,999,990.00') intereses, TO_CHAR(COALESCE(AVG(rei.total_rate),0.00), 'FM9,999,999,990.00') tasa_promedio
-    FROM requests req, request_invoices rei, suppliers sup, companies com, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.status in ('EJECUTADA', 'LIQUIDADA')
     AND inv.id IN(select invoice_id from payment_invoices)
     AND req.used_date BETWEEN TO_DATE(to_char(date_trunc('month',current_date),'YYYY-MM-DD'), 'YYYY-MM-DD') AND TO_DATE(to_char(date_trunc('month',current_date) + INTERVAL '1' MONTH - INTERVAL '1' DAY,'YYYY-MM-DD'), 'YYYY-MM-DD')
@@ -1739,7 +1731,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.status in ('EJECUTADA', 'LIQUIDADA')
     AND inv.id IN(select invoice_id from payment_invoices)
     AND sup.id = :supplier_id;"
@@ -1753,7 +1745,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     FROM suppliers sup, companies com, invoices inv
     LEFT JOIN company_projects pro ON (inv.company_project_id = pro.id)
     WHERE inv.supplier_id = sup.id
-    AND inv.company_id = com.id 
+    AND inv.company_id = com.id
     AND inv.status = 'CANCELADA'
     AND com.id = :company_id;"
     @query = @query.gsub ':company_id', params[:company_id].to_s
@@ -2021,11 +2013,11 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   def dashboard_company_fees
     @query = "SELECT
     (SELECT cos.fee porcentaje_comision
-    FROM companies com, company_segments cos 
+    FROM companies com, company_segments cos
     WHERE com.id = cos.company_id
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_enero
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2035,7 +2027,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-01'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_febrero
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2045,7 +2037,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-02'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_marzo
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2055,7 +2047,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-03'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_abril
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2065,7 +2057,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-04'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_mayo
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2075,7 +2067,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-05'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_junio
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2085,7 +2077,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-06'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_julio
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2095,7 +2087,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-07'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_agosto
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2105,7 +2097,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-08'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_septiembre
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2115,7 +2107,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_octubre
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2125,7 +2117,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-10'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_noviembre
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2135,7 +2127,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     AND TO_CHAR(req.used_date, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-11'
     AND com.id = :company_id),
     (SELECT TO_CHAR(COALESCE(sum((cos.fee * rei.interests) / rei.total_rate),0.00), 'FM9,999,999,990.00') comision_diciembre
-    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv 
+    FROM requests req, request_invoices rei, suppliers sup, companies com, company_segments cos, invoices inv
     WHERE inv.id = rei.invoice_id
     AND req.id = rei.request_id
     AND inv.supplier_id = sup.id
@@ -2459,146 +2451,146 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-01'
               UNION
               SELECT 'FEBRERO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                       WHEN count(inv.id) = 0
                                                                                                                       THEN 0
                                                                                                                       ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                      END porcentaje_descuento 
+                                                                                                                      END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-02'
               UNION
               SELECT 'MARZO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-03'
               UNION
               SELECT 'ABRIL' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-04'
               UNION
               SELECT 'MAYO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-05'
               UNION
               SELECT 'JUNIO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-06'
               UNION
               SELECT 'JULIO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                     WHEN count(inv.id) = 0
                                                                                                                     THEN 0
                                                                                                                     ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                    END porcentaje_descuento 
+                                                                                                                    END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-07'
               UNION
               SELECT 'AGOSTO' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                       WHEN count(inv.id) = 0
                                                                                                                       THEN 0
                                                                                                                       ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                      END porcentaje_descuento 
+                                                                                                                      END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-08'
               UNION
               SELECT 'SEPTIEMBRE' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                           WHEN count(inv.id) = 0
                                                                                                                           THEN 0
                                                                                                                           ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                          END porcentaje_descuento 
+                                                                                                                          END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09'
               UNION
               SELECT 'OCTUBRE' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                       WHEN count(inv.id) = 0
                                                                                                                       THEN 0
                                                                                                                       ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                      END porcentaje_descuento 
+                                                                                                                      END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-10'
               UNION
               SELECT 'NOVIEMBRE' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                         WHEN count(inv.id) = 0
                                                                                                                         THEN 0
                                                                                                                         ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                        END porcentaje_descuento 
+                                                                                                                        END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-11'
               UNION
               SELECT 'DICIEMBRE' mes, count(inv.id) total_facturas, count(rei.invoice_id) total_facturas_en_descuento, CASE
                                                                                                                         WHEN count(inv.id) = 0
                                                                                                                         THEN 0
                                                                                                                         ELSE (count(rei.invoice_id) * 100)/count(inv.id)
-                                                                                                                        END porcentaje_descuento 
+                                                                                                                        END porcentaje_descuento
               FROM invoices inv
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
-              WHERE inv.status NOT IN ('CANCELADA') 
+              WHERE inv.status NOT IN ('CANCELADA')
               AND TO_CHAR(inv.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-12';"
     @sofom_invoices_vs_discounts_month = execute_statement(@query)
     render json: @sofom_invoices_vs_discounts_month
   end
 
   def dashboard_sofom_suppliers_movements
-    @query = "SELECT 'ENERO' mes, 
+    @query = "SELECT 'ENERO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-01') afiliados,
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-01') bloqueados,
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2606,14 +2598,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-01') que_operaron
               UNION
-              SELECT 'FEBRERO' mes, 
+              SELECT 'FEBRERO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-02'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-02'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2621,14 +2613,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-02')
               UNION
-              SELECT 'MARZO' mes, 
+              SELECT 'MARZO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-03'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-03'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2636,14 +2628,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-03')
               UNION
-              SELECT 'ABRIL' mes, 
+              SELECT 'ABRIL' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-04'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-04'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2651,14 +2643,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-04')
               UNION
-              SELECT 'MAYO' mes, 
+              SELECT 'MAYO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-05'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-05'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2666,14 +2658,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-05')
               UNION
-              SELECT 'JUNIO' mes, 
+              SELECT 'JUNIO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-06'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-06'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2681,14 +2673,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-06')
               UNION
-              SELECT 'JULIO' mes, 
+              SELECT 'JULIO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-07'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-07'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2696,14 +2688,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-07')
               UNION
-              SELECT 'AGOSTO' mes, 
+              SELECT 'AGOSTO' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-08'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-08'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2711,14 +2703,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09')
               UNION
-              SELECT 'SEPTIEMBRE' mes, 
+              SELECT 'SEPTIEMBRE' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2726,14 +2718,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-09')
               UNION
-              SELECT 'OCTUBRE' mes, 
+              SELECT 'OCTUBRE' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-10'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-10'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2741,14 +2733,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-10')
               UNION
-              SELECT 'NOVIEMBRE' mes, 
+              SELECT 'NOVIEMBRE' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-11'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-11'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2756,14 +2748,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               AND con.id = pay.contributor_to_id
               AND TO_CHAR(pay.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-11')
               UNION
-              SELECT 'DICIEMBRE' mes, 
+              SELECT 'DICIEMBRE' mes,
               (SELECT COUNT(sup.id)
               FROM suppliers sup
               WHERE TO_CHAR(sup.created_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-12'),
               (SELECT COUNT(sup.id)
               FROM suppliers sup, supplier_segments sus
-              WHERE sup.id = sus.supplier_id 
-              AND sus.status = 'BLOQUEADO' 
+              WHERE sup.id = sus.supplier_id
+              AND sus.status = 'BLOQUEADO'
               AND TO_CHAR(sus.updated_at, 'YYYY-MM') = to_char(CURRENT_DATE, 'YYYY')||'-12'),
               (SELECT COUNT(distinct(sup.id))
               FROM suppliers sup, contributors con, payments pay
@@ -2807,7 +2799,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
               LEFT JOIN request_invoices rei ON (inv.id = rei.invoice_id)
               LEFT JOIN requests req ON (rei.request_id = req.id)
               JOIN suppliers sup ON (inv.supplier_id = sup.id)
-              JOIN companies com ON (inv.company_id = com.id)              
+              JOIN companies com ON (inv.company_id = com.id)
               LEFT JOIN payment_invoices payinv ON (payinv.invoice_id = inv.id)
               LEFT JOIN cfdis cfdi_int ON (cfdi_int.payment_invoice_id = payinv.id AND cfdi_int.source_type = 'INTERESES FINANCIERA')
               LEFT JOIN cfdis cfdi_co_sup ON (cfdi_co_sup.payment_invoice_id = payinv.id AND cfdi_co_sup.source_type = 'COMPLEMENTO PROVEEDOR')
@@ -2852,14 +2844,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   def get_request_used_date
     direct_used_date_mode = GeneralParameter.get_general_parameter_value('DIRECT_USED_DATE_MODE')
     if direct_used_date_mode == 'SI'
-      Time.zone = "America/Chihuahua"
-      now_date_time = Time.zone.now.strftime("%F %T")
-      limit_date_time = Time.zone.now.strftime("%F 11:30:00")
-      if now_date_time < limit_date_time 
-        final_date = Time.zone.now.strftime("%F").to_date
-      else
-        final_date = Time.zone.now.strftime("%F").to_date + 1.days
-      end
+      Time.zone = 'America/Chihuahua'
+      now_date_time = Time.zone.now.strftime('%F %T')
+      limit_date_time = Time.zone.now.strftime('%F 11:30:00')
+      final_date = if now_date_time < limit_date_time
+                     Time.zone.now.strftime('%F').to_date
+                   else
+                     Time.zone.now.strftime('%F').to_date + 1.days
+                   end
       render json: final_date.to_s
     else
       render json: 'calendar'

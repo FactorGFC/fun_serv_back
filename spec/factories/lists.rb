@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: lists
@@ -17,7 +18,7 @@
 
 FactoryBot.define do
   factory :list do
-    domain { "usuario_estatus" }
+    domain { "usuario.estatus" }
     sequence(:key) { |n| "AC#{n}" }
     value { "Activo" }
     description { "Estatus activo para la tabla de usuarios" }

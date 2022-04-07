@@ -3,7 +3,7 @@
 class Api::V1::SimCustomerPaymentsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::SimCustomerPaymentsApi
-
+  
   before_action :authenticate
   before_action :set_sim_customer_payment, only: %i[show update destroy]
   before_action :set_customer_credit
@@ -44,7 +44,8 @@ class Api::V1::SimCustomerPaymentsController < Api::V1::MasterApiController
   private
 
   def sim_customer_payment_params
-    params.require(:sim_customer_payment).permit(:pay_number, :current_debt, :remaining_debt, :payment, :capital, :interests, :iva, :payment_date, :status, :attached)
+    params.require(:sim_customer_payment).permit(:pay_number, :current_debt, :remaining_debt, :payment, :capital, :interests, :iva, :payment_date, :status, :attached, :insurance, :commission,
+                                                 :aditional_payment)
   end
 
   def set_customer_credit

@@ -3,10 +3,10 @@
 class Api::V1::DocumentsController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::DocumentsApi
-
+  
   before_action :authenticate
   before_action :set_document, only: %i[show update destroy]
-  
+
   def index
     @documents = Document.all
   end
@@ -14,13 +14,13 @@ class Api::V1::DocumentsController < Api::V1::MasterApiController
   def show; end
 
   # POST /documents
-  def create    
+  def create
     @ext_service = ExtService.find(document_params[:ext_service_id]) unless document_params[:ext_service_id].nil?
-    if @ext_service.nil?
-      @document = Document.new(document_params)
-    else
-      @document = @ext_service.documents.new(document_params)
-    end
+    @document = if @ext_service.nil?
+                  Document.new(document_params)
+                else
+                  @ext_service.documents.new(document_params)
+                end
     if @document.save
       render 'api/v1/documents/show'
     else

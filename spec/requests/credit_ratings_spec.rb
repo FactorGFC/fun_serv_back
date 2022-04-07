@@ -30,7 +30,7 @@ RSpec.describe Api::V1::CreditRatingsController, type: :request do
       json = JSON.parse(response.body)
       expect(json['data']['id']).to eq @credit_rating.id
     end
-    it 'manda los atributos dla calificación' do
+    it 'manda los atributos de la calificación' do
       json = JSON.parse(response.body)
       expect(json['data']['attributes'].keys).to contain_exactly('id', 'key', 'description', 'value', 'cr_type', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at')
     end

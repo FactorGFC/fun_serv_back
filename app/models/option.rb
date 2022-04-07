@@ -12,7 +12,6 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
-
 class Option < ApplicationRecord
   include Swagger::Blocks
   include Swagger::OptionSchema
@@ -21,6 +20,7 @@ class Option < ApplicationRecord
   has_many :roles, through: :role_options
   has_many :user_options, dependent: :destroy
   has_many :users, through: :user_options
+ 
   validates :name, presence: true
   validates :description, presence: true
 

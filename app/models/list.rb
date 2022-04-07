@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: lists
@@ -14,7 +16,6 @@
 #
 #  index_lists_on_domain_and_key  (domain,key) UNIQUE
 #
-
 class List < ApplicationRecord
   include Swagger::Blocks
   include Swagger::ListSchema

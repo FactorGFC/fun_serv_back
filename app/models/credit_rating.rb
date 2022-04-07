@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: credit_ratings
@@ -17,7 +19,7 @@ class CreditRating < ApplicationRecord
   include Swagger::Blocks
   include Swagger::CreditRatingSchema
   has_many :rates
-  has_many :projects
+  has_many :customer_credits
 
   validates :description, presence: true
   validates :key, presence: true

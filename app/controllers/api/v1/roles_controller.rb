@@ -3,7 +3,7 @@
 class Api::V1::RolesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::RolesApi
-
+  
   before_action :authenticate
   before_action :set_role, only: %i[show update destroy]
 

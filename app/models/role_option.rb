@@ -20,7 +20,6 @@
 #  fk_rails_...  (option_id => options.id)
 #  fk_rails_...  (role_id => roles.id)
 #
-
 class RoleOption < ApplicationRecord
   include Swagger::Blocks
   include Swagger::RoleOptionSchema

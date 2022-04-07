@@ -21,7 +21,6 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
-
 class MyApp < ApplicationRecord
   belongs_to :user
   has_many :tokens

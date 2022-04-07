@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
-  #include Swagger::Blocks
-  #include Swagger::PostalCodesApi
+  # include Swagger::Blocks
+  # include Swagger::PostalCodesApi
 
   before_action :authenticate
 
@@ -15,11 +15,11 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
         @error_desc.push("No existe un crédito con el id: #{restructure_credits_params[:customer_credit_id]}")
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
-      else  
+      else
         @fixed_payment = @customer_credit.fixed_payment
         customer_payment = @customer_credit.pending_payments.first
         if customer_payment.blank?
-          @error_desc.push("No se encontraron pagos pendientes")
+          @error_desc.push('No se encontraron pagos pendientes')
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         else
@@ -35,7 +35,7 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           elsif restructure_credits_params[:total_payment].to_f < @fixed_payment.to_f && restructure_credits_params[:total_payment].to_f < current_debt_total.to_f.round(2)
-            @error_desc.push("Si el adeudo restante es menor al pago fijo, se debe de pagar el total del adeudo restante: #{current_debt_total.to_f.round(2).to_s}")
+            @error_desc.push("Si el adeudo restante es menor al pago fijo, se debe de pagar el total del adeudo restante: #{current_debt_total.to_f.round(2)}")
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           else
@@ -52,14 +52,15 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             @last_date = customer_payment.payment_date
           end
           if customer_payment.save
-            @update_pending_payments_sql = "update sim_customer_payments set status=':new_status', extra1= ':comment' where customer_credit_id=':customer_credit_id' and status = ':current_status';"
+            @update_pending_payments_sql = "update sim_customer_payments set status=':new_status', extra1= ':comment' where customer_credit_id=':customer_credit_id'
+                                            and status = ':current_status';"
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':new_status', 'CA'
-            @update_pending_payments_sql = @update_pending_payments_sql.gsub ':comment', "Se cancela el pago por reestructuración en plazo, se abonó a capital: #{payment_capital.round(2).to_s}"
+            @update_pending_payments_sql = @update_pending_payments_sql.gsub ':comment', "Se cancela el pago por reestructuración en plazo, se abonó a capital: #{payment_capital.round(2)}"
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':customer_credit_id', @customer_credit.id.to_s
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':current_status', 'PE'
             @update_pending_payments = ActiveRecord::Base.connection.update(@update_pending_payments_sql)
           else
-            @error_desc.push("No se pudo actualzar el pago actual con el abono a capital")
+            @error_desc.push('No se pudo actualzar el pago actual con el abono a capital')
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           end
@@ -89,19 +90,19 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             end
           end
         end
-        if remaining_debt.round == 0
+        if remaining_debt.round.zero?
           @customer_credit.status = 'PA'
-        else  
-          customer_credit_id = @customer_credit.id          
+        else
+          customer_credit_id = @customer_credit.id
           term = @term.value
           payment_period = @payment_period.value
-          rate = (@project.client_rate.to_f  / payment_period.to_f) / 100
+          rate = (@project.client_rate.to_f / payment_period.to_f) / 100
           rate_with_iva = rate.to_f * 1.16
           payment_amount = @fixed_payment
           first_iteration = true
           last_payment = false
           until last_payment
-            @current_payment = @current_payment + 1
+            @current_payment += 1
             if first_iteration
               first_iteration = false
               interests = remaining_debt.to_f * rate.to_f
@@ -119,7 +120,7 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
               interests = remaining_debt.to_f * rate.to_f
               iva = interests.to_f * 0.16
               capital = payment_amount.to_f - interests.to_f - iva.to_f
-              if remaining_debt < capital                
+              if remaining_debt < capital
                 capital = remaining_debt
                 payment_amount = capital + interests.to_f + iva.to_f
                 last_payment = true
@@ -137,21 +138,21 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             when '1'
               payment_date = @last_date + number_of_periods.years
             when '6'
-              payment_date = @last_date + (number_of_periods*2).months
+              payment_date = @last_date + (number_of_periods * 2).months
             when '4'
-              payment_date = @last_date + (number_of_periods*3).months
+              payment_date = @last_date + (number_of_periods * 3).months
             else
               @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Dias(365), Meses(12), Años(1), Bimestres(6), Trimestres(4)")
               error_array!(@error_desc, :unprocessable_entity)
               raise ActiveRecord::Rollback
             end
             sim_customer_payments = SimCustomerPayment.create(customer_credit_id: customer_credit_id, pay_number: @current_payment, current_debt: current_debt.round(2), remaining_debt:  remaining_debt.round(2), payment: payment.round(2),
-              capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: payment_date, status: 'PE')
-            if sim_customer_payments.blank?
-              @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
-              error_array!(@error_desc, unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
+                                                              capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: payment_date, status: 'PE')
+            next unless sim_customer_payments.blank?
+
+            @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
+            error_array!(@error_desc, unprocessable_entity)
+            raise ActiveRecord::Rollback
           end
         end
       end
@@ -159,16 +160,16 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
       sum_interests = @customer_credit.current_payments.reduce(0) { |suma, current_payment| suma += current_payment.interests }
       sum_iva = @customer_credit.current_payments.reduce(0) { |suma, current_payment| suma += current_payment.iva }
       total_debt = sum_capital + sum_interests + sum_iva
-      @customer_credit.update( capital: sum_capital, interests: sum_interests, iva: sum_iva, total_debt: total_debt, restructure_term: @current_payment )
+      @customer_credit.update(capital: sum_capital, interests: sum_interests, iva: sum_iva, total_debt: total_debt, restructure_term: @current_payment)
       if @customer_credit.save
         restructure_funder_yields_term
         simulation = params[:simulation]
-        unless simulation.blank? || simulation == 'false'
+        if simulation.blank? || simulation == 'false'
           @customer_credit
-          raise ActiveRecord::Rollback
         else
           @customer_credit
-        end        
+          raise ActiveRecord::Rollback
+        end
       else
         error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
         raise ActiveRecord::Rollback
@@ -185,11 +186,11 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
         @error_desc.push("No existe un crédito con el id: #{restructure_credits_params[:customer_credit_id]}")
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
-      else  
+      else
         @fixed_payment = @customer_credit.fixed_payment
         customer_payment = @customer_credit.pending_payments.first
         if customer_payment.blank?
-          @error_desc.push("No se encontraron pagos pendientes")
+          @error_desc.push('No se encontraron pagos pendientes')
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         else
@@ -205,7 +206,7 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           elsif restructure_credits_params[:total_payment].to_f < @fixed_payment.to_f && restructure_credits_params[:total_payment].to_f < current_debt_total.to_f.round(2)
-            @error_desc.push("Si el adeudo restante es menor al pago fijo, se debe de pagar el total del adeudo restante: #{current_debt_total.to_f.round(2).to_s}")
+            @error_desc.push("Si el adeudo restante es menor al pago fijo, se debe de pagar el total del adeudo restante: #{current_debt_total.to_f.round(2)}")
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           else
@@ -224,12 +225,13 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
           if customer_payment.save
             @update_pending_payments_sql = "update sim_customer_payments set status=':new_status', extra1= ':comment' where customer_credit_id=':customer_credit_id' and status = ':current_status';"
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':new_status', 'CA'
-            @update_pending_payments_sql = @update_pending_payments_sql.gsub ':comment', "Se cancela el pago por reestructuración en importe del pago, se abonó a capital: #{payment_capital.round(2).to_s}"
+            @update_pending_payments_sql = @update_pending_payments_sql.gsub ':comment',
+                                                                             "Se cancela el pago por reestructuración en importe del pago, se abonó a capital: #{payment_capital.round(2)}"
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':customer_credit_id', @customer_credit.id.to_s
             @update_pending_payments_sql = @update_pending_payments_sql.gsub ':current_status', 'PE'
             @update_pending_payments = ActiveRecord::Base.connection.update(@update_pending_payments_sql)
           else
-            @error_desc.push("No se pudo actualzar el pago actual con el abono a capital")
+            @error_desc.push('No se pudo actualzar el pago actual con el abono a capital')
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           end
@@ -263,32 +265,32 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
         if remaining_debt.round == 0
           @customer_credit.status = 'PA'
         else
-          customer_credit_id = @customer_credit.id          
-          if @customer_credit.restructure_term.blank?
-            term = @term.value
-          else
-            term = @customer_credit.restructure_term
-          end
+          customer_credit_id = @customer_credit.id
+          term = if @customer_credit.restructure_term.blank?
+                   @term.value
+                 else
+                   @customer_credit.restructure_term
+                 end
           payment_period = @payment_period.value
-          rate = (@project.client_rate.to_f  / payment_period.to_f) / 100
+          rate = (@project.client_rate.to_f / payment_period.to_f) / 100
           rate_with_iva = rate.to_f * 1.16
-          rest_term = term - @max_num_payment    
-          @payment_amount = (rate_with_iva.to_f * remaining_debt.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-rest_term.to_f)))
+          rest_term = term - @max_num_payment
+          @payment_amount = (rate_with_iva.to_f * remaining_debt.to_f) / (1 - ((1 + rate_with_iva.to_f)**-rest_term.to_f))
           first_iteration = true
-          1.upto(rest_term) do |i|
-            @current_payment = @current_payment + 1
+          1.upto(rest_term) do |_i|
+            @current_payment += 1
             number_of_periods = @current_payment - @max_num_payment
             if first_iteration
-              first_iteration = false              
+              first_iteration = false
               interests = remaining_debt.to_f * rate.to_f
               iva = interests.to_f * 0.16
-              capital = @payment_amount.to_f - interests.to_f - iva.to_f             
+              capital = @payment_amount.to_f - interests.to_f - iva.to_f
               current_debt = remaining_debt.to_f
-              remaining_debt = current_debt.to_f - capital.to_f        
+              remaining_debt = current_debt.to_f - capital.to_f
               payment = capital.to_f + interests.to_f + iva.to_f
             else
               interests = remaining_debt.to_f * rate.to_f
-              iva = interests.to_f * 0.16              
+              iva = interests.to_f * 0.16
               capital = @payment_amount.to_f - interests.to_f - iva.to_f
               if remaining_debt < capital
                 capital = remaining_debt
@@ -307,21 +309,21 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
             when '1'
               payment_date = @last_date + number_of_periods.years
             when '6'
-              payment_date = @last_date + (number_of_periods*2).months
+              payment_date = @last_date + (number_of_periods * 2).months
             when '4'
-              payment_date = @last_date + (number_of_periods*3).months
+              payment_date = @last_date + (number_of_periods * 3).months
             else
               @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Dias(365), Meses(12), Años(1), Bimestres(6), Trimestres(4)")
               error_array!(@error_desc, :unprocessable_entity)
               raise ActiveRecord::Rollback
             end
             sim_customer_payments = SimCustomerPayment.create(customer_credit_id: customer_credit_id, pay_number: @current_payment, current_debt: current_debt.round(2), remaining_debt:  remaining_debt.round(2), payment: payment.round(2),
-              capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: payment_date, status: 'PE')
-            if sim_customer_payments.blank?
-              @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
-              error_array!(@error_desc, unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
+                                                              capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: payment_date, status: 'PE')
+            next unless sim_customer_payments.blank?
+
+            @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
+            error_array!(@error_desc, unprocessable_entity)
+            raise ActiveRecord::Rollback
           end
         end
       end
@@ -329,15 +331,15 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
       sum_interests = @customer_credit.current_payments.reduce(0) { |suma, current_payment| suma += current_payment.interests }
       sum_iva = @customer_credit.current_payments.reduce(0) { |suma, current_payment| suma += current_payment.iva }
       total_debt = sum_capital + sum_interests + sum_iva
-      @customer_credit.update( capital: sum_capital, interests: sum_interests, iva: sum_iva, total_debt: total_debt, fixed_payment: @payment_amount )
+      @customer_credit.update(capital: sum_capital, interests: sum_interests, iva: sum_iva, total_debt: total_debt, fixed_payment: @payment_amount)
       if @customer_credit.save
         restructure_funder_yields_payment
         simulation = params[:simulation]
-        unless simulation.blank? || simulation == 'false'
+        if simulation.blank? || simulation == 'false'
           @customer_credit
-          raise ActiveRecord::Rollback
         else
           @customer_credit
+          raise ActiveRecord::Rollback
         end
       else
         error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
@@ -345,288 +347,22 @@ class Api::V1::RestructureCreditsController < Api::V1::MasterApiController
       end
     end
   end
-  
+
   private
-  
+
   def restructure_credits_params
     params.require(:restructure_credit).permit(:customer_credit_id, :total_payment)
   end
 
-  def restructure_funder_yields_term
-    @error_desc = []
-    @funding_requests = FundingRequest.where(project_id: @project.id)
-    @funding_request = @funding_requests[0]
-    if @funding_request.blank?
-      @error_desc.push("No existe una solicitud de fondeo con el id de proyecto: #{@project.id}")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-    else
-      @investments = Investment.where(funding_request_id: @funding_request.id)
-      if @investments.blank?
-        @error_desc.push("No existen inversiones para la solicitud de fondeo con id: #{@funding_request.id}")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      else
-        @investments.each do |investment|
-          current_yield = investment.pending_yields.first
-          if current_yield.blank?
-            @error_desc.push("No se encontraron rendimientos pendientes")
-            error_array!(@error_desc, :not_found)
-            raise ActiveRecord::Rollback
-          else                                    
-            @current_investment_capital = (@current_payment_capital * (investment.total/@customer_credit.capital)).round(2)
-            @yield_fixed_payment = investment.yield_fixed_payment
-            @payment_remaining_capital = current_yield.current_capital.round(2) - @current_investment_capital.round(2)
-            current_yield.capital = @current_investment_capital
-            current_yield.total = @current_investment_capital + current_yield.gross_yield - current_yield.isr
-            current_yield.remaining_capital = @payment_remaining_capital.round(2)
-            current_yield.status = 'AP'
-            current_yield.extra1 = 'Se actualiza el pago con el abono a capital correspondiente'
-            @max_num_yield = current_yield.yield_number
-            @current_yield = current_yield.yield_number
-            @yield_last_date = current_yield.payment_date
-            @yield_rest_capital = @payment_remaining_capital.round(2)
-            if current_yield.save
-              @update_pending_yields_sql = "update sim_funder_yields set status=':new_status', extra1=':comment' where investment_id=':investment_id' and status = ':current_status';"
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':new_status', 'CA'
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':comment', "Se cancela el rendimiento por reestructuración en plazo, se abonó a capital: #{current_yield.capital.round(2).to_s}"
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':investment_id', investment.id.to_s
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':current_status', 'PE'
-              @update_pending_yields = ActiveRecord::Base.connection.update(@update_pending_yields_sql)
-            else
-              @error_desc.push("No se pudo actualzar el rendimiento actual con el abono a capital")
-              error_array!(@error_desc, :unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
-          end
-          remaining_capital = @payment_remaining_capital.to_f
-          @error_desc = []
-          if remaining_capital.round == 0
-            investment.update( status: 'AP' )
-          else
-            investment_id = investment.id
-            funder_id = investment.funder_id
-            term = @term.value
-            payment_period = @payment_period.value
-            total_investment = @yield_rest_capital
-            rate = (investment.rate.to_f  / payment_period.to_f) / 100
-            #rate_without_isr = rate.to_f / 1.16
-            used_date = @yield_last_date
-            payment_amount = @yield_fixed_payment
-            first_iteration = true
-            last_payment = false
-            until last_payment
-              @current_yield = @current_yield + 1
-              if first_iteration
-                first_iteration = false
-                gross_yield = total_investment.to_f * rate.to_f
-                isr = gross_yield.to_f * 0.16
-                net_yield = gross_yield.to_f - isr.to_f
-                capital = payment_amount.to_f - gross_yield.to_f                
-                if remaining_capital < capital
-                  capital = remaining_capital
-                  total = capital.to_f + net_yield.to_f
-                  last_payment = true
-                end
-                total = capital.to_f + net_yield.to_f
-                current_capital = @payment_remaining_capital.to_f
-                remaining_capital = total_investment.to_f - capital.to_f                  
-              else
-                gross_yield = remaining_capital.to_f * rate.to_f
-                isr = gross_yield.to_f * 0.16
-                net_yield = gross_yield.to_f - isr.to_f
-                capital = payment_amount.to_f - gross_yield.to_f
-                if remaining_capital < capital
-                  capital = remaining_capital
-                  total = capital.to_f + net_yield.to_f
-                  last_payment = true
-                end
-                total = capital.to_f + net_yield.to_f
-                current_capital = remaining_capital.to_f
-                remaining_capital = remaining_capital.to_f - capital.to_f                                                     
-              end
-              number_of_periods = @current_yield - @max_num_yield
-              case payment_period.to_s
-              when '365'
-                payment_date = used_date + number_of_days.days
-              when '12'
-                payment_date = used_date + number_of_periods.months
-              when '1'
-                payment_date = used_date + number_of_periods.years
-              when '6'
-                payment_date = used_date + (number_of_periods*2).months
-              when '4'
-                payment_date = used_date + (number_of_periods*3).months 
-              else
-                @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Dias(365), Meses(12), Años(1), Bimestres(6), Trimestres(4)")
-                error_array!(@error_desc, :unprocessable_entity)
-                raise ActiveRecord::Rollback
-              end
-              sim_funder_yield = SimFunderYield.create(investment_id: investment_id, funder_id: funder_id, yield_number: @current_yield, current_capital: current_capital.round(2), remaining_capital:  remaining_capital.round(2), gross_yield: gross_yield.round(2),
-                                    isr: isr.round(2), net_yield: net_yield.round(2), capital: capital.round(2), total: total.round(2), payment_date: payment_date, status: 'PE')
-              if sim_funder_yield.blank?
-                @error_desc.push('Ocurrio un error al crear la simulación de rendimientos')
-                error_array!(@error_desc, unprocessable_entity)
-                raise ActiveRecord::Rollback
-              end
-            end            
-            unless investment.save            
-              error_array!(investment.errors.full_messages, :unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
-          end
-        end
-      end
-    end
-  end
+ 
 
-  def restructure_funder_yields_payment
-    @error_desc = []
-    @funding_requests = FundingRequest.where(project_id: @project.id)
-    @funding_request = @funding_requests[0]
-    if @funding_request.blank?
-      @error_desc.push("No existe una solicitud de fondeo con el id de proyecto: #{@project.id}")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-    else
-      @investments = Investment.where(funding_request_id: @funding_request.id)
-      if @investments.blank?
-        @error_desc.push("No existen inversiones para la solicitud de fondeo con id: #{@funding_request.id}")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      else
-        @investments.each do |investment|
-          current_yield = investment.pending_yields.first
-          if current_yield.blank?
-            @error_desc.push("No se encontraron rendimientos pendientes")
-            error_array!(@error_desc, :not_found)
-            raise ActiveRecord::Rollback
-          else
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> investment: #{investment.id}"
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> @current_payment_capital: #{@current_payment_capital}"                                    
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> investment.total: #{investment.total}"                                                                        
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> @customer_credit.capital: #{@customer_credit.capital}" 
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> investment.total: #{investment.total}" 
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> investment.yield_fixed_payment: #{investment.yield_fixed_payment}"
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> current_yield.current_capital: #{current_yield.current_capital}"                        
-            @current_investment_capital = (@current_payment_capital * (investment.total/@customer_credit.capital)).round(2)
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> @current_investment_capital: #{@current_investment_capital}"
-            @yield_fixed_payment = investment.yield_fixed_payment
-            @payment_remaining_capital = current_yield.current_capital.round(2) - @current_investment_capital.round(2)
-            #puts ">>>>>>>>>>>>>>>>>>>>>>>> @payment_remaining_capital: #{@payment_remaining_capital}"
-            current_yield.capital = @current_investment_capital
-            current_yield.total = @current_investment_capital + current_yield.gross_yield - current_yield.isr
-            current_yield.remaining_capital = @payment_remaining_capital.round(2)
-            current_yield.status = 'AP'
-            current_yield.extra1 = 'Se actualiza el pago con el abono a capital correspondiente'
-            @max_num_yield = current_yield.yield_number
-            @current_yield = current_yield.yield_number
-            @yield_last_date = current_yield.payment_date
-            @yield_rest_capital = @payment_remaining_capital.round(2)
-            if current_yield.save
-              @update_pending_yields_sql = "update sim_funder_yields set status=':new_status', extra1=':comment' where investment_id=':investment_id' and status = ':current_status';"
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':new_status', 'CA'
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':comment', "Se cancela el rendimiento por reestructuración en importe del pago, se abonó a capital: #{current_yield.capital.round(2).to_s}"
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':investment_id', investment.id.to_s
-              @update_pending_yields_sql = @update_pending_yields_sql.gsub ':current_status', 'PE'
-              @update_pending_yields = ActiveRecord::Base.connection.update(@update_pending_yields_sql)
-            else
-              @error_desc.push("No se pudo actualzar el rendimiento actual con el abono a capital")
-              error_array!(@error_desc, :unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
-          end
-          remaining_capital = @payment_remaining_capital.to_f
-          @error_desc = []
-          puts ">>>>>>>>>>>>>>>>>> remainig_capital: #{remaining_capital.round}"
-          if remaining_capital.round == 0
-            investment.update( status: 'AP' )
-          else
-            investment_id = investment.id
-            funder_id = investment.funder_id
-            if @customer_credit.restructure_term.blank?
-              term = @term.value
-            else
-              term = @customer_credit.restructure_term
-            end
-            payment_period = @payment_period.value
-            total_investment = @yield_rest_capital
-            rest_term = term - @max_num_payment
-            rate = (investment.rate.to_f  / payment_period.to_f) / 100
-            #rate_without_isr = rate.to_f / 1.16
-            used_date = @yield_last_date
-            payment_amount = (rate.to_f * remaining_capital.to_f) / (1 - ((1 + (rate.to_f)) ** (-rest_term.to_f)))
-            first_iteration = true
-            1.upto(rest_term) do |i|
-              @current_yield = @current_yield + 1
-              if first_iteration
-                first_iteration = false
-                gross_yield = total_investment.to_f * rate.to_f
-                isr = gross_yield.to_f * 0.16
-                net_yield = gross_yield.to_f - isr.to_f
-                capital = payment_amount.to_f - gross_yield.to_f                
-                if remaining_capital < capital
-                  capital = remaining_capital
-                  total = capital.to_f + net_yield.to_f
-                end
-                total = capital.to_f + net_yield.to_f
-                current_capital = @payment_remaining_capital.to_f
-                remaining_capital = total_investment.to_f - capital.to_f                  
-              else
-                gross_yield = remaining_capital.to_f * rate.to_f
-                isr = gross_yield.to_f * 0.16
-                net_yield = gross_yield.to_f - isr.to_f
-                capital = payment_amount.to_f - gross_yield.to_f
-                if remaining_capital < capital
-                  capital = remaining_capital
-                  total = capital.to_f + net_yield.to_f
-                end
-                total = capital.to_f + net_yield.to_f
-                current_capital = remaining_capital.to_f
-                remaining_capital = remaining_capital.to_f - capital.to_f                                                     
-              end
-              number_of_periods = @current_yield - @max_num_yield
-              case payment_period.to_s
-              when '365'
-                payment_date = used_date + rest_term.days
-              when '12'
-                payment_date = used_date + number_of_periods.months
-              when '1'
-                payment_date = used_date + number_of_periods.years
-              when '6'
-                payment_date = used_date + (number_of_periods*2).months
-              when '4'
-                payment_date = used_date + (number_of_periods*3).months 
-              else
-                @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Dias(365), Meses(12), Años(1), Bimestres(6), Trimestres(4)")
-                error_array!(@error_desc, :unprocessable_entity)
-                raise ActiveRecord::Rollback
-              end
-              sim_funder_yield = SimFunderYield.create(investment_id: investment_id, funder_id: funder_id, yield_number: @current_yield, current_capital: current_capital.round(2), remaining_capital:  remaining_capital.round(2), gross_yield: gross_yield.round(2),
-                                    isr: isr.round(2), net_yield: net_yield.round(2), capital: capital.round(2), total: total.round(2), payment_date: payment_date, status: 'PE')
-              if sim_funder_yield.blank?
-                @error_desc.push('Ocurrio un error al crear la simulación de rendimientos')
-                error_array!(@error_desc, unprocessable_entity)
-                raise ActiveRecord::Rollback
-              end
-            end
-            investment.update( yield_fixed_payment: payment_amount )
-            unless investment.save            
-              error_array!(investment.errors.full_messages, :unprocessable_entity)
-              raise ActiveRecord::Rollback
-            end
-          end
-        end
-      end
-    end
-  end
 end
 
-#simulation = params[:simulation]
-#unless simulation.blank? || simulation == 'false'
+# simulation = params[:simulation]
+# unless simulation.blank? || simulation == 'false'
 #  render 'api/v1/requests/show'
 #  raise ActiveRecord::Rollback
-#else
+# else
 #  request_mailer
 #  render 'api/v1/requests/show'
-#end
+# end

@@ -76,14 +76,14 @@ RSpec.describe Api::V1::ContributorsController, contributor_type: :request do
         @person2 = FactoryBot.create(:person)
         post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                contributor: { contributor_type: 'PERSONA FÍSICA', bank: 'Bancomer',
-                                                              account_number: 123456789, clabe: 123456789123456789, person_id: @person.id } }
+                                                              account_number: 123_456_789, clabe: 123_456_789_123_456_789, person_id: @person.id } }
       end
       it { expect(response).to have_http_status(200) }
       it 'crea un nuevo contribuyente' do
         expect do
           post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                  contributor: { contributor_type: 'PERSONA FÍSICA',
-                                                                bank: 'Bancomer', account_number: 123456789, clabe: 123456789123456789, person_id: @person2.id } }
+                                                                bank: 'Bancomer', account_number: 123_456_789, clabe: 123_456_789_123_456_789, person_id: @person2.id } }
         end.to change(Contributor, :count).by(1)
       end
       it 'responde con la cadena creada' do
@@ -107,7 +107,7 @@ RSpec.describe Api::V1::ContributorsController, contributor_type: :request do
         @legal_entity = FactoryBot.create(:legal_entity)
         post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                contributor: { contributor_type: 'Persona moral', bank: 'Bancomer',
-                                                              account_number: 123456789, clabe: 123456789123456789, legal_entity_id: @legal_entity.id } }
+                                                              account_number: 123_456_789, clabe: 123_456_789_123_456_789, legal_entity_id: @legal_entity.id } }
       end
       it { expect(response).to have_http_status(401) }
 
@@ -125,14 +125,14 @@ RSpec.describe Api::V1::ContributorsController, contributor_type: :request do
         @legal_entity = FactoryBot.create(:legal_entity)
         post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                contributor: { bank: 'Bancomer',
-                                                              account_number: 123456789, clabe: 123456789123456789, legal_entity_id: @legal_entity.id } }
+                                                              account_number: 123_456_789, clabe: 123_456_789_123_456_789, legal_entity_id: @legal_entity.id } }
       end
 
       it { expect(response).to have_http_status(422) }
 
       it 'responde con los errores al guardar el contribuyente' do
         json = JSON.parse(response.body)
-        #puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
+        # puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
         expect(json['errors']).to_not be_empty
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe Api::V1::ContributorsController, contributor_type: :request do
         @person = FactoryBot.create(:person)
         post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                contributor: { contributor_type: 'Persona moral', bank: 'Bancomer',
-                                                              account_number: 123456789, clabe: 123456789123456789, person_id: 99 } }
+                                                              account_number: 123_456_789, clabe: 123_456_789_123_456_789, person_id: 99 } }
       end
       it { expect(response).to have_http_status(404) }
 
@@ -163,7 +163,7 @@ RSpec.describe Api::V1::ContributorsController, contributor_type: :request do
         @legal_entity = FactoryBot.create(:legal_entity)
         post '/api/v1/contributors', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                contributor: { contributor_type: 'Persona moral', bank: 'Bancomer',
-                                                              account_number: 123456789, clabe: 123456789123456789, legal_entity_id: 99 } }
+                                                              account_number: 123_456_789, clabe: 123_456_789_123_456_789, legal_entity_id: 99 } }
       end
       it { expect(response).to have_http_status(404) }
 

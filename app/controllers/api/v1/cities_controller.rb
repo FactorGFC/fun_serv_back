@@ -3,7 +3,6 @@
 class Api::V1::CitiesController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::CitiesApi
-
   before_action :authenticate
   before_action :set_city, only: %i[show update destroy]
   before_action :set_state

@@ -32,7 +32,8 @@ RSpec.describe Api::V1::DocumentsController, type: :request do
     end
     it 'manda los atributos del documento' do
       json = JSON.parse(response.body)
-      expect(json['data']['attributes'].keys).to contain_exactly('id', 'document_type', 'name', 'description', 'validation', 'ext_service_id', 'extra1', 'extra2', 'extra3', 'created_at', 'updated_at')
+      expect(json['data']['attributes'].keys).to contain_exactly('id', 'document_type', 'name', 'description', 'validation', 'ext_service_id', 'extra1', 'extra2', 'extra3', 'created_at',
+                                                                 'updated_at')
     end
   end
 
@@ -123,7 +124,7 @@ RSpec.describe Api::V1::DocumentsController, type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
         @document = FactoryBot.create(:document)
         patch api_v1_document_path(@document), params: { token: @token.token, secret_key: my_app.secret_key,
-                                                               document: { document_type: 'Id' } }
+                                                         document: { document_type: 'Id' } }
       end
       it { expect(response).to have_http_status(401) }
     end

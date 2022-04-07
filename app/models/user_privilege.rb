@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: user_privileges
@@ -19,7 +21,6 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
-
 class UserPrivilege < ApplicationRecord
   include Swagger::Blocks
   include Swagger::UserPrivilegeSchema

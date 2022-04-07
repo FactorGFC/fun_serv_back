@@ -1,32 +1,37 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: people
 #
-#  id               :uuid             not null, primary key
-#  birth_country    :string
-#  birthdate        :date             not null
-#  birthplace       :string
-#  curp             :string
-#  email            :string
-#  extra1           :string
-#  extra2           :string
-#  extra3           :string
-#  fiel             :boolean
-#  first_name       :string           not null
-#  fiscal_regime    :string           not null
-#  gender           :string
-#  id_type          :string
-#  identification   :bigint           not null
-#  imss             :bigint
-#  last_name        :string           not null
-#  martial_status   :string
-#  mobile           :string
-#  nationality      :string
-#  phone            :string
-#  rfc              :string           not null
-#  second_last_name :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
+#  id                :uuid             not null, primary key
+#  birth_country     :string
+#  birthdate         :date             not null
+#  birthplace        :string
+#  curp              :string
+#  email             :string
+#  extra1            :string
+#  extra2            :string
+#  extra3            :string
+#  fiel              :boolean
+#  first_name        :string           not null
+#  fiscal_regime     :string           not null
+#  gender            :string
+#  housing_type      :string
+#  id_type           :string
+#  identification    :bigint           not null
+#  imss              :bigint
+#  last_name         :string           not null
+#  martial_regime    :string
+#  martial_status    :string
+#  minior_dependents :integer
+#  mobile            :string
+#  nationality       :string
+#  phone             :string
+#  rfc               :string           not null
+#  second_last_name  :string           not null
+#  senior_dependents :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 FactoryBot.define do
   factory :person do
@@ -43,6 +48,10 @@ FactoryBot.define do
     birthplace { "La Junta" }
     birthdate { 21.years.ago }
     martial_status { "Soltero" }
+    martial_regime {"Bienes separados"}
+    minior_dependents {"1"}
+    senior_dependents {"0"}
+    housing_type {"Renta"}
     id_type { "INE" }
     identification { 123456789 }
     phone { "999999999999" }
@@ -66,6 +75,10 @@ FactoryBot.define do
       birthplace { "La Junta" }
       birthdate { 21.years.ago }
       martial_status { "Soltero" }
+      martial_regime {"Bienes separados"}
+      minior_dependents{"1"}
+      senior_dependents {"0"}
+      housing_type {"Renta"}
       id_type { "INE" }
       identification { 123456789 }
       phone { "999999999999" }

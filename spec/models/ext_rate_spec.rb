@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: ext_rates
@@ -6,6 +7,7 @@
 #  description :string           not null
 #  end_date    :date
 #  key         :string           not null
+#  max_value   :decimal(15, 4)
 #  rate_type   :string           not null
 #  start_date  :date             not null
 #  value       :decimal(15, 4)   not null

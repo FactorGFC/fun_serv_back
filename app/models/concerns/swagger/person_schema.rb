@@ -50,6 +50,18 @@ module Swagger::PersonSchema
       property :martial_status do
         key :type, :string
       end
+      property :martial_regime do
+        key :type, :string
+      end
+      property :minior_depentents do
+        key :type, :number
+      end
+      property :senior_depentendts do
+        key :type, :number
+      end
+      property :housing_type do
+        key :type, :string
+      end
       property :id_type do
         key :type, :string
       end

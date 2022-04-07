@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: contributor_addresses
@@ -33,6 +34,7 @@ require 'rails_helper'
 
 RSpec.describe ContributorAddress, type: :model do
   it { should validate_presence_of :street }
+  it { should validate_presence_of :address_type }
   it { should validate_presence_of :external_number }  
   it { should validate_presence_of :suburb }
   it { should validate_presence_of :postal_code }

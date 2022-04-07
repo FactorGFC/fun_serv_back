@@ -51,8 +51,8 @@ RSpec.describe Api::V1::RatesController, rate_type: :request do
         @payment_period = FactoryBot.create(:payment_period)
         @credit_rating = FactoryBot.create(:credit_rating)
         post '/api/v1/rates', params: { token: @token.token, secret_key: @my_app.secret_key,
-                                               rate: { key: '12MAA', description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
-                                                       term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
+                                        rate: { key: '12MAA', description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
+                                                term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
       end
       it { expect(response).to have_http_status(200) }
       it 'crea un nuevo tasa' do
@@ -77,8 +77,8 @@ RSpec.describe Api::V1::RatesController, rate_type: :request do
         @payment_period = FactoryBot.create(:payment_period)
         @credit_rating = FactoryBot.create(:credit_rating)
         post '/api/v1/rates', params: { token: @token.token, secret_key: @my_app.secret_key,
-                                              rate: { key: '12MAA', description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
-                                                      term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
+                                        rate: { key: '12MAA', description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
+                                                term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
       end
       it { expect(response).to have_http_status(200) }
       it 'crea un nuevo tasa' do
@@ -130,19 +130,19 @@ RSpec.describe Api::V1::RatesController, rate_type: :request do
         @payment_period = FactoryBot.create(:payment_period)
         @credit_rating = FactoryBot.create(:credit_rating)
         post '/api/v1/rates', params: { token: @token.token, secret_key: @my_app.secret_key,
-                                               rate: { description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
-                                                       term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
+                                        rate: { description: 'Tasa de crédito a 12 pagos mensuales para AA', value: '12.50',
+                                                term_id: @term.id, payment_period_id: @payment_period.id, credit_rating_id: @credit_rating.id } }
       end
 
       it { expect(response).to have_http_status(422) }
 
       it 'responde con los errores al guardar el tasa' do
         json = JSON.parse(response.body)
-        #puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
+        # puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
         expect(json['errors']).to_not be_empty
       end
     end
-  end  
+  end
 
   describe 'PATCH /rates/:id' do
     context 'con un token valido' do
@@ -152,7 +152,7 @@ RSpec.describe Api::V1::RatesController, rate_type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @rate = FactoryBot.create(:rate)
         patch api_v1_rate_path(@rate), params: { token: @token.token, secret_key: @my_app.secret_key,
-                                                               rate: { key: 'AA12M' } }
+                                                 rate: { key: 'AA12M' } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -166,7 +166,7 @@ RSpec.describe Api::V1::RatesController, rate_type: :request do
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: FactoryBot.create(:sequence_user))
         @rate = FactoryBot.create(:rate)
         patch api_v1_rate_path(@rate), params: { token: @token.token, secret_key: my_app.secret_key,
-                                                               rate: { key: 'AA12M' } }
+                                                 rate: { key: 'AA12M' } }
       end
       it { expect(response).to have_http_status(401) }
     end
