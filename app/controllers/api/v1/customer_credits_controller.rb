@@ -105,6 +105,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     total_requested = @customer_credit.total_requested
     rate = @customer_credit.rate
     rate_with_iva = rate.to_f * (1 + (iva_percent.to_f/100))
+    start_date = @customer_credit.start_date
     payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + rate_with_iva.to_f)**-term.to_f))
     @fixed_payment = payment_amount
     remaining_debt = 0

@@ -21,7 +21,7 @@ gem 'omniauth-google-oauth2'
 gem 'valid_email'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'rack-cors'
-gem 'bundler', '2.3.10'
+gem 'bundler', '2.2.32'
 gem 'rest-client'
 gem 'savon', '~> 2.0'
 gem 'execjs', '2.7.0'
