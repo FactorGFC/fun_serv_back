@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
   get '/my_apps', to: 'welcome#app', constraints: ->(solicitud) { !solicitud.session[:user_id].blank? }
-  get '/', to: 'welcome#index'
-
+  #get '/', to: 'welcome#index'
+  get '/', to: 'welcome#ok'
   resources :my_apps, except: %i[show index]
   resources :apidocs, only: [:index]
   namespace :api, defaults: { format: 'json' } do
