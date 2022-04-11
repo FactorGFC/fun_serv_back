@@ -28,6 +28,7 @@ gem 'execjs', '2.7.0'
 gem 'autoprefixer-rails', '~> 10.2', '>= 10.2.4.0'
 gem 'mifiel'
 gem 'combine_pdf'
+gem "nio4r", "= 2.5.2"
 #gem 'prawn'
 #gem 'ilovepdf'
 
