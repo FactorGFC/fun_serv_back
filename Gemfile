@@ -11,7 +11,7 @@ gem 'swagger-blocks'
 gem 'rails', '~> 6.0.0'
 gem 'pg', '1.2.3'
 gem 'faker'
-gem 'puma'#, '= 5.6.2', groups: [:development, :test]
+gem 'puma', '= 5.6.2', groups: [:development, :test]
 gem 'webpacker', '= 5.1.1'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
