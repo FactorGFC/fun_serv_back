@@ -70,6 +70,7 @@ Rails.application.routes.draw do
       get '/authenticate', to: 'api_sessions#create'
       get '/reset_password', to: 'api_sessions#reset_password'
       get '/get_reset_token', to: 'api_sessions#get_reset_token'
+      get '/get_credit_customer_report', to: 'reports#get_credit_customer_report' 
       match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
     end
   end
