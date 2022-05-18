@@ -9,6 +9,8 @@
 #  attached          :string
 #  balance           :decimal(15, 4)   not null
 #  capital           :decimal(15, 4)   not null
+#  credit_folio      :decimal(15, 4)
+#  currency          :string
 #  debt_time         :decimal(15, 4)
 #  destination       :string
 #  end_date          :date             not null

@@ -49,6 +49,8 @@ Rails.application.routes.draw do
       resources :ext_rates
       resources :customer_personal_references
       resources :credit_analyses
+      resources :payment_credits, only: %i[update destroy create]
+      resources :payments
 
 
       resources :customer_credits do

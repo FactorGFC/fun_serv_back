@@ -7,6 +7,29 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
   def create
     @error_desc = []
     ActiveRecord::Base.transaction do
+
+      @company = Company.find_by_sql ["SELECT ab.*
+      FROM ((SELECT comp.*
+             FROM companies comp, contributors cont, people peop
+             WHERE comp.contributor_id = cont.id
+             AND cont.person_id = peop.id
+             AND peop.rfc in (:rfc)
+             AND cont.contributor_type in ('PF')
+             ) UNION ALL
+             (SELECT comp.*
+             FROM companies comp, contributors cont, legal_entities leen
+             WHERE comp.contributor_id = cont.id
+             AND cont.legal_entity_id = leen.id
+             AND leen.rfc in (:rfc)
+             AND cont.contributor_type = 'PM'
+             )
+           ) ab", { rfc: params[:rfc]}]
+    if @company[0].blank?
+    @error_desc.push("No se encontró una cadena dada de alta con el RFC: #{params[:rfc]}")
+    error_array!(@error_desc, :unprocessable_entity)
+    raise ActiveRecord::Rollback
+    end
+
       #Revisamos que el tipo de contribuyente no venga vacio
       if contributors_params[:contributor_type].blank?
         @error_desc.push('Se tiene que mandar el tipo de contribuyente')
@@ -66,13 +89,13 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
       end
       if params[:type] == 'customer'
         @customer = Customer.new(contributor_id: @contributor.id, attached: customer_params[:attached], customer_type: customer_params[:customer_type], name: customer_params[:name],
-                                 status: customer_params[:status], user_id: customer_params[:user_id], salary_period: customer_params[:salary_period], salary: customer_params [:salary],
+                                 status: customer_params[:status], user_id: customer_params[:user_id], salary_period: customer_params[:salary_period], salary: customer_params[:salary],
                                  other_income: customer_params[:other_income], net_expenses: customer_params[:net_expenses], family_expenses: customer_params[:family_expenses],
                                  house_rent: customer_params[:house_rent], credit_cp: customer_params[:credit_cp], credit_lp: customer_params[:credit_lp], immediate_superior: customer_params[:immediate_superior], 
                                  seniority: customer_params[:seniority], ontime_bonus: customer_params[:ontime_bonus], assist_bonus: customer_params[:assist_bonus], food_vouchers: customer_params[:food_vouchers], 
-                                 total_income: customer_params[:total_income], total_savings_food: customer_params[:total_savings_food], chrismas_bonus: customer_params[:chrismas_bonus], taxes: customer_params[:taxes], 
+                                 total_income: customer_params[:total_income], total_savings_found: customer_params[:total_savings_found], christmas_bonus: customer_params[:christmas_bonus], taxes: customer_params[:taxes], 
                                  imms: customer_params[:imms], savings_found:customer_params[:savings_found], savings_found_loand: customer_params[:savings_found_loand], savings_bank:customer_params[:savings_bank], 
-                                 insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit])
+                                 insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit], company_id: customer_params[:company_id])
         unless @customer.customer_type.blank?
           @file_types = FileType.where(customer_type: @customer.customer_type)
           if @file_types.blank?
@@ -84,16 +107,17 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
             @customer.update(file_type_id: @file_types[0].id)
             if @customer.save
                      #Agregamos las referencias de un customer
-                  @customer_personal_refrences = CustomerPersonalReferences.new(customer_id: @customer.id, first_name: customer_pr_params[:first_name], last_name: customer_pr_params[:last_name], 
+                  @customer_personal_refrence = CustomerPersonalReference.new(customer_id: @customer.id, first_name: customer_pr_params[:first_name], last_name: customer_pr_params[:last_name], 
                                                                                 second_last_name: customer_pr_params[:second_last_name], address: customer_pr_params[:address], 
                                                                                 phone: customer_pr_params[:phone], reference_type: customer_pr_params[:reference_type])
-                  unless @customer_personal_refrences.save
-                  render json: { error: @customer_personal_refrences.errors }, status: :unprocessable_entity
+                  unless @customer_personal_refrence.save
+                  render json: { error: @customer_personal_refrence.errors }, status: :unprocessable_entity
                   raise ActiveRecord::Rollback
                   end
                 render 'api/v1/user_registers/pf_customer'
             else
               render json: { error: @customer.errors }, status: :unprocessable_entity
+              raise ActiveRecord::Rollback
             end
           end
         end
@@ -137,11 +161,11 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                      :salary_period, :salary, :other_income, :net_expenses,
                                      :family_expenses, :house_rent, :credit_cp, :credit_lp,
                                      :immediate_superior, :seniority, :ontime_bonus, :assist_bonus,
-                                     :food_vouchers, :total_income, :total_savings_food,
-                                     :chrismas_bonus, :taxes, :imms, :savings_found,
+                                     :food_vouchers, :total_income, :total_savings_found,
+                                     :christmas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
                                      :child_support, :extra_expenses, :infonavit, :user_id, :company_id)
-  
+                                    end
   
   def create_contributor_documents
     @file_type_documents = FileTypeDocument.where(file_type_id: @file_types[0].id)
@@ -151,7 +175,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
         ContributorDocument.custom_update_or_create(@contributor.id, file_type_document.id, @documents[0].name, 'PI') # PI - Por ingresar, estatus inicial
       end
     end
-  end
+ 
 
   def customer_pr_params
     params.require(:customer_personal_reference).permit(:first_name, :last_name, :second_last_name, :address, :phone, :reference_type, :customer_id)

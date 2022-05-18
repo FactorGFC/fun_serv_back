@@ -519,260 +519,60 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def layout_base
-    @query_titulo_supplier = "SELECT TRIM(to_char(to_date(':used_date','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
-                    FROM((SELECT TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe
-                      FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com, contributors con
-                      WHERE inv.id = rei.invoice_id
-                      AND req.id = rei.request_id
-                      AND inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.status = 'PENDIENTE'
-                      AND req.status = 'APROBADA'
-                      AND inv.currency = ':currency'
-                      AND req.used_date = ':used_date'
-                      ) UNION ALL
-                      (SELECT TO_CHAR(inv.total, 'FM9999999990.00') importe
-                      FROM invoices inv, suppliers sup, companies com, contributors con
-                      WHERE inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.id not in (SELECT invoice_id from request_invoices)
-                      AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
-                      AND inv.currency = ':currency'
-                      AND inv.used_date = ':used_date'
-                      ) UNION ALL
-                      (SELECT TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe
-                      FROM invoices inv, suppliers sup, companies com, contributors con
-                      WHERE inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.id in (SELECT invoice_id from request_invoices)
-                      AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
-                      AND inv.currency = ':currency'
-                      AND inv.used_date = ':used_date'
-                      )
-                    ) ab;"
+      @query_titulo_supplier = "SELECT TRIM(to_char(to_date('2020-04-18','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
+      FROM(SELECT TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe
+        FROM customer_credits cuc, companies com, contributors con, customers cus
+        WHERE cus.id = cuc.customer_id
+        AND con.id = cus.contributor_id
+        AND cuc.status ='AP'
+        AND cuc.currency = ':currency'
+        AND cuc.start_date = ':start_date'                      
+      ) ab;"
 
     @query_supplier = "SELECT ':pr_folio' payment_report_folio, ab.*
-              FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXN'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com, contributors con
-                WHERE inv.id = rei.invoice_id
-                AND req.id = rei.request_id
-                AND inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.status = 'PENDIENTE'
-                AND req.status = 'APROBADA'
-                AND inv.currency = ':currency'
-                AND req.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(inv.total, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXP'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                WHEN inv.currency = 'DOLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, suppliers sup, companies com, contributors con
-                WHERE inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.id not in (SELECT invoice_id from request_invoices)
-                AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
-                AND inv.currency = ':currency'
-                AND inv.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXP'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                WHEN inv.currency = 'DOLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, suppliers sup, companies com, contributors con
-                WHERE inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.id in (SELECT invoice_id from request_invoices)
-                AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
-                AND inv.currency = ':currency'
-                AND inv.used_date = ':used_date'
-                )
-              ) ab;"
+    FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,
+      CASE
+      WHEN con.bank = 'BASE'
+      THEN con.account_number
+      ELSE con.clabe
+      END cuenta_destino,
+      TO_CHAR(cuc.amount_allowed, 'FM9999999990.00') importe,
+      cuc.credit_folio referencia_concepto,
+      cuc.credit_folio referencia,
+      CASE
+      WHEN cuc.currency = 'PESOS'
+      THEN 'MXN'
+      WHEN cuc.currency = 'DÓLARES'
+      THEN 'USD'
+      WHEN cuc.currency = 'DOLARES'
+      THEN 'USD'
+      END divisa
+      FROM customer_credits cuc, customers cus, contributors con
+      WHERE cus.id = cuc.customer_id
+      AND con.id = cus.contributor_id
+      AND cuc.status ='AP'
+      AND cuc.currency = ':currency'
+      AND cuc.start_date = ':start_date'
+      ) 
+    ) ab;"
 
-    @query_titulo_funder = "SELECT TRIM(to_char(to_date(':used_date','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
-                    FROM((SELECT TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe
-                      FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com, contributors con
-                      WHERE inv.id = rei.invoice_id
-                      AND req.id = rei.request_id
-                      AND inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.status = 'PENDIENTE'
-                      AND req.status = 'APROBADA'
-                      AND inv.currency = ':currency'
-                      AND req.used_date = ':used_date'
-                      ) UNION ALL
-                      (SELECT TO_CHAR(inv.total, 'FM9999999990.00') importe
-                      FROM invoices inv, suppliers sup, companies com, contributors con
-                      WHERE inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.id not in (SELECT invoice_id from request_invoices)
-                      AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
-                      AND inv.currency = ':currency'
-                      AND inv.used_date = ':used_date'
-                      ) UNION ALL
-                      (SELECT TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe
-                      FROM invoices inv, suppliers sup, companies com, contributors con
-                      WHERE inv.supplier_id = sup.id
-                      AND inv.company_id = com.id
-                      AND sup.contributor_id = con.id
-                      AND inv.id in (SELECT invoice_id from request_invoices)
-                      AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
-                      AND inv.currency = ':currency'
-                      AND inv.used_date = ':used_date'
-                      )
-                    ) ab;"
-
-    @query_funder = "SELECT ':pr_folio' payment_report_folio, ab.*
-              FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXN'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com, contributors con
-                WHERE inv.id = rei.invoice_id
-                AND req.id = rei.request_id
-                AND inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.status = 'PENDIENTE'
-                AND req.status = 'APROBADA'
-                AND inv.currency = ':currency'
-                AND req.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(inv.total, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXP'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                WHEN inv.currency = 'DOLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, suppliers sup, companies com, contributors con
-                WHERE inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.id not in (SELECT invoice_id from request_invoices)
-                AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
-                AND inv.currency = ':currency'
-                AND inv.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT '01' tipo_operacion, con.extra1 destinatario,
-                CASE
-                WHEN con.bank = 'BASE'
-                THEN con.account_number
-                ELSE con.clabe
-                END cuenta_destino,
-                TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe,
-                inv.invoice_folio referencia_concepto,
-                inv.invoice_folio referencia,
-                CASE
-                WHEN inv.currency = 'PESOS'
-                THEN 'MXP'
-                WHEN inv.currency = 'DÓLARES'
-                THEN 'USD'
-                WHEN inv.currency = 'DOLARES'
-                THEN 'USD'
-                END divisa
-                FROM invoices inv, suppliers sup, companies com, contributors con
-                WHERE inv.supplier_id = sup.id
-                AND inv.company_id = com.id
-                AND sup.contributor_id = con.id
-                AND inv.id in (SELECT invoice_id from request_invoices)
-                AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
-                AND inv.currency = ':currency'
-                AND inv.used_date = ':used_date'
-                )
-              ) ab;"
-
-    if params[:type].blank?
+   
       @query_titulo = @query_titulo_supplier
       @query = @query_supplier
-    elsif params[:type] == 'funder'
-      @query_titulo = @query_titulo_funder
-      @query = @query_funder
-    else
-      @query_titulo = @query_titulo_supplier
-      @query = @query_supplier
-    end
-    @query_titulo = @query_titulo.gsub ':used_date', params[:used_date].to_s
+
+
+    @query_titulo = @query_titulo.gsub ':start_date', params[:start_date].to_s
     @query_titulo = @query_titulo.gsub ':currency', params[:currency].to_s
     @base_titulo = execute_statement(@query_titulo)
     @pr_folio = @base_titulo[0]['titulo']
-    @query = @query.gsub ':used_date', params[:used_date].to_s
+    @query = @query.gsub ':start_date', params[:start_date].to_s
     @query = @query.gsub ':pr_folio', @pr_folio
     @query = @query.gsub ':currency', params[:currency].to_s
     @layout_base = execute_statement(@query)
     unless @layout_base.blank?
       @layout_base.each do |report_row|
-        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
-        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
+        @customer_credit = CustomerCredit.where(id: report_row['id_customer_credit'].to_s)
+        @customer_credit.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
     render json: @layout_base
