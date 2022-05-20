@@ -208,6 +208,8 @@ GEM
     net-ssh (6.1.0)
     netrc (0.11.0)
     nio4r (2.5.3)
+    nokogiri (1.13.6-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
     nori (2.6.0)
@@ -402,6 +404,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
+  aarch64-linux
   x86_64-darwin-20
 
 DEPENDENCIES
