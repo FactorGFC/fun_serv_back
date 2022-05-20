@@ -76,4 +76,3 @@ jobs:
           version_description: ${{ github.event.head_commit.message }}
           region: us-east-1
           deployment_package: deploy.zip
-      
