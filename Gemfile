@@ -2,7 +2,8 @@
 
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
-ruby '2.6.9'
+
+ruby '2.7.6'
 
 gem 'annotate'
 gem 'awesome_print', require: 'ap'
@@ -11,24 +12,23 @@ gem 'swagger-blocks'
 gem 'rails', '~> 6.0.0'
 gem 'pg', '1.2.3'
 gem 'faker'
-gem 'puma', '= 5.6.2', groups: [:development, :test]
+gem 'puma'
+gem 'sass-rails', '~> 5'
 gem 'webpacker', '= 5.1.1'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
 gem 'materialize-sass'
 gem 'omniauth-google-oauth2'
 gem 'valid_email'
+gem 'bootsnap', '1.4.3', require: false
 gem 'rack-cors'
-gem 'bundler', '2.3.11'
 gem 'rest-client'
 gem 'savon', '~> 2.0'
 gem 'execjs', '2.7.0'
 gem 'autoprefixer-rails', '~> 10.2', '>= 10.2.4.0'
 gem 'mifiel'
 gem 'combine_pdf'
-gem "nio4r", "= 2.5.2"
-gem 'bootsnap', require: false
-gem 'sass-rails', require: false
+gem 'nio4r', '2.5.3'
 #gem 'prawn'
 #gem 'ilovepdf'
 
