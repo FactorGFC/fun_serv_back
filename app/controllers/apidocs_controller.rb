@@ -10,7 +10,7 @@ class ApidocsController < ApplicationController
         contact do
           key :name, 'Griselda Oaxaca'
           key :email, 'griselda010@gmail.com'
-        endd
+        end
       end
       tag do
         key :name, 'User'
@@ -232,5 +232,5 @@ class ApidocsController < ApplicationController
     def index
       render json: Swagger::Blocks.build_root_json(SWAGGERED_CLASSES)
     end
-  end
+end
   
