@@ -83,6 +83,7 @@ FactoryBot.define do
     amount_allowed {""}
     time_allowed {""}
     debt_time {"1"}
+    iva_percent {"16.00"}
     extra1 { "MyString" }
     extra2 { "MyString" }
     extra3 { "MyString" }
@@ -90,7 +91,7 @@ FactoryBot.define do
     association :customer, factory: :customer
     association :term, factory: :term
     association :payment_period, factory: :payment_period
-    association :credit_rating, factory: :credit_rating
+    #association :credit_rating, factory: :credit_rating
   
   end
 end

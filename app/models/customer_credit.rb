@@ -56,7 +56,7 @@ class CustomerCredit < ApplicationRecord
   belongs_to :customer
   belongs_to :payment_period 
   belongs_to :term
-  belongs_to :credit_rating
+  #belongs_to :credit_rating
   
   has_many :sim_customer_payments, dependent: :destroy
   #has_many :current_customer_payments
@@ -76,9 +76,12 @@ class CustomerCredit < ApplicationRecord
   validates :fixed_payment, presence: true
   validates :rate, presence: true
   
-  before_save :calculate_balance_credit
+  before_create :calculate_balance_credit
 
   def calculate_balance_credit
+  #  puts 'aqui calcula el balance!!!!!!!!!'
     self[:balance] = self[:total_debt] - self[:total_payments]
+   # puts 'balanceeeee' + self[:balance].inspect
+   # puts 'total_debt' + self[:total_debt].inspect
   end
 end

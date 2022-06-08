@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_30_015944) do
+ActiveRecord::Schema.define(version: 2022_05_18_163916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -166,6 +166,8 @@ ActiveRecord::Schema.define(version: 2022_03_30_015944) do
     t.decimal "amount_allowed", precision: 15, scale: 4
     t.decimal "time_allowed", precision: 15, scale: 4
     t.decimal "iva_percent", precision: 15, scale: 4
+    t.decimal "credit_folio", precision: 15, scale: 4
+    t.string "currency"
     t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"
     t.index ["payment_period_id"], name: "index_customer_credits_on_payment_period_id"
@@ -362,6 +364,17 @@ ActiveRecord::Schema.define(version: 2022_03_30_015944) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "payment_credits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "pc_type", null: false
+    t.decimal "total", precision: 15, scale: 4, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "payment_id", null: false
+    t.uuid "customer_credit_id", null: false
+    t.index ["customer_credit_id"], name: "index_payment_credits_on_customer_credit_id"
+    t.index ["payment_id"], name: "index_payment_credits_on_payment_id"
+  end
+
   create_table "payment_periods", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "key", null: false
     t.string "description", null: false
@@ -372,6 +385,23 @@ ActiveRecord::Schema.define(version: 2022_03_30_015944) do
     t.string "extra3"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "payment_date", null: false
+    t.string "payment_type", null: false
+    t.string "payment_number", null: false
+    t.string "currency", null: false
+    t.decimal "amount", precision: 15, scale: 4, null: false
+    t.string "email_cfdi", null: false
+    t.string "notes"
+    t.string "voucher"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "contributor_from_id", null: false
+    t.uuid "contributor_to_id", null: false
+    t.index ["contributor_from_id"], name: "index_payments_on_contributor_from_id"
+    t.index ["contributor_to_id"], name: "index_payments_on_contributor_to_id"
   end
 
   create_table "people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -563,6 +593,10 @@ ActiveRecord::Schema.define(version: 2022_03_30_015944) do
   add_foreign_key "file_type_documents", "file_types"
   add_foreign_key "municipalities", "states"
   add_foreign_key "my_apps", "users"
+  add_foreign_key "payment_credits", "customer_credits"
+  add_foreign_key "payment_credits", "payments"
+  add_foreign_key "payments", "contributors", column: "contributor_from_id"
+  add_foreign_key "payments", "contributors", column: "contributor_to_id"
   add_foreign_key "rates", "credit_ratings"
   add_foreign_key "rates", "payment_periods"
   add_foreign_key "rates", "terms"

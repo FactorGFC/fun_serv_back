@@ -67,5 +67,5 @@ RSpec.describe CustomerCredit, type: :model do
   it { should belong_to(:customer) }
   it { should belong_to(:payment_period) }
   it { should belong_to(:term) }
-  it { should belong_to(:credit_rating) }
+ # it { should belong_to(:credit_rating) }
 end
