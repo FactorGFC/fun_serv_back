@@ -238,6 +238,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
   def token
     SecureRandom.hex
+    
   end
 
 end
