@@ -23,7 +23,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
              AND leen.rfc in (:rfc)
              AND cont.contributor_type = 'PM'
              )
-           ) ab", { rfc: params[:rfc]}]
+           ) ab", { rfc: params[:person][:rfc]}]
     if @company[0].blank?
     @error_desc.push("No se encontró una cadena dada de alta con el RFC: #{params[:rfc]}")
     error_array!(@error_desc, :unprocessable_entity)

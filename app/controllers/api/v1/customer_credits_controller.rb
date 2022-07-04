@@ -32,44 +32,47 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
      # puts 'balance ' + @customer_credit.balance.inspect
       @end_date = @customer_credit.start_date
       @customer_credit.end_date = @end_date
-      if @customer_credit.save
-        @terms = Term.where(id: @customer_credit.term_id)
-        @term = @terms[0]
-        if @term.blank?
-          @error_desc.push("No existe un plazo con el id: #{@customer_credit.term_id}")
-          error_array!(@error_desc, :not_found)
-          raise ActiveRecord::Rollback
-        else
-          @payment_periods = PaymentPeriod.where(id: @customer_credit.payment_period_id)
-          @payment_period = @payment_periods[0]
-          if @payment_period.blank?
-            @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
+        if @customer_credit.save
+          @terms = Term.where(id: @customer_credit.term_id)
+          @term = @terms[0]
+          if @term.blank?
+            @error_desc.push("No existe un plazo con el id: #{@customer_credit.term_id}")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
-         # else
-        #    @credit_rating = CreditRating.where(id: @customer_credit.credit_rating_id)
-       #     @credit_rating = @credit_rating[0]
-      #      if @credit_rating.blank?
-     #         @error_desc.push("No existe un periodo con el id: #{@customer_credit.credit_rating}")
-    #          error_array!(@error_desc, :not_found)
-   #           raise ActiveRecord::Rollback
-  #          end
-         end
-        end
-        calculate_customer_payments
-        @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
-                                end_date: @end_date, fixed_payment: @fixed_payment.round(2))
-        if @customer_credit.status == 'SI'
+          else
+            @payment_periods = PaymentPeriod.where(id: @customer_credit.payment_period_id)
+            @payment_period = @payment_periods[0]
+            if @payment_period.blank?
+              @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
+              error_array!(@error_desc, :not_found)
+              raise ActiveRecord::Rollback
+          #  else
+          #    @credit_rating = CreditRating.where(id: @customer_credit.credit_rating_id)
+          #    @credit_rating = @credit_rating[0]
+          #    if @credit_rating.blank?
+          #      @error_desc.push("No existe un periodo con el id: #{@customer_credit.credit_rating}")
+          #      error_array!(@error_desc, :not_found)
+          #      raise ActiveRecord::Rollback
+          #    end
+          end
+          end
+          calculate_customer_payments
+          @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
+                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2))
+          if @customer_credit.status == 'SI'
+              render 'api/v1/customer_credits/show'
+              raise ActiveRecord::Rollback
+          elsif @customer_credit.status == 'PROPUESTO'
+             #TO DO: AGREGAR MAILER CON CALLBACK PARA LA CONFIRMACION DEL CLIENTE DEL NUEVO CREDITO CON ESTATUS PROPUESTO
+             customer_credit_mailer
+          else
             render 'api/v1/customer_credits/show'
-            raise ActiveRecord::Rollback
-        else
-          render 'api/v1/customer_credits/show'
-        end
+          end
 
-      else
-        error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-        raise ActiveRecord::Rollback
-      end
+        else
+          error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+          raise ActiveRecord::Rollback
+        end
     end
   end
 
@@ -171,4 +174,70 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     end
     @total_debt = @total_debt + @capital + @interests + @iva
   end
+
+  def customer_credit_mailer
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email
+        FROM contributors con, people peo, customers cus
+        WHERE con.person_id = peo.id
+        AND cus.contributor_id = con.id
+        AND cus.id = ':customer_id'"
+      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
+    else
+      @query = 
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email
+        FROM contributors con, people peo, customers cus
+        WHERE con.person_id = peo.id
+        AND cus.contributor_id = con.id
+        AND cus.id = ':customer_id'"
+      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
+    end  
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      begin
+        @token = token
+        @token_expiry = Time.now + 1.day
+        @callback_url_aceptado = "#{@frontend_url}/#/get_callback/#{@token}/aceptado"
+        @callback_url_rechazado = "#{@frontend_url}/#/get_callback/#{@token}/rechazado"
+      end while CustomerCredit.where(extra3: @token).any?
+      @customer_credit.update(extra3: @token)
+      @customer_credit.update(extra2: @token_expiry)
+       # correo para el cliente
+       #email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate
+      @mailer_signatories.each do |mailer_signatory|
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.send_mail_credit(mail_to,
+          mailer_signatory['name'],
+          "Nomina GFC - Confirmar propuesta de credito",
+          # @current_user.name,
+          "Hola",
+          [@callback_url_aceptado,@callback_url_rechazado,@customer_credit]
+        ).deliver_now
+      end
+    end
+  end
+
+  def mailer_mode_to (email)
+    if @mailer_mode == 'TEST'
+      @mailer_mail_to = @mailer_test_email
+    else
+      @mailer_mail_to = email
+    end
+    @mailer_mail_to
+  end
+
+  def generate_token
+    return if token.present? && token_expiry > Time.now
+    self.token = token
+    self.token_expiry = Time.now + 1.day
+  end
+
+  def token
+    SecureRandom.hex
+  end
+
 end
