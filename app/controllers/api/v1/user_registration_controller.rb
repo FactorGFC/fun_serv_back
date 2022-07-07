@@ -13,19 +13,19 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
              FROM companies comp, contributors cont, people peop
              WHERE comp.contributor_id = cont.id
              AND cont.person_id = peop.id
-             AND peop.rfc in (:rfc)
+             AND peop.rfc in (:company_rfc)
              AND cont.contributor_type in ('PF')
              ) UNION ALL
              (SELECT comp.*
              FROM companies comp, contributors cont, legal_entities leen
              WHERE comp.contributor_id = cont.id
              AND cont.legal_entity_id = leen.id
-             AND leen.rfc in (:rfc)
+             AND leen.rfc in (:company_rfc)
              AND cont.contributor_type = 'PM'
              )
-           ) ab", { rfc: params[:rfc]}]
+           ) ab", { company_rfc: params[:company_rfc]}]
     if @company[0].blank?
-    @error_desc.push("No se encontró una cadena dada de alta con el RFC: #{params[:rfc]}")
+    @error_desc.push("No se encontró una cadena dada de alta con el RFC: #{params[:company_rfc]}")
     error_array!(@error_desc, :unprocessable_entity)
     raise ActiveRecord::Rollback
     end
@@ -88,7 +88,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
         raise ActiveRecord::Rollback
       end
       if params[:type] == 'customer'
-        @customer = Customer.new(contributor_id: @contributor.id, attached: customer_params[:attached], customer_type: customer_params[:customer_type], name: customer_params[:name],
+        @customer = Customer.new(contributor_id: @contributor.id, attached: customer_params[:attached], customer_type: customer_params[:customer_type], name: @person.first_name,
                                  status: customer_params[:status], user_id: customer_params[:user_id], salary_period: customer_params[:salary_period], salary: customer_params[:salary],
                                  other_income: customer_params[:other_income], net_expenses: customer_params[:net_expenses], family_expenses: customer_params[:family_expenses],
                                  house_rent: customer_params[:house_rent], credit_cp: customer_params[:credit_cp], credit_lp: customer_params[:credit_lp], immediate_superior: customer_params[:immediate_superior], 
