@@ -28,6 +28,5 @@ require 'rails_helper'
 
 RSpec.describe Company, type: :model do
   it { should validate_presence_of :business_name }
-  it { should validate_presence_of :company_rate }
   it { should validate_presence_of :contributor }
 end
