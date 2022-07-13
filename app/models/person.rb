@@ -41,6 +41,7 @@ class Person < ApplicationRecord
   #before_save :get_authorization_key
   has_many :contributor_addresses, through: :contributors
   has_many :customers, through: :contributors
+  has_many :companies,  through: :contributors
 
   
   validates :fiscal_regime, presence: true

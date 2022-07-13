@@ -8,9 +8,15 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
   get '/my_apps', to: 'welcome#app', constraints: ->(solicitud) { !solicitud.session[:user_id].blank? }
-  #get '/', to: 'welcome#index'
+  get '/', to: 'welcome#index'
   get '/', to: 'welcome#ok'
   get '/health_check', to: 'welcome#ok'
+  post '/get_callback', to: 'sessions#get_callback'
+  post '/get_callback_decline', to: 'sessions#get_callback_decline'
+  post '/get_callback_token', to: 'sessions#get_callback_token'
+  #borrar al finalizar pruebas
+  # root :to => 'welcome#index', as: :home
+
   resources :my_apps, except: %i[show index]
   resources :apidocs, only: [:index]
   namespace :api, defaults: { format: 'json' } do
@@ -64,6 +70,7 @@ Rails.application.routes.draw do
       #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
       #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
       #get '/user_registration', to: 'user_registration#create'
+      post '/company_registration', to: 'company_registration#create'
       post '/user_registration', to: 'user_registration#create'
       get '/restructure_credit_term', to: 'restructure_credits#term'
       get '/restructure_credit_payment', to: 'restructure_credits#payment'
@@ -75,6 +82,7 @@ Rails.application.routes.draw do
       get '/get_reset_token', to: 'api_sessions#get_reset_token'
       get '/get_credit_customer_report', to: 'reports#get_credit_customer_report' 
       match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
+      # get '/get_solicitud_credito', to: 'reports#get_solicitud_credito'
     end
   end
 end

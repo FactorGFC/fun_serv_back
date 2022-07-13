@@ -31,11 +31,12 @@ class Company < ApplicationRecord
     include Swagger::CompanySchema
     belongs_to :contributor
     has_many :customers
+    has_many :people, through: :contributors
+    has_many :legal_entities, through: :contributors
     before_save :calculate_balance_company
   
     validates :business_name, presence: true
     validates :start_date, presence: true
-    validates :company_rate, presence: true
     validates :contributor, presence: true, uniqueness: true
   
     def calculate_balance_company
