@@ -14,9 +14,13 @@ Rails.application.routes.draw do
   post '/get_callback', to: 'sessions#get_callback'
   post '/get_callback_decline', to: 'sessions#get_callback_decline'
   post '/get_callback_token', to: 'sessions#get_callback_token'
+<<<<<<< Updated upstream
   #borrar al finalizar pruebas
   # root :to => 'welcome#index', as: :home
 
+=======
+  post '/get_comitee_callback_token', to: 'sessions#get_comitee_callback_token'
+>>>>>>> Stashed changes
   resources :my_apps, except: %i[show index]
   resources :apidocs, only: [:index]
   namespace :api, defaults: { format: 'json' } do
@@ -58,6 +62,7 @@ Rails.application.routes.draw do
       resources :credit_analyses
       resources :payment_credits, only: %i[update destroy create]
       resources :payments
+      resources :customer_credits_signatories
 
 
       resources :customer_credits do
@@ -69,6 +74,7 @@ Rails.application.routes.draw do
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'
       #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
       #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
+      post '/customer_credit_signatory/:signatory_token', to: 'customer_credits_signatories#signature'
       #get '/user_registration', to: 'user_registration#create'
       post '/company_registration', to: 'company_registration#create'
       post '/user_registration', to: 'user_registration#create'

@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
+  include ActionView::Helpers::AssetTagHelper
+  
   include UserAuthentication
   # before_action :authenticate
   before_action :set_jbuilder_defaults
@@ -165,5 +167,136 @@ class ApplicationController < ActionController::Base
     end
     @total_debt = @total_debt + @capital + @interests + @iva
   end
+
+  def send_control_desk_mailer(customer_credit)
+    @customer_credit =  CustomerCredit.find(customer_credit)
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Mesa de control')"
+    else
+      error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+    end
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        # begin
+          # @token_control_desk =  SecureRandom.hex
+          # TOKEN CON VIDA UTIL DE 7 DIAS
+          # @token_control_desk_expiry = Time.now + 7.day
+          # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
+          # end while CustomerCredit.where(extra3: @token_control_desk).any?
+        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.send_mail_committee(mail_to,
+          mailer_signatory['name'],
+          "Nomina GFC- #{mailer_signatory['name']} - El comité y la empresa han aceptado la propuesta de credito",
+          # @current_user.name,
+          "Aprobar como #{mailer_signatory['tipo']}",
+          [@callback_url_committee,@customer_credit]
+        ).deliver_now
+      end
+    end
+  end
+
+  def send_analyst_mailer(customer_credit)
+    @customer_credit =  CustomerCredit.find(customer_credit)
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Analista')"
+    else
+      error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+    end
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        # begin
+          # @token_control_desk =  SecureRandom.hex
+          # TOKEN CON VIDA UTIL DE 7 DIAS
+          # @token_control_desk_expiry = Time.now + 7.day
+          # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
+          # end while CustomerCredit.where(extra3: @token_control_desk).any?
+        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.send_mail_committee(mail_to,
+          mailer_signatory['name'],
+          # "Nomina GFC- #{mailer_signatory['name']} - El comité y la empresa han aceptado la propuesta de credito",
+          "Factor GFC Global - Credi Global - El comité y la empresa han aceptado la propuesta de credito - #{mailer_signatory['tipo']}",
+          # @current_user.name,
+          "Revisar como #{mailer_signatory['tipo']}",
+          [@callback_url_analyst,@customer_credit]
+        ).deliver_now
+      end
+    end
+  end
+
+  def send_committee_mail(customer_credit)
+    @customer_credit = customer_credit
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Analista', 'Comité','Empresa')"
+    else
+      error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+    end
+    response = execute_statement(@query)
+    unless response.blank?
+      @cliente = Customer.find(@customer_credit.customer_id)
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        begin
+          @token_commitee =  SecureRandom.hex
+          # TOKEN CON VIDA UTIL DE 7 DIAS
+          @token_commitee_expiry = Time.now + 7.day
+          #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
+          @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_commitee}"
+        end while CustomerCredit.where(extra3: @token_commitee).any?
+        #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+        @customer_credit_signatory = CustomerCreditsSignatory.new(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+        if @customer_credit_signatory.save
+        else 
+          error_array!(@customer_credit_signatory.errors.full_messages, :unprocessable_entity)
+          raise ActiveRecord::Rollback
+        end
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.send_mail_committee(mail_to,
+          mailer_signatory['name'],
+          # "Facot GFC Global - Credi Global - #{mailer_signatory['name']} - Favor de aprovar o rechazar propuesta de credito",
+          "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
+          # @current_user.name,
+          "Aprobar como #{mailer_signatory['tipo']}",
+          [@callback_url_committee,@customer_credit,@cliente.name]
+        ).deliver_now
+      end
+    end
+  end
+
+  def mailer_mode_to (email)
+    if @mailer_mode == 'TEST'
+      @mailer_mail_to = @mailer_test_email
+    else
+      @mailer_mail_to = email
+    end
+    @mailer_mail_to
+  end
+
 end
 

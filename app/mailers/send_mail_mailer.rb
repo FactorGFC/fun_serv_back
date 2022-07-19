@@ -9,6 +9,20 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
+  def send_mail_credit(email, name, subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end
+
+  def send_mail_committee(email, name, subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end
+
   def send_email_request(email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate)
     @create_user = create_user
     @email_name = name

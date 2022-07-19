@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_18_163916) do
+ActiveRecord::Schema.define(version: 2022_07_19_192553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -172,6 +172,19 @@ ActiveRecord::Schema.define(version: 2022_05_18_163916) do
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"
     t.index ["payment_period_id"], name: "index_customer_credits_on_payment_period_id"
     t.index ["term_id"], name: "index_customer_credits_on_term_id"
+  end
+
+  create_table "customer_credits_signatories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "signatory_token"
+    t.datetime "signatory_token_expiration"
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "notes"
+    t.uuid "user_id", null: false
+    t.uuid "customer_credit_id", null: false
+    t.index ["customer_credit_id"], name: "index_customer_credits_signatories_on_customer_credit_id"
+    t.index ["user_id"], name: "index_customer_credits_signatories_on_user_id"
   end
 
   create_table "customer_personal_references", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -583,6 +596,8 @@ ActiveRecord::Schema.define(version: 2022_05_18_163916) do
   add_foreign_key "customer_credits", "customers"
   add_foreign_key "customer_credits", "payment_periods"
   add_foreign_key "customer_credits", "terms"
+  add_foreign_key "customer_credits_signatories", "customer_credits"
+  add_foreign_key "customer_credits_signatories", "users"
   add_foreign_key "customer_personal_references", "customers"
   add_foreign_key "customers", "companies"
   add_foreign_key "customers", "contributors"
