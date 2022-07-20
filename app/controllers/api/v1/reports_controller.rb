@@ -678,7 +678,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @layout_scotiabank = execute_statement(@query)
     unless @layout_scotiabank.blank?
       @layout_scotiabank.each do |report_row|
-        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
+        @customer_credit = Invoice.where(id: report_row['id_factura'].to_s)
         @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
       end
     end
