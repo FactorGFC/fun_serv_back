@@ -243,7 +243,7 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-
+  
   def send_committee_mail(customer_credit)
     @customer_credit = customer_credit
     unless @customer_credit.blank?
