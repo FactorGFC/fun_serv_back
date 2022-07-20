@@ -8,7 +8,7 @@
 #  attached          :string
 #  balance           :decimal(15, 4)   not null
 #  capital           :decimal(15, 4)   not null
-#  credit_folio      :decimal(15, 4)
+#  credit_folio      :string
 #  currency          :string
 #  debt_time         :decimal(15, 4)
 #  destination       :string
@@ -77,8 +77,8 @@ FactoryBot.define do
     start_date { "2021-02-01" }
     end_date { "2022-02-01" }
     attached { "http://credit124587.pdf" }
-    restructure_term { "1"}
-    rate {"18.50"}
+    restructure_term { "1" }
+    rate { "18.50" }
     destination {"Gastos familiares"}
     amount_allowed {""}
     time_allowed {""}

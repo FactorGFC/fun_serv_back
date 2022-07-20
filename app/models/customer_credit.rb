@@ -9,7 +9,7 @@
 #  attached          :string
 #  balance           :decimal(15, 4)   not null
 #  capital           :decimal(15, 4)   not null
-#  credit_folio      :decimal(15, 4)
+#  credit_folio      :string
 #  currency          :string
 #  debt_time         :decimal(15, 4)
 #  destination       :string
@@ -77,11 +77,18 @@ class CustomerCredit < ApplicationRecord
   validates :rate, presence: true
   
   before_create :calculate_balance_credit
+  before_create :create_folio
 
   def calculate_balance_credit
   #  puts 'aqui calcula el balance!!!!!!!!!'
     self[:balance] = self[:total_debt] - self[:total_payments]
    # puts 'balanceeeee' + self[:balance].inspect
    # puts 'total_debt' + self[:total_debt].inspect
+  end
+
+  def create_folio
+    t = Time.now
+    folio = t.to_i
+    self[:credit_folio] = "CN#{folio.to_s}"
   end
 end

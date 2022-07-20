@@ -84,7 +84,8 @@ Rails.application.routes.draw do
       get '/authenticate', to: 'api_sessions#create'
       get '/reset_password', to: 'api_sessions#reset_password'
       get '/get_reset_token', to: 'api_sessions#get_reset_token'
-      get '/get_credit_customer_report', to: 'reports#get_credit_customer_report' 
+      get '/get_credit_customer_report', to: 'reports#get_credit_customer_report'
+      get '/reports/start_date/:start_date/currency/:currency/layout_base/', to: 'reports#layout_base' 
       match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
       # get '/get_solicitud_credito', to: 'reports#get_solicitud_credito'
     end

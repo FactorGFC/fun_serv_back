@@ -519,7 +519,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def layout_base
-      @query_titulo_supplier = "SELECT TRIM(to_char(to_date('2020-04-18','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
+      @query_titulo_supplier = "SELECT TRIM(to_char(to_date(':start_date','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
       FROM(SELECT TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe
         FROM customer_credits cuc, companies com, contributors con, customers cus
         WHERE cus.id = cuc.customer_id
@@ -530,13 +530,13 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
       ) ab;"
 
     @query_supplier = "SELECT ':pr_folio' payment_report_folio, ab.*
-    FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,
+    FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,  cuc.id id_customer_credit,
       CASE
       WHEN con.bank = 'BASE'
       THEN con.account_number
       ELSE con.clabe
       END cuenta_destino,
-      TO_CHAR(cuc.amount_allowed, 'FM9999999990.00') importe,
+      TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe,
       cuc.credit_folio referencia_concepto,
       cuc.credit_folio referencia,
       CASE
@@ -572,7 +572,8 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     unless @layout_base.blank?
       @layout_base.each do |report_row|
         @customer_credit = CustomerCredit.where(id: report_row['id_customer_credit'].to_s)
-        @customer_credit.update(payment_report_folio: report_row['payment_report_folio'].to_s)
+        puts report_row.inspect
+        @customer_credit.update(extra1: report_row['payment_report_folio'].to_s)
       end
     end
     render json: @layout_base
