@@ -935,24 +935,28 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
   def user_requests
     @query = "SELECT ab.*
-              FROM((SELECT usr.name usuario, com.business_name cadena, sup.business_name proovedor, req.id, req.folio, req.status, req.request_date fecha_factura, req.used_date fecha_operacion, req.due_date fecha_vencimiento, req.currency moneda, TO_CHAR(req.total, 'FM9,999,999,990.00'), req.capacity porcentaje_operar, TO_CHAR(req.total_used, 'FM9,999,999,990.00') total_operar, TO_CHAR(req.interests, 'FM9,999,999,990.00') intereses, TO_CHAR(req.net_amount, 'FM9,999,999,990.00') efectivo_neto, req.financial_cost costo_financiero, req.attached
-              FROM requests req, suppliers sup, companies com, users usr
-              WHERE req.supplier_id = sup.id
-              AND req.company_id = com.id
-              AND req.user_id = :user_id
-              AND req.user_id = usr.id
-              AND req.status not in ('CANCELADA','LIQUIDADA')
-              AND :user_id <> (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
-              ) UNION ALL
-              (SELECT usr.name usuario, com.business_name cadena, sup.business_name proovedor, req.id, req.folio, req.status, req.request_date fecha_factura, req.used_date fecha_operacion, req.due_date fecha_vencimiento, req.currency moneda, TO_CHAR(req.total, 'FM9,999,999,990.00'), req.capacity porcentaje_operar, TO_CHAR(req.total_used, 'FM9,999,999,990.00') total_operar, TO_CHAR(req.interests, 'FM9,999,999,990.00') intereses, TO_CHAR(req.net_amount, 'FM9,999,999,990.00') efectivo_neto, req.financial_cost costo_financiero, req.attached
-              FROM requestS req, suppliers sup, companies com, users usr
-              WHERE req.supplier_id = sup.id
-              AND req.company_id = com.id
-              AND req.user_id = usr.id
-              AND :user_id = (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
-              AND req.status not in ('CANCELADA','LIQUIDADA')
-              )
-              ) ab;"
+              FROM((SELECT usr.name usuario, com.business_name compañia, cus.name empleado, cuc.id credit_uuid, 
+              cuc.credit_folio, (select value from lists where key = cuc.status) estatus, cuc.start_date fecha_operacion,   
+              cuc.currency moneda, TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00') total, TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses 
+                       FROM customer_credits cuc, customers cus, companies com, users usr
+                       WHERE cuc.customer_id = cus.id
+                       AND cus.company_id = com.id
+                       AND cus.user_id = ':user_id'
+                       AND cus.user_id = usr.id
+                       AND cuc.status not in ('LI')
+                       AND ':user_id'<> (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
+                       ) UNION ALL
+                       (SELECT usr.name usuario, com.business_name compañia, cus.name empleado, cuc.id credit_uuid, 
+                       cuc.credit_folio, (select value from lists where key = cuc.status and domain = 'CREDIT_STATUS') estatus, cuc.start_date fecha_operacion, cuc.currency moneda, 
+                       TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00'), TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses 
+                       FROM customer_credits cuc, customers cus, companies com, users usr
+                       WHERE cuc.customer_id = cus.id
+                       AND cus.company_id = com.id
+                       AND cus.user_id = usr.id
+                       AND ':user_id' = (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
+                       AND cuc.status not in ('LI')
+                       )
+                       ) ab;"
     @query = @query.gsub ':user_id', params[:user_id].to_s
     @user_requests = execute_statement(@query)
     render json: @user_requests

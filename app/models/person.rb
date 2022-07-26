@@ -42,6 +42,7 @@ class Person < ApplicationRecord
   has_many :contributor_addresses, through: :contributors
   has_many :customers, through: :contributors
   has_many :companies,  through: :contributors
+  has_many :customer_personal_references, through: :customers
 
   
   validates :fiscal_regime, presence: true

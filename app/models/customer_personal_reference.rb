@@ -27,6 +27,7 @@ class CustomerPersonalReference < ApplicationRecord
 include Swagger::Blocks
 include Swagger::CustomerPersonalReferenceSchema
  belongs_to :customer
+ has_many :customer_personal_reference, through: :customers
  validates :first_name, presence: true
  validates :last_name, presence: true
  validates :second_last_name, presence: true

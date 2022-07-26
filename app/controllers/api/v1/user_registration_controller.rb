@@ -107,9 +107,15 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
             @customer.update(file_type_id: @file_types[0].id)
             if @customer.save
                      #Agregamos las referencias de un customer
-                  @customer_personal_refrence = CustomerPersonalReference.new(customer_id: @customer.id, first_name: customer_pr_params[:first_name], last_name: customer_pr_params[:last_name], 
-                                                                                second_last_name: customer_pr_params[:second_last_name], address: customer_pr_params[:address], 
-                                                                                phone: customer_pr_params[:phone], reference_type: customer_pr_params[:reference_type])
+                 cp_references = []
+                 cp_references = params[:customer_personal_references] 
+                  for i in (0..2)
+                    @cp_reference = cp_references[i]
+                    @customer_personal_refrence = CustomerPersonalReference.new(customer_id: @customer.id, first_name: @cp_reference["first_name"], last_name: @cp_reference["last_name"], 
+                    second_last_name: @cp_reference["second_last_name"], address: @cp_reference["address"], 
+                    phone: @cp_reference["phone"], reference_type: @cp_reference["reference_type"])
+                    @customer_personal_refrence.save
+                  end
                   unless @customer_personal_refrence.save
                   render json: { error: @customer_personal_refrence.errors }, status: :unprocessable_entity
                   raise ActiveRecord::Rollback
@@ -177,7 +183,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
     end
  
 
-  def customer_pr_params
+  def customer_personal_references_params
     params.require(:customer_personal_reference).permit(:first_name, :last_name, :second_last_name, :address, :phone, :reference_type, :customer_id)
   end
 end
