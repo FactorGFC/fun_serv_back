@@ -87,7 +87,8 @@ Rails.application.routes.draw do
       get '/get_credit_customer_report', to: 'reports#get_credit_customer_report'
       get '/reports/start_date/:start_date/currency/:currency/layout_base/', to: 'reports#layout_base'
       get '/reports/job/:job/financial_workers', to: 'reports#financial_workers'
-      get '/reports/user_id/:user_id/user_requests', to: 'reports#user_requests' 
+      get '/reports/user_id/:user_id/user_requests', to: 'reports#user_requests'
+      get '/reports/user_id/:user_id/user_company', to: 'reports#user_company' 
       match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
       # get '/get_solicitud_credito', to: 'reports#get_solicitud_credito'
     end

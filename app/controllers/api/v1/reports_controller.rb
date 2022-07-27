@@ -892,7 +892,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     FROM users usr, supplier_users sus, suppliers sup
     WHERE usr.id = sus.user_id
     AND sus.supplier_id = sup.id
-    AND usr.id = :user_id;"
+    AND usr.id = ':user_id';"
     @query = @query.gsub ':user_id', params[:user_id].to_s
     @supplier_user_association = execute_statement(@query)
     render json: @supplier_user_association
@@ -903,18 +903,18 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     FROM users usr, company_users cus, companies com
     WHERE usr.id = cus.user_id
     AND cus.company_id = com.id
-    AND usr.id = :user_id;"
+    AND usr.id = ':user_id';"
     @query = @query.gsub ':user_id', params[:user_id].to_s
     @company_user_association = execute_statement(@query)
     render json: @company_user_association
   end
 
   def user_company
-    @query = "SELECT com.id company_id, com.business_name cadena
-    FROM users usr, company_users cus, companies com
-    WHERE usr.id = cus.user_id
-    AND com.id = cus.company_id
-    AND usr.id = :user_id;"
+    @query = "SELECT com.id company_uuid, com.business_name compañia, usr.id user_uuid  
+    FROM  customers cus, companies com, users usr
+    WHERE cus.company_id = com.id
+    AND cus.user_id = usr.id
+    AND cus.user_id = ':user_id';"
     @query = @query.gsub ':user_id', params[:user_id].to_s
     @user_company = execute_statement(@query)
     render json: @user_company
@@ -935,26 +935,28 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
 
   def user_requests
     @query = "SELECT ab.*
-              FROM((SELECT usr.name usuario, com.business_name compañia, cus.name empleado, cuc.id credit_uuid, 
-              cuc.credit_folio, (select value from lists where key = cuc.status) estatus, cuc.start_date fecha_operacion,   
-              cuc.currency moneda, TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00') total, TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses 
+              FROM((SELECT cuc.start_date fecha_inicio, cus.name empleado, cuc.capital, TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses,
+              cuc.rate,TO_CHAR(cuc.total_debt, 'FM9,999,999,990.00') adeudo_total, TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00') pedido_total, cuc.fixed_payment pago_fijo,
+              (select value from terms where id = cuc.term_id ) plazo, (select key from payment_periods where id = cuc.payment_period_id ), com.business_name compañia,  
+              cuc.id credit_uuid, cuc.credit_folio, (select value from lists where key = cuc.status and domain = 'CREDIT_STATUS') estatus, cuc.currency moneda 
                        FROM customer_credits cuc, customers cus, companies com, users usr
                        WHERE cuc.customer_id = cus.id
                        AND cus.company_id = com.id
                        AND cus.user_id = ':user_id'
                        AND cus.user_id = usr.id
-                       AND cuc.status not in ('LI')
+                       AND cuc.status not in ('LI','SO','RE','RC')
                        AND ':user_id'<> (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
                        ) UNION ALL
-                       (SELECT usr.name usuario, com.business_name compañia, cus.name empleado, cuc.id credit_uuid, 
-                       cuc.credit_folio, (select value from lists where key = cuc.status and domain = 'CREDIT_STATUS') estatus, cuc.start_date fecha_operacion, cuc.currency moneda, 
-                       TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00'), TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses 
+                       (SELECT cuc.start_date fecha_inicio, cus.name empleado, cuc.capital, TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses,
+                       cuc.rate,TO_CHAR(cuc.total_debt, 'FM9,999,999,990.00') adeudo_total, TO_CHAR(cuc.total_requested, 'FM9,999,999,990.00') pedido_total, cuc.fixed_payment pago_fijo,
+                       (select value from terms where id = cuc.term_id ) plazo, (select key from payment_periods where id = cuc.payment_period_id ), com.business_name compañia,  
+                       cuc.id credit_uuid, cuc.credit_folio, (select value from lists where key = cuc.status and domain = 'CREDIT_STATUS') estatus,cuc.currency moneda 
                        FROM customer_credits cuc, customers cus, companies com, users usr
                        WHERE cuc.customer_id = cus.id
                        AND cus.company_id = com.id
                        AND cus.user_id = usr.id
                        AND ':user_id' = (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
-                       AND cuc.status not in ('LI')
+                       AND cuc.status not in ('LI','SO','RE','RC')
                        )
                        ) ab;"
     @query = @query.gsub ':user_id', params[:user_id].to_s
