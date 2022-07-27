@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <%= wicked_pdf_stylesheet_link_tag 'application' %>
+    <title> Solicitud </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+ html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
+      a.comment-indicator:hover + div.comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em }
+      a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em }
+      div.comment { display:none }
+      table { border-collapse:collapse; page-break-after:always }
+    </style>
+    <table  cellpadding="2" cellspacing="0" id="sheet0">
+        <tbody>
+          <tr class="row0">
+            <td> <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;"></td>
+            <td colspan="12"></td>
+            <td colspan="20">SOLICITUD CONTRATO CREDITO </td>
+          </tr>
+          <tr class="row1">
+            <th colspan="13" align="left">REQUISITOS:</th>
+            <td colspan="40"></td>
+          </tr>
+          <tr class="row2">
+            <td colspan="13">1. SOLICITUD CONTRATO </td>
+            <th colspan="24" bgcolor="#C0C0C0">LUGAR Y FECHA</th>
+          </tr>
+          <tr class="row3">
+            <td colspan="13">2. IDENTIFICACION OFICIAL VIGENTE CON FIRMA</td>
+            <td colspan="10" align="center"><%= @lugar %> a: <%= @date %></td>
+          </tr>
+          <tr class="row4">
+            <td colspan="13">3. COMPROBANTE DE DOMICILIO (TELMEX, LUZ, AGUA NO MAYOR A 3 MESES)</td>
+            <th colspan="10" bgcolor="#C0C0C0">NO. CLIENTE</th>
+          </tr>
+          <tr class="row5">
+            <td colspan="13">4. COMPROBANTE DE INGRESIS NO MAYOR A TRES MESES</td>
+            <td colspan="10" align="center"><%= @customer_id%></td>
+          </tr>
+          <tr class="row6">
+            <th colspan="24" bgcolor="#C0C0C0">DATOS GENERALES</th>
+          </tr>
+          <tr class="row7">
+            <th colspan="24" align="left">NOMBRE (APELLIDO PATERNO, MATERNO Y NOMBRE(S)</th>
+          <tr class="row9">
+            <td colspan="24"><%= @apellido_paterno%> <%= @apellido_materno %> <%= @nombre %></td>
+          </tr>
+          <tr class="row10">
+            <th colspan="5">RFC</th>
+            <th colspan="6">SEXO</th>
+            <th align="left" >ESTADO CIVIL</th>
+            <th align="left">SOLTERO</th>
+            <td ><%= @estado_civil == 'Soltero' ? 'X' : '' %></td>
+            <th colspan="1" align="left">BIENES MANCOMUNADOS</th>
+            <td colspan="2" ><%= @regimen_marital == 'Bienes mancomunados' ? 'X' : '' %></td>
+            <th colspan="7" align="left">NUMERO DE DEPENDIENTES ECONOMICOS</th>
+          </tr>
+          <tr class="row11">
+            <td colspan="5"><%= @rfc %></td>
+            <th colspan="3" align="left">FEMENINO</th>
+            <td><%= @sexo == 'Masculino' ? '' : 'X' %></td>
+            <th align="left">MASCULINO</th>
+            <td colspan="1"><%= @sexo == 'Masculino' ? 'X' : '' %></td>
+            <td colspan="1"></td>
+            <th align="left">CASADO</th>
+            <td colspan="1"><%= @estado_civil == 'Casado' ? 'X' : '' %></td>
+            <th colspan="2"align="left">BIENES SEPARADOS</th>
+            <td ><%= @regimen_marital == 'Bienes  separados' ? 'X' : '' %></td>
+            <th colspan="1" align="left">MAYORES</th>
+            <td ><%= @dependientes_mayores%> </td>
+            <th align="left">MENORES:</th>
+            <td colspan="2"><%= @dependientes_menores %></td> 
+          </tr>
+          <tr class="row12">
+            <th colspan="9" align="left">FECHA DE NACIMIENTO (DIA, MES, AÑO)</th>
+            <th colspan="3" align="left">EDAD</th>
+            <th colspan="4" align="left">IDENTIFICACION QUE PRESENTA</th>
+            <th colspan="8" align="left">NO. DE IDENTIFICACION </th>
+          </tr>
+          <tr class="row13">
+            <td colspan="9" ><%= @fecha_nacimiento %></td>
+            <td colspan="3" ><%= @age %></td>
+            <td colspan="4" ><%= @identificacion_oficial %></td>
+            <td colspan="8" ><%=@ine%></td>
+          </tr>
+          <tr class="row14">
+          </tr>
+          <tr class="row15">
+            <th colspan="21" bgcolor="#C0C0C0">DOMICILIO PARTICULAR</th>
+          </tr>
+          <tr class="row16">
+            <th colspan="3" align="left">CALLE</th>
+            <th colspan="7" align="left">NO. EXT.</th>
+            <th align="left">NO. INT.</th>
+            <th colspan="5" align="left">COLONIA</th>
+            <th colspan="6" align="left">CODIGO POSTAL</th>
+          </tr>
+          <tr class="row17">
+            <td colspan="3" ><%= @calle %></td>
+            <td colspan="7" ><%= @numero_exterior %></td>
+            <td ><%= @numero_apartamento %></td>
+            <td colspan="5" ><%= @colonia %></td>
+            <td colspan="5" ><%= @codigo_postal %></td>
+          </tr>
+          <tr class="row18">
+          </tr>
+          <tr class="row19">
+            <th colspan="8" align="left">DELEGACION Y MUNICIPIO</th>
+            <th colspan="4" align="left">CIUDAD POBLACION </th>
+            <th colspan="3" align="left">PAIS</th>
+            <th colspan="9" align="left">TIPO DE VIVIENDA</th>
+          </tr>
+          <tr class="row20">
+            <td colspan="8" ><%= @municipio%></td>
+            <td colspan="4" ><%=@estado%></td>
+            <td colspan="3" ><%= @country %></td>
+            <th align="left">RENTADA</th>
+            <td ><%= @tipo_vivienda == 'Renta' ? 'X' : '' %></td>
+            <th align="left">HIPOTECADA</th>
+            <td ><%= @tipo_vivienda == 'Hipoteca' ? 'X' : '' %></td>
+            <th align="left">OTRA </th>
+            <td colspan="3"><%= @tipo_vivienda == 'Otra' ? 'X' : '' %></td>
+          </tr>
+          <tr class="row21">
+            <td colspan="16" ></td>
+            <th align="left">PROPIA</th>
+            <td ><%= @tipo_vivienda == 'Propia' ? 'X' : '' %></td>
+            <th align="left">FAMILIAR</th>
+            <td ><%= @tipo_vivienda == 'Familiar' ? 'X' : '' %></td>
+            <td colspan="3" ></td> 
+          </tr>
+          <tr class="row22">
+            <th colspan="8" align="left">TELEFONO PARTICULAR</th>
+            <th colspan="6" align="left">TELEFONO CELULAR</th>
+            <th colspan="10" align="left">CORREO ELECTRONICO Y FACEBOOK</th>
+          </tr>
+          <tr class="row23">
+            <td colspan="8"><%=@telefono%></td>
+            <td colspan="6"><%=@movil%></td>
+            <td colspan="10"><%=@email%></td>
+          </tr>
+          <tr class="row24">
+            <th colspan="21" bgcolor="#C0C0C0">DATOS DEL EMPLEO ACTUAL</th>
+          </tr>
+          <tr class="row25">
+            <th colspan="11" align="left">NOMBRE DE LA EMPRESA DONDE TRABAJA</th>
+            <th colspan="4" align="left">PUESTO ACTUAL</th>
+            <th colspan="6" align="left">ANTIGÜEDAD</th>
+          </tr>
+          <tr class="row26">
+            <td colspan="11" ><%= @company %></td>
+            <td colspan="4" >?</td>
+            <td colspan="6" ><%= @antiguedad %></td>
+          </tr>
+          <tr class="row27">
+          </tr>
+          <tr class="row28">
+            <th colspan="11" align="left">ACTIVIDAD O GIRO DE LA EMPRESA DONDE LABORA</th>
+            <th  colspan="12" align="left">NOMBRE DEL JEFE INMEDIATO </th>
+          </tr>
+          <tr class="row29">
+            <td colspan="11" ><%= @giro_empresa %></td>
+            <td colspan="12" ><%= @jefe_inmediato%></td>
+          </tr>
+          <tr class="row30">
+          </tr>
+          <tr class="row31">
+            <th colspan="21" bgcolor="#C0C0C0">DOMICILIO DEL EMPLEO ACTUAL</th>
+          </tr>
+          <tr class="row32">
+            <th colspan="5" align="left">CALLE Y NUMERO</th>
+            <th colspan="6" align="left">COLONIA</th>
+            <th colspan="2" align="left">CODIGO POSTAL </th>
+            <th colspan="9" align="left">DELEGACION O MUNICIPIO</th>
+          </tr>
+          <tr class="row33">
+            <td colspan="5"><%= @company_calle %> <%= @company_numero_exterior %></td>
+            <td colspan="6"> <%= @company_colonia %> </td>
+            <td colspan="2"><%= @company_codigo_postal %></td>
+            <td colspan="9"><%= @company_municipio_name %></td>
+          </tr>
+          <tr class="row34">
+          </tr>
+          <tr class="row35">
+            <th colspan="5" align="left">CIUDAD O POBLACION </th>
+            <th colspan="6" align="left">ENTIDAD FEDERATIVA (ESTADO)</th>
+            <th colspan="12" align="left">TELEFONO</th>
+          </tr>
+          <tr class="row36">
+            <td colspan="5" ><%= @company_municipio_name %></td>
+            <td colspan="6" ><%= @company_state_name %></td>
+            <td colspan="12" >?</td>
+          </tr>
+          <tr class="row37">
+          <td colspan="24" rowspan="2"></td>
+          </tr>
+          <tr class="row">
+          <td colspan="24" rowspan="4"></td>
+          </tr>
+          <div class="page-break"></div>
+          <tr class="row38">
+            <th colspan="21" bgcolor="#C0C0C0">REFERENCIAS PERSONALES (DE DOS NO FAMILIARES Y DE UN FAMILIAR)</th>
+          </tr>
+          <% @referencias_personales.each do |referencia| %>
+            <% if referencia.reference_type != 'Familiar' %>
+          <tr class="row39">
+            <th colspan="10" align="left">NOMBRE COMPLETO </th>
+            <th colspan="6" align="left">DOMICILIO </th>
+            <th colspan="8" align="left">TELEFONO (CON LADA)</th>
+          </tr>
+
+            <tr class="row40">
+              <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
+              <td colspan="6" ><%= referencia.address %></td>
+              <td colspan="8" ><%= referencia.phone %></td>
+            </tr>
+          <tr class="row41">
+          </tr>
+           <% end %>
+           <% end %>
+
+           <% @referencias_personales.each do |referencia| %>
+            <% if referencia.reference_type != 'Compita' %>
+             <tr class="row44">
+            </tr>
+            <tr class="row45">
+            <th colspan="10" align="left">NOMBRE COMPLETO DE UN FAMILIAR QUE NO VIVA CON USTED</th>
+            <th colspan="6" align="left">DOMICILIO </th>
+            <th colspan="8" align="left">TELEFONO (CON LADA)</th>
+          </tr>
+          <tr class="row46">
+            <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
+            <td colspan="6" ><%= referencia.address %></td>
+            <td colspan="8" ><%= referencia.phone %></td>
+          </tr>
+
+            <% end %>
+            <% end %>
+
+          <%# <tr class="row41"> %>
+          <%# </tr> %>
+          <%# <tr class="row42"> %>
+            <%# <th colspan="10" align="left">NOMBRE COMPLETO </th> %>
+            <%# <th colspan="6" align="left">DOMICILIO </th> %>
+            <%# <th colspan="8" align="left">TELEFONO (CON LADA)</th> %>
+          <%# </tr> %>
+          <%# <tr class="row43"> %>
+            <%# <td colspan="10" >?</td> %>
+            <%# <td colspan="6" >?</td> %>
+            <%# <td colspan="8" >?</td> %>
+          <%# </tr> %>
+
+          <%# <tr class="row44"> %>
+          <%# </tr> %>
+          <%# <tr class="row45"> %>
+            <%# <th colspan="10" align="left">NOMBRE COMPLETO DE UN FAMILIAR QUE NO VIVA CON USTED</th> %>
+            <%# <th colspan="6" align="left">DOMICILIO </th> %>
+            <%# <th colspan="8" align="left">TELEFONO (CON LADA)</th> %>
+          <%# </tr> %>
+          <%# <tr class="row46"> %>
+            <%# <td colspan="10" >?</td> %>
+            <%# <td colspan="6" >?</td> %>
+            <%# <td colspan="8" >?</td> %>
+          <%# </tr> %>
+
+          <tr class="row47">
+          </tr>
+          <tr class="row48">
+            <th colspan="21" bgcolor="#C0C0C0">EGRESOS MENSUALES</th>
+          </tr>
+          <tr class="row49">
+            <th colspan="6" align="left">SUELDO MENSUAL</th>
+            <th colspan="6"align="center">FRECUENCIA DE PAGO </th>
+            <th colspan="3" align="left">OTROS INGRESOS </th>
+            <th colspan="3" align="left">ESPECIFIQUE</th>
+            <th colspan="7" align="left">TOTAL DE INGRESOS </th>
+          </tr>
+          <tr class="row50">
+            <td colspan="7" ><%= number_to_currency(@salario)%></td>
+            <th align="left">CATORCENAL</th>
+            <td ><%= @frecuencia_de_pago == 'Catorcenal' ? 'X': '' %></td>
+            <td colspan="1" </td>
+            <th align="left">MENSUAL</th>
+            <td ><%= @frecuencia_de_pago == 'Mensual' ? 'X': '' %></td>
+            <td colspan="3" > <%= @otros_ingresos %> </td>
+            <td colspan="3" ><%= number_to_currency(@otros_ingresos) %></td>
+            <td colspan="9" ><%= number_to_currency(@ingreso_total) %></td>
+          </tr>
+          <tr class="row51">
+          <td colspan="7" ></td>
+            <th align="left">SEMANAL</th>
+            <td ><%= @frecuencia_de_pago == 'Semanal' ? 'X': '' %></td>
+            <th align="left">QUINCENAL</th>
+            <td ><%= @frecuencia_de_pago == "'quincena'" ? 'X': '' %></td>
+          </tr>
+          <tr class="row52">
+            <th colspan="9" align="left">IMPORTE TOTAL DE PAGO DE DEUDAS</th>
+            <th colspan="13" align="center">DESTINO DEL PAGO DE DEUDAS</th>
+          </tr>
+          <tr class="row53">
+            <td colspan="9" ><%= number_to_currency(@total_gastos)%> </td>
+            <th colspan="3" align="left">TARJETAS DE CERDITO COMERCIAL</th>
+            <td colspan="1"><%= @creditos_lp.empty? ? '': 'X' %></td>
+            <th colspan="4" align="left">HIPOTECARIO</th>
+            <td ><%= @creditos_personales.empty? ? '': 'X' %></td>
+            <th colspan="2" align="left">OTROS</th>
+            <td colspan="2"><%= @creditos_personales.empty? ? '': 'X' %></td>
+          </tr>
+          <tr class="row54">
+            <td colspan="9" ></td>
+            <th colspan="3" align="left">TARJETAS DE CREDITO BANCARIO</th>
+            <td ><%= @creditos_lp.empty? ? '': 'X' %></td>
+            <th colspan="4" align="left">AUTOMOVIL</th>
+            <td ><%= @creditos_personales.empty? ? '': 'X' %></td>
+            <td  colspan="5"></td>
+          </tr>
+          <tr class="row55">
+            <th colspan="21" bgcolor="#C0C0C0">DATOS DEL CLIENTE</th>
+          </tr>
+          <tr class="row56">
+            <th colspan="9" align="left">NUMERO DE CUENTA DEL BANCO </th>
+            <th colspan="5" align="left">NOMBRE DEL BANCO </th>
+            <th colspan="9" align="left">NO. DE CUENTA CLABE</th>
+          </tr>
+          <tr class="row57">
+            <td colspan="9" ><%= @cuenta_bancaria %></td>
+            <td colspan="5" ><%= @banco %></td>
+            <td colspan="9" ><%= @cuenta_clabe %></td>
+          </tr>
+          <tr class="row58">
+          </tr>
+          <tr class="row59">
+            <th colspan="21" bgcolor="#C0C0C0">MONTO SOLICITADO </th>
+          </tr>
+          <tr class="row60">
+            <th colspan="8" align="left">IMPORTE DEL CREDITO SOLICITADO </th>
+            <td colspan="4" ><%= number_to_currency(@monto_total_solicitado)%></td>
+            <td colspan="12"></td>
+          </tr>
+          <tr class="row61">
+            <th  align="left">PLAZO:</th>
+            <td colspan="9" ><%= @plazo %></td>
+            <th  align="left">DESTINO:</th>
+            <td colspan="11" ><%= @destino %></td>
+          </tr>
+          <tr class="row62">
+          </tr>
+          <tr class="row63">
+            <th colspan="21" bgcolor="#C0C0C0">PARA SER LLENADO POR LA EMPRESA</th>
+          </tr>
+          <tr class="row64">
+            <th colspan="8" align="left">IMPORTE DEL CREDITO AUTORIZADO  </th>
+            <td colspan="4">
+            <%# <%= number_to_currency() %>
+            </td>
+            <td colspan="12"></td>
+          </tr>
+          <tr class="row65">
+            <th align="left">PLAZO:</th>
+            <td colspan="9" ><%= @plazo %></td>
+            <th colspan="2"  align="left">SEGURO DE VIDA:</th>
+            <td colspan="11" >?</td>
+          </tr>
+          </tr>
+          <tr class="row67">
+          </tr>
+          <tr class="row68">
+            <td colspan="24" align="center"><center>Por este conducto autorizo expresamente a Factor GFC Leasing, S.A.P.I. de C.V. para que por conducto de sus funcionarios facultados lleve a cabo investigaciones, sobre mi comportamiento Crediticio en las Sociedades de Información Crediticia que estime conveniente. Asimismo, declaro que conozco la naturaleza y alcance de la información que se solicitará, del uso que Factor GFC Leasing S.A.P.I. de C.V. hará de tal información y de que ésta podrá realizar consultas periódicas de mi historial crediticio, consintiendo que esta autorización se encuentre vigente por un período de 3 años contados a partir de la fecha de su expedición y en todo caso durante el tiempo que mantengamos relación jurídica. Estoy consciente y acepto que este documento quede bajo propiedad de Factor GFC Leasing S.A.P.I. de C.V.</center></td>
+          </tr>
+          <tr class="row69">
+            <th colspan="7" align="left">LUGAR</th>
+            <th colspan="17" align="left">FECHA</th>
+          </tr>
+          <tr class="row70">
+            <td colspan="7"><%= @lugar %></td>
+            <td colspan="4"><%= @date %></td>
+            <th colspan="4" align="center"><center>FIRMA DEL SOLICITANTE (EL ACREDITADO)</center></th>
+            <th colspan="6" align="center"><center> FIRMA DE ACEPTACION A LO ESTABLECIDO EN EL PRESENTE CONTRATO</center></th>
+          </tr>
+        </tbody>
+    </table>
+  </body>
+</html>

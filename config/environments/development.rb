@@ -82,4 +82,10 @@ Rails.application.configure do
     authentication: 'plain',
     enable_starttls_auto:  true
   }
+
+  ENV['LOCAL_ACCESS_KEY_ID'] = 'AKIAWRCSQFXT4UEWO2PS'
+  ENV['LOCAL_SECRET_ACCESS_KEY']='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'
+  ENV['LOCAL_AWS_REGION'] = 'us-east-1'
+  ENV['LOCAL_NOMINA_ENV'] = 'debug'
+  ENV['LOCAL_BUCKET_NAME'] = 'elasticbeanstalk-us-east-1-448997109223'
 end

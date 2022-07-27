@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to '/'
   end
-
+#CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO
   def get_callback
     @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
@@ -32,6 +32,8 @@ class SessionsController < ApplicationController
             @customer_credit.update(status: 'ACEPTADO')
             @customer_credit.update(extra3: "#{params[:call_back_token]}-ACEPTADO")
             render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
+            #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y DE LUZ VERDE
+            send_control_desk_mailer(@customer_credit)
           else
             @error_desc.push("El credito ya ha sido actualizado por el cliente #{@customer_credit.status}")
             error_array!(@error_desc, :not_found)
@@ -42,7 +44,7 @@ class SessionsController < ApplicationController
       error_array!(@error_desc, :not_found)
     end
   end
-
+#CUANDO EL CLIENTE/EMPLEADO RECHAZA EL CREDITO
   def get_callback_decline
     @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])

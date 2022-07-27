@@ -134,4 +134,10 @@ Rails.application.configure do
     config.app_secret = ENV['MIFIEL_APP_SECRET']
     config.base_url = ENV['MIFIEL_BASE_URL']
   end
+
+  ENV['ACCESS_KEY_ID'] = ENV['ACCESS_KEY_ID']
+  ENV['SECRET_ACCESS_KEY'] = ENV['SECRET_ACCESS_KEY']
+  ENV['AWS_REGION'] = ENV['AWS_REGION']
+  ENV['NOMINA_ENV'] = ENV['NOMINA_ENV']
+  ENV['BUCKET_NAME'] = ENV['BUCKET_NAME']
 end
