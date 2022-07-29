@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <%= wicked_pdf_stylesheet_link_tag 'application' %>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
+      div.comment { display:none }
+      div { border-collapse:hidden; page-break-after:always border-style:hidden }
+      .lcolumn {float: left;  width: 50%;  padding: 10px;}
+      .rcolumn {float: right;  width: 50%;  padding: 10px;}
+      .ptext {font-size:14pt;}
+
+      /* .gridlines div { border:1px none black } */
+      /* .gridlines div { border:1px none black } */
+    </style>
+  </head>
+  <body>
+    <div class="row">
+        <div class="column">
+        <div style="position: relative;"><img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="widdiv: 200px;"></div></div>
+    </div>
+    <br>
+    <div>
+            <div class="row">
+                <div class="column"align="right"><%= @lugar %> a: <%= @date %> </div>
+            </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div>
+            <div class="row">
+                <div class="ptext" >Por medio de la presente yo <%= @nombre %> <%= @apellido_paterno%> <%= @apellido_materno %> acepto de conformidad que respecto al préstamo otorgado por: <%= number_to_currency(@monto_total_solicitado) %> con número de crédito <%= @folio %> deberé depositar los siguientes conceptos:</div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <div >
+                <div>
+                <div class="row">
+                <div class="lcolumn">Comisión por apertura de 1%"</div>
+                <% @percentage = @monto_total_solicitado.to_f*1.to_f / 100 %>
+                <% puts @percentage %>
+                <div class="rcolumn"><%= number_to_currency(@percentage) %>
+                </div>
+                <div class="row">
+                    <div class="lcolumn">IVA de la comisión: </div>
+                    <div class="rcolumn"><%= number_to_currency(@iva) %></div>
+                </div>
+                <div class="row">
+                    <div class="lcolumn">Seguro por concepto de saldo deudor en <br />caso de fallecimiento (0.45% por año)</div>
+                    <div class="rcolumn">?</div>
+                </div>
+                <div class="row">
+                    <div class="lcolumn">IVA del seguro:</div>
+                    <div class="rcolumn">?</div>
+                </div>
+                <div class="row">
+                    <div class="lcolumn"> <b>Total a depositar: </b></div>
+                    <div class="rcolumn">?</div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <div>
+                <div>
+                    <div class="row">
+                        <div class="ptext">a la cuenta de FACTOR GFC LEASING S.A.P.I. DE C.V. de BANCO MERCANTIL DEL NORTE, S.A. GRUPO FINANCIERO
+                        BANORTE Cuenta:1057424003 CLABE: 072 1500 10574240031</div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="column" style="text-align: center"> ___________________________________________________________________</div>
+                    </div>
+                    <div class="row">
+                        <div class="column" style="text-align: center"><%= @nombre %> <%= @apellido_paterno%> <%= @apellido_materno %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <%= wicked_pdf_stylesheet_link_tag 'application' %>
+  <title> KYC </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:10pt; background-color:white }
+      a.comment-indicator:hover + div.comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em }
+      a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em }
+      div.comment { display:none }
+      table { border-collapse:collapse; page-break-after:always }
+      /* .gridlines td { border:1px solid black }
+      .gridlines th { border:1px solid black } */
+    </style>
+  </head>
+  <body>
+<%# <style> %>
+<%# @page { margin-left: 1in; margin-right: 1in; margin-top: 0.75in; margin-bottom: 0.75in; } %>
+<%# body { margin-left: 1in; margin-right: 1in; margin-top: 0.75in; margin-bottom: 0.75in; } %>
+<%# </style> %>
+    <table cellspacing="0" id="sheet0">
+        <tbody>
+          <tr class="row0">
+            <td  colspan="6" align="center"><img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;"></td>
+            <th colspan="18"align="center" >FORMATO DE CONOCIMIENTO DEL CLIENTE<br />
+            KYC "Know Your Client"</th>
+          </tr>
+          <tr class="row5">
+            <th colspan="24" align="right" bgcolor="#165193"><font style="font-size:10pt">ACREDITADA</font></th>
+          </tr>
+          <tr class="row6">
+            <th colspan="24" align="right" ><span style="font-family:'Arial'; font-size:10pt">Persona Física</span></th>
+          </tr>
+          <tr class="row8">
+            <th colspan="24" bgcolor="#DADEE2" align="left">
+            <font style="font-size:10pt">DATOS GENERALES</font>
+            <%# <font color="FFFFFF">DATOS GENERALES (No se deberán dejar espacios en blanco. En caso de no aplicar alguna casilla, marcar con "N/A" No Aplica)</font> %>
+            </th>
+          </tr>
+          <tr class="row9">
+            <th colspan="24"  align="left"><font style="font-size:10pt">Nombre completo / Nombre(s) sin abreviaturas, apellido paterno, apellido materno</font></th>
+          </tr>
+          <tr class="row10">
+            <td colspan="24"> <%= @nombre %> <%= @apellido_paterno%> <%= @apellido_materno %></td>
+          </tr>
+          <tr class="row11">
+            <th colspan="6" ><font style="font-size:10pt">Fecha de nacimiento (dd/mm/aaaa)</font></th>
+            <th colspan="6"  ><font style="font-size:10pt">Pais de nacimiento</font></th>
+            <th colspan="6"  ><font style="font-size:10pt">Pais de residencia</font></th>
+            <th colspan="6"  ><font style="font-size:10pt">Nacionalidad</font></th>
+          </tr>
+          <tr class="row12">
+            <td colspan="6"><%= @fecha_nacimiento.strftime("%d/%m/%Y")  %></td>
+            <td colspan="6"><%= @country %></td>
+            <td colspan="6"><%= @country %></td>
+            <td colspan="6"><%= @nacionalidad  %></td>
+          </tr>
+          <tr class="row13">
+            <th colspan="6" ><font style="font-size:10pt">Género (Femenino/Masculino)</font></th>
+            <th colspan="8"  ><font style="font-size:10pt">CURP</font></th>
+            <th colspan="8"  ><font style="font-size:10pt">RFC con homoclave</font></th>
+          </tr>
+          <tr class="row14">
+            <td colspan="6"><%= @sexo %></td>
+            <td colspan="8"><%= @curp %></td>
+            <td colspan="8"><%= @rfc %> ? homoclave </td>
+          </tr>
+          <tr class="row15">
+            <th colspan="12" ><font style="font-size:10pt">Actividad económica que desempeña / Giro empresarial detallado</font></th>
+            <th colspan="12" ><font style="font-size:10pt">Ocupación / Profesión</font></th>
+          </tr>
+          <tr class="row16">
+            <td colspan="12"><%= @giro_empresa %></td>
+            <td colspan="12">?</td>
+          </tr>
+          <tr class="row17">
+            <th colspan="4"><font style="font-size:10pt">Teléfono fijo</font></th>
+            <th  colspan="12"><font style="font-size:10pt">Teléfono celular (opcional)</font></th>
+            <th  colspan="8"><font style="font-size:10pt">Correo electrónico</font></th>
+          </tr>
+          <tr class="row18">
+            <td colspan="4"><%= @telefono %></td>
+            <td colspan="12"><%= @movil %></td>
+            <td colspan="8"><%= @email %></td>
+          </tr>
+          <tr class="row19">
+            <th colspan="6" ><font style="font-size:10pt">Tipo y Número de Forma Migratoria (solo aplica para extranjeros)</font></th>
+            <th  colspan="6"><font style="font-size:10pt">FIEL</font></th>
+            <th colspan="6" ><font style="font-size:10pt">Numero de Identificació Fiscal</font></th>
+            <th colspan="6" ><font style="font-size:10pt">Pais que lo asigna</font></th>
+          </tr>
+          <tr class="row20">
+            <td colspan="6">NA</td>
+            <td colspan="6">NA</td>
+            <td colspan="6">NA</td>
+            <td colspan="6">NA</td>
+          <tr class="row21">
+            <th colspan="4" ><font style="font-size:10pt">Tipo de Identificación</font></th>
+            <th   colspan="10"><font style="font-size:10pt">No. de Identificación </font></th>
+            <th colspan="10" ><font style="font-size:10pt">Autoridad que la Emite </font></th>
+          </tr>
+          <tr class="row22">
+            <td colspan="4"><%= @identificacion_oficial %> ></td>
+            <td  colspan=10"><%= @ine %></td>
+            <td colspan="10">INSTITUTO NACIONAL ELECTORAL</td>
+          </tr>
+          <tr class="row23">
+            <th colspan="24" bgcolor="DADEE2" align="left"><font style="font-size:10pt">DOMICILIO PARTICULAR (Correspondiente a su lugar de residencia)</font></th>
+          </tr>
+          <tr class="row24">
+            <th colspan="8" ><font style="font-size:10pt">Calle / Avenida / Vía</font></td>
+            <th colspan="8" ><font style="font-size:10pt">Número exterior</font></th>
+            <th colspan="8" ><font style="font-size:10pt">Número interior</font></th>
+          </tr>
+          <tr class="row25">
+            <td colspan="8"><%= @calle %></td>
+            <td colspan="8"><%= @numero_exterior %></td>
+            <td colspan="8"><%= @numero_apartamento %></td>
+          </tr>
+          <tr class="row26">
+            <th colspan="8" ><font style="font-size:10pt">Delegación / Municipio</font></th>
+            <th colspan="8" ><font style="font-size:10pt">Ciudad / Población</font></th>
+            <th colspan="8" ><font style="font-size:10pt">Colonia / Urbanización</font></th>
+          </tr>
+          <tr class="row27">
+            <td colspan="8"><%= @municipio %></td>
+            <td colspan="8"><%= @estado %></td>
+            <td colspan="8"><%= @colonia %></td>
+          </tr>
+          <tr class="row28">
+            <th colspan="8" ><font style="font-size:10pt">Estado / Providencia</font></th>
+            <th colspan="8" ><font style="font-size:10pt">País / Entidad federativa</font></th>
+            <th colspan="8" ><font style="font-size:10pt">Código postal</font></th>
+          </tr>
+          <tr class="row29">
+            <td colspan="8"><%= @estado %></td>
+            <td colspan="8"><%= @country %></td>
+            <td colspan="8"><%= @codigo_postal %></td>
+          </tr>
+          <tr class="row30">
+            <th colspan="24"  align="left"><font style="font-size:10pt">En caso de no ser residente en México, especificar las razones por las que decidió celebrar créditos o servicios con Factor GFC en México</font></th>
+          </tr>
+          <tr class="row31">
+            <td colspan="24">NA</td>
+          </tr>
+          <tr class="row32">
+            <th colspan="24" bgcolor="DADEE2" align="left"><font style="font-size:10pt">DATOS COMPLEMENTARIOS - Perfil transaccional</font></th>
+          </tr>
+          <tr class="row33">
+            <th colspan="24"  align="left"><font style="font-size:10pt">Especificar cual será el origen de los recursos con el cual pagará el crédito  o gastos (comisión, interés, notaria, etc.) de algún servicio con Factor GFC</font></th>
+          </tr>
+          <tr class="row34">
+            <td colspan="24">Sueldo</td>
+          </tr>
+          <tr class="row35">
+            <th colspan="24"  align="left"><font style="font-size:10pt">Especificar para que será destinado el recurso proveniente del crédito o servicio solicitado a Factor GFC</font></th>
+          </tr>
+          <tr class="row36">
+            <td colspan="24"><%= @destino %></td>
+          </tr>
+          <tr class="row37">
+            <th colspan="12"  align="left"><font style="font-size:10pt">¿Cuál es el producto o servicio que está tramitando con Factor GFC?</font></th>
+            <th colspan="12" ><font style="font-size:10pt">¿Realizará pagos directamente a Factor GFC en efectivo?</font></th>
+          </tr>
+          <tr class="row38">
+            <td colspan="12">Credito de nomina</td>
+            <td colspan="12">Si<span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX      </span>
+              <span style=" font-family:'Arial'; font-size:9pt">No</span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">      XX      </span></td>
+          </tr>
+          <tr class="row39">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Cuál es el importe total del(os) crédito(s) o servicio(s) nuevos solicitado(s) a Factor GFC?</font></th>
+          </tr>
+          <tr class="row40">
+            <td ><%= number_to_currency(@monto_total_solicitado) %></td> 
+            <td colspan="24"></td>
+          </tr>
+          <tr class="row41">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Tiene créditos vigentes con Factor GFC, aparte de la nueva solicitud? De ser así, especificar por que importe fueron y bajo que tipo de crédito</font></th>
+          </tr>
+          <tr class="row42">
+            <td colspan="24">NO</td>
+          <tr class="row43">
+            <th colspan="24"  align="left"><font style="font-size:10pt">Considerando la nueva solicitud y los créditos vigentes, ¿aproximadamente por cuanto será su pago más alto mensual?</font></th>
+          </tr>
+          <tr class="row44">
+            <td colspan="24">$0.00</td>
+          </tr>
+          <tr class="row45">
+            <th colspan="12"  align="left"><font style="font-size:10pt">¿Cuántos pagos, disposiciones y/o movimientos estima realizar como máximo en un mes?</font></th>
+            <th colspan="12" ><font style="font-size:10pt">Frecuencia según movimientos</font></th>
+          </tr>
+          <tr class="row46">
+            <td colspan="12">5 MOVIMIENTOS</td>
+            <td colspan="12">"Baja" de 1 a 2 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span>"Media" de 3 a 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span>"Alta" más de 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span></td>
+          </tr>
+          <tr class="row47">
+            <th colspan="24" bgcolor="DADEE2"><font style="font-size:10pt">DATOS COMPLEMENTARIOS - Declaratoria</font></th>
+          </tr>
+          <tr class="row48">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?</font>  Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt"> No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt"> </span><span style="color:#E7E6E6; font-family:'Arial'; font-size:9pt">      </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
+          </tr>
+          <tr class="row49">
+            <td colspan="24">-</td>
+          </tr>
+          <tr class="row50">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Su conyugue o algún pariente por consanguinidad o afinidad en segundo grado, desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?  Si </font><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt">        No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    <br />
+              </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre, parentesco o relación, la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
+          <tr class="row51">
+            <td colspan="24">-</td>
+          </tr>
+          <tr class="row52">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Alguna persona distinta a usted hará uso, obtendrá los beneficios o decidirá sobre el uso, aprovechamiento o destino del recurso proveniente del crédito solicitado?  Si </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt">       No  </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    <br />
+              </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre de la persona física o moral y el motivo)</font></th>
+          </tr>
+          <tr class="row53">
+            <td colspan="24">-</td>
+          </tr>
+          <tr class="row54">
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Alguna persona física o moral distinta a usted aportará, pagará o depósitará con sus propios recursos a la SOFOM para el cumplimiento del presente crédito, así como los gastos y comisiones que se generen del mismo?</font>          Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     X     </span><span style=" font-family:'Arial'; font-size:9pt">   No</span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">       X      </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre de la persona física o moral y especificar el motivo)</span></th>
+          </tr>
+          <tr class="row55">
+            <td colspan="24">-</td>
+          </tr>
+          <tr class="row56">
+            <th colspan="24"  align="center"> <font style="font-size:8pt"> Declaro que la información y documentación presentada es verídica, que actúo por cuenta propia y que el origen de mis recursos son provenientes de actividades lícitas.</font></th>
+          </tr>
+          <tr class="row57">
+            <td colspan="24">-</td>
+          </tr>
+          <tr class="row58">
+            <td colspan="12" >Nombre completo y firma</td>
+            <td colspan="12">* El presente formato será evidencia de la entrevista personal con el cliente</td>
+          </tr>
+          <%# <tr class="row59"> %>
+          <%# </tr> %>
+          <%# <tr class="row60"> %>
+          <%# </tr> %>
+        </tbody>
+    </table>
+  </body>
+</html>
