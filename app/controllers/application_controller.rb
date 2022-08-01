@@ -327,7 +327,13 @@ class ApplicationController < ActionController::Base
     @pagos_fijos = @customer_credit.fixed_payment
     @status = @customer_credit.status
     @fecha_inicio = @customer_credit.start_date
+    @dia_inicio = @fecha_inicio.strftime("%d")
+    @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
+    @anio_inicio = @fecha_inicio.strftime("%Y")
     @fecha_fin = @customer_credit.end_date
+    @dia_fin = @fecha_fin.strftime("%d")
+    @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
+    @anio_fin = @fecha_fin.strftime("%Y")
     @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
     @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
     @banco = @customer_credit_data[0]["banco"]
@@ -452,21 +458,34 @@ class ApplicationController < ActionController::Base
     #   cd_file.write open(@url_domiciliacion).read
     # end
 
-    @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
-    pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
-    path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
-    puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_privacidad,path_privacidad)
-    puts "TERMINA DE GUARDAR EN S3"
-    @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
-    puts 
-    puts @url_privacidad
-    File.open('privacidad.pdf', "wb") do |cd_file|
-      cd_file.write open(@url_privacidad).read
-    end
-    # @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
+    # @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
+    # pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
+    # path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
+    # puts "INTENTA GUARDAR EN S3"
+    # s3_save(pdf_privacidad,path_privacidad)
+    # puts "TERMINA DE GUARDAR EN S3"
+    # @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
+    # puts 
+    # puts @url_privacidad
+    # File.open('privacidad.pdf', "wb") do |cd_file|
+    #   cd_file.write open(@url_privacidad).read
+    # end
+    # # @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
 
-    
+    @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
+    pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
+    path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
+    puts "INTENTA GUARDAR EN S3"
+    s3_save(pdf_pagare,path_pagare)
+    puts "TERMINA DE GUARDAR EN S3"
+    @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
+    puts 
+    puts @url_pagare
+    File.open('pagare.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_pagare).read
+    end
+   # # @file << CombinePDF.load(Rails.root.join('pagare.pdf'), allow_optional_content: true)
+
     
     # @file.save "final_#{@folio}.pdf"
     # file = File.open(Rails.root.join("final_#{@folio}.pdf"))

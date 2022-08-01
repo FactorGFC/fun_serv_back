@@ -1,0 +1,156 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <%= wicked_pdf_stylesheet_link_tag 'application' %>
+        <title>Aviso de Privacidad</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style type="text/css">
+            html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
+            div.comment { display:none }
+            div { border-collapse:hidden; page-break-after:always border-style:hidden }
+        </style>
+    </head>
+
+    <body>
+    <div>
+    <br>
+    <br>
+    <div class="row">
+        <h4 style='text-align: left;'>
+        PAGARÉ ÚNICO CON CONTRATO
+        </h4>
+    </div>
+    <br>
+    <div class="row">
+        <p>
+            <span style='text-align: justify;'>Por este pagaré me obligo a pagar incondicionalmente a la orden de
+                <strong>
+                    FACTOR
+                </strong>
+            </span>
+            <strong>
+                <span >
+                    GFC LEASING S.A.P.I. DE C.V.,
+                </span>
+            </strong>
+                <span >
+                        la cantidad de
+                    <strong><u><span style="background:yellow;">
+                        <%= number_to_human(@monto_total_solicitado)%> (<%= number_to_currency(@monto_total_solicitado)%> PESOS 00/100 M.N.)
+                    </span></u></strong>
+                        En el lugar establecido en el Contrato de préstamo sobre Nomina que adelante se identifica. En un plazo de 
+                    <strong><u><span style="background:yellow;">
+                        <%= @plazo %> SEMANAS
+                    </span></u></strong> 
+                    <strong><u>
+                        ,
+                    </u></strong>
+                        a partir del día 
+                    <strong><u><span style="background:yellow;">
+                        <%= @dia_inicio %> de
+                    </span></u></strong>
+                    <strong><u><span style="background:yellow;">
+                            <%= @mes_inicio %> del <%= @anio_inicio %>
+                    </span></u></strong>
+                        , para concluir el día 
+                    <strong><u><span style="background:yellow;">
+                        <%= @dia_fin %>
+                    </span></u></strong>
+                    <strong><u><span style="background:yellow;">
+                        de <%= @mes_fin %> del <%= @anio_fin %>.
+                    </span></u></strong>
+                </span>
+        </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            
+        </span>
+    </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            Los pagos deberán realizarse conforme se detalla en la tabla de amortizaciones que se consigna en el presente título, en las fechas al efecto
+            señaladas. El importe principal de este pagaré causará intereses ordinarios y, en su caso, intereses moratorios conforme a las tasas pactadas
+            en el Contrato de préstamo sobre Nómina del cual se deriva.
+        </span>
+    </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            
+        </span>
+    </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            Mediante este pagaré se documenta la disposición por la suma de su importe principal, del Contrato de préstamo sobre Nómina, celebrado con fecha 
+            <strong>
+                <u>
+                    <span style="background:yellow;">
+                        <%= @dia %> de <%= @mes %> del <%= @anio%>
+                    </span>.</u>
+            </strong>
+            El presente pagaré único ampara la disposición del préstamo concedido en virtud de dicho contrato.
+        </span>
+    </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            
+        </span>
+    </p>
+    </div>
+    <div class="row">
+    <p>
+        <span >
+            Este pagaré se suscribe en la Ciudad de Chihuahua, Chihuahua, con fecha 
+            <strong>
+                <u>
+                    <span style="background:yellow;">
+                        <%= @dia %> de <%= @mes %> del <%= @anio %>.
+                    </span>
+                </u>
+            </strong>
+        </span>
+    </p>
+    </div>
+    <br>
+    <br>
+    <br>
+        </div>
+    <div class="row">
+        <p>
+            <span align="center" >
+                SUSCRIPTOR
+            </span>
+        </p>
+        <br>
+    </div>
+   
+    <div class="row">
+        <div class="col" align="center">
+        <p>
+            <span>
+                ___________________________________________________________
+            </span>
+        </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col" align="center">
+            <p>
+                <span>
+                    <%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %>
+                </span>
+            </p>
+        </div>
+    </div>
+
+</body>
