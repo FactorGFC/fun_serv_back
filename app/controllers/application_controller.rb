@@ -471,20 +471,34 @@ class ApplicationController < ActionController::Base
     #   cd_file.write open(@url_privacidad).read
     # end
     # # @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
-
-    @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
-    pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
-    path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
+    
+    @caratula_terminos_filename = "customer_credit_caratula_terminos_report_#{@folio}.pdf"
+    pdf_caratula_terminos = render_to_string pdf: @caratula_terminos_filename, template: "caratula_terminos.pdf.erb", encoding: "UTF-8"
+    path_caratula_terminos = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @caratula_terminos_filename }"
     puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_pagare,path_pagare)
+    s3_save(pdf_caratula_terminos,path_caratula_terminos)
     puts "TERMINA DE GUARDAR EN S3"
-    @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
+    @url_caratula_terminos = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@caratula_terminos_filename}"
     puts 
-    puts @url_pagare
-    File.open('pagare.pdf', "wb") do |cd_file|
-      cd_file.write open(@url_pagare).read
+    puts @url_caratula_terminos
+    File.open('caratula_terminos.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_caratula_terminos).read
     end
-   # # @file << CombinePDF.load(Rails.root.join('pagare.pdf'), allow_optional_content: true)
+   # # @file << CombinePDF.load(Rails.root.join('caratula_terminos.pdf'), allow_optional_content: true)
+
+  #   @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
+  #   pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
+  #   path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
+  #   puts "INTENTA GUARDAR EN S3"
+  #   s3_save(pdf_pagare,path_pagare)
+  #   puts "TERMINA DE GUARDAR EN S3"
+  #   @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
+  #   puts 
+  #   puts @url_pagare
+  #   File.open('pagare.pdf', "wb") do |cd_file|
+  #     cd_file.write open(@url_pagare).read
+  #   end
+  #  # # @file << CombinePDF.load(Rails.root.join('pagare.pdf'), allow_optional_content: true)
 
     
     # @file.save "final_#{@folio}.pdf"
