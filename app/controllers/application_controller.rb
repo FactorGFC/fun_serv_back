@@ -305,18 +305,16 @@ class ApplicationController < ActionController::Base
 
   def generate_customer_credit_request_report_pdf
     #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDARLO EN S3
-    #TO DO: DESPUES DEBE ADJUNTARSE ESTE PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PDF
-    puts "ENTRA AL GENERATE"
-    puts "ENTRA AL GENERATE"
-    puts "ENTRA AL GENERATE"
+    #TO DO: DESPUES DEBE ADJUNTARSE ESTE PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PD
     @folio = @customer_credit.id
     @lugar = 'Chihuahua, Chihuahua'
-    puts "@customer_credit"
-    puts @customer_credit.inspect 
     get_customer_credit_data
     @term = @customer_credit_data[0]["numero_pagos"]
     @plazo = @customer_credit_data[0]["plazo"]
     @date = Time.now.strftime("%d/%m/%Y")
+    @dia = Time.now.strftime("%d")
+    @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
+    @anio = Time.now.strftime("%Y")
     @customer_id = @customer_credit.customer_id
     @destino = @customer_credit.destination
     @monto_total_solicitado = @customer_credit.total_requested
@@ -394,7 +392,7 @@ class ApplicationController < ActionController::Base
 
     # GUARDA EL PDF EN MEMORIA
     # pdf = render_to_string pdf: @filename, template: "solicitud.pdf.erb", encoding: "UTF-8"
-    # path = "customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    # path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     # puts "path"
     # puts path
     # puts "path"
@@ -402,7 +400,7 @@ class ApplicationController < ActionController::Base
     # s3_save(pdf,path)
     # puts "TERMINA DE GUARDAR EN S3"
     
-    # @url = "https://#{bucket_name}.s3.amazonaws.com/customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    # @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     # puts 
     # puts @url
     # File.open('solicitud.pdf', "wb") do |cd_file|
@@ -414,11 +412,11 @@ class ApplicationController < ActionController::Base
     # # DESCOMENTAR
     # @kyc_filename = "customer_credit_kyc_report_#{@folio}.pdf"
     # pdf_nyc = render_to_string pdf: @kyc_filename, template: "kyc.pdf.erb", encoding: "UTF-8"
-    # path_kyc = "customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
+    # path_kyc = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
     # puts "INTENTA GUARDAR EN S3"
     # s3_save(pdf_nyc,path_kyc)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_kyc = "https://#{bucket_name}.s3.amazonaws.com/customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename}"
+    # @url_kyc = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename}"
     # puts 
     # puts @url_kyc
     # File.open('kyc.pdf', "wb") do |cd_file|
@@ -428,11 +426,11 @@ class ApplicationController < ActionController::Base
 
     # @carta_deposito_filename = "customer_credit_carta_deposito_report_#{@folio}.pdf"
     # pdf_carta_deposito = render_to_string pdf: @carta_deposito_filename, template: "carta_conformidad_deposito.pdf.erb", encoding: "UTF-8"
-    # path_carta_deposito = "customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
+    # path_carta_deposito = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
     # puts "INTENTA GUARDAR EN S3"
     # s3_save(pdf_carta_deposito,path_carta_deposito)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_carta_deposito = "https://#{bucket_name}.s3.amazonaws.com/customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename}"
+    # @url_carta_deposito = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename}"
     # puts 
     # puts @url_carta_deposito
     # File.open('carta_deposito.pdf', "wb") do |cd_file|
@@ -441,32 +439,45 @@ class ApplicationController < ActionController::Base
     # @file << CombinePDF.load(Rails.root.join('carta_deposito.pdf'), allow_optional_content: true)
 
     
-    @domiciliacion_filename = "customer_credit_domiciliacion_report_#{@folio}.pdf"
-    pdf_domiciliacion = render_to_string pdf: @domiciliacion_filename, template: "domiciliacion.pdf.erb", encoding: "UTF-8"
-    path_domiciliacion = "customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
+    # @domiciliacion_filename = "customer_credit_domiciliacion_report_#{@folio}.pdf"
+    # pdf_domiciliacion = render_to_string pdf: @domiciliacion_filename, template: "domiciliacion.pdf.erb", encoding: "UTF-8"
+    # path_domiciliacion = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
+    # puts "INTENTA GUARDAR EN S3"
+    # s3_save(pdf_domiciliacion,path_domiciliacion)
+    # puts "TERMINA DE GUARDAR EN S3"
+    # @url_domiciliacion = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@domiciliacion_filename}"
+    # puts 
+    # puts @url_domiciliacion
+    # File.open('domiciliacion.pdf', "wb") do |cd_file|
+    #   cd_file.write open(@url_domiciliacion).read
+    # end
+
+    @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
+    pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
+    path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
     puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_domiciliacion,path_domiciliacion)
+    s3_save(pdf_privacidad,path_privacidad)
     puts "TERMINA DE GUARDAR EN S3"
-    @url_domiciliacion = "https://#{bucket_name}.s3.amazonaws.com/customer_documents/#{nomina_env}/#{@folio}/#{@domiciliacion_filename}"
+    @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
     puts 
-    puts @url_domiciliacion
-    File.open('domiciliacion.pdf', "wb") do |cd_file|
-      cd_file.write open(@url_domiciliacion).read
+    puts @url_privacidad
+    File.open('privacidad.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_privacidad).read
     end
-    # @file << CombinePDF.load(Rails.root.join('domiciliacion.pdf'), allow_optional_content: true)
+    # @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
 
     
     
     # @file.save "final_#{@folio}.pdf"
     # file = File.open(Rails.root.join("final_#{@folio}.pdf"))
     # @final_filename = "customer_credit_final_report_#{@folio}.pdf"
-    # path_final = "customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    # path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
     # puts "INTENTA GUARDAR EN S3"
     # s3_save(file,path_final)
     # puts "TERMINA DE GUARDAR EN S3"
     # file.close
     
-    # @url_final = "https://#{bucket_name}.s3.amazonaws.com/customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    # @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
     # puts 
     # puts @url_final
     # byebug
@@ -477,6 +488,8 @@ class ApplicationController < ActionController::Base
     File.delete(Rails.root.join("solicitud.pdf"))if File.exist?(Rails.root.join("solicitud.pdf"))
     File.delete(Rails.root.join("kyc.pdf"))if File.exist?(Rails.root.join("kyc.pdf"))
     File.delete(Rails.root.join("carta_deposito.pdf"))if File.exist?(Rails.root.join("carta_deposito.pdf"))
+    File.delete(Rails.root.join("domiciliacion.pdf"))if File.exist?(Rails.root.join("domiciliacion.pdf"))
+    File.delete(Rails.root.join("privacidad.pdf"))if File.exist?(Rails.root.join("privacidad.pdf"))
     File.delete(Rails.root.join("final_#{@folio}.pdf"))if File.exist?(Rails.root.join("final_#{@folio}.pdf"))
   end
 

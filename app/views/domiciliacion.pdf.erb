@@ -4,128 +4,102 @@
   <%= wicked_pdf_stylesheet_link_tag 'application' %>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style type="text/css">
-      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:11pt; background-color:white }
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
+      div.comment { display:none }
+      div { border-collapse:hidden; page-break-after:always border-style:hidden }
       table { border-collapse:collapse; page-break-after:always }
-      /* .gridlines td { border:1px none black } */
-      /* .gridlines th { border:1px none black } */
-/* 
-      table.sheet0 col.col0 { width:1000pt }
-      table.sheet0 col.col1 { width:1000pt }
-      table.sheet0 col.col2 { width:1000pt }
-      table.sheet0 col.col3 { width:1000pt }
-      table.sheet0 col.col4 { width:1000pt }
-      table.sheet0 col.col5 { width:1000pt }
-      table.sheet0 col.col6 { width:1000pt }
-      table.sheet0 col.col7 { width:1000pt }
-      table.sheet0 col.col8 { width:1000pt }
-      table.sheet0 col.col9 { width:1000pt }
-      table.sheet0 col.col10 { width:1000pt }
-      table.sheet0 col.col11 { width:1000pt }
-      table.sheet0 tr { height:15pt }
-      table.sheet0 tr.row7 { height:15pt }
-      table.sheet0 tr.row8 { height:15pt }
-      table.sheet0 tr.row10 { height:15pt }
-      table.sheet0 tr.row11 { height:15pt }
-      table.sheet0 tr.row13 { height:15pt }
-      table.sheet0 tr.row20 { height:15pt }
-      table.sheet0 tr.row23 { height:15pt }
-      table.sheet0 tr.row29 { height:15pt }
-      table.sheet0 tr.row34 { height:15pt } */
     </style>
   </head>
 
   <body>
-<style>
-/* @page { margin-left: 2in; margin-right: 2in; margin-top: 0.75in; margin-bottom: 0.75in; } */
-/* body { margin-left: 2in; margin-right: 2in; margin-top: 0.75in; margin-bottom: 0.75in; } */
-</style>
-    <table border="3" cellpadding="0" cellspacing="0" id="sheet0" class="sheet0 gridlines">
-        <tbody>
-          </tr>
-          <tr class="row1">
-            <td><img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/banorte.png" alt="logo leasing" style="widdiv: 150px; max-width: 100%;max-height: 100%;display: block;"></td>
-          </tr>
-          <tr class="row4">
-            <th colspan="11" align="center"><span style="font-family:Arial; font-size:13pt">Formato para solicitar la Domiciliación</span></th>
-          </tr>
-          <tr class="row5">
-            <td colspan="11" align="right">a          XX        de        XX      de      XXXX</td>
-          </tr>
-          <tr class="row6">
-            <td colspan="11" align="right">DíaMesAño  </td>
-          </tr>
-          <tr class="row8">
-            <th colspan="11" rowspan="2" align="center">Solicito y autorizo que con base en la información que se indica en esta comunicación</br>se realicen cargos periódicos en mi cuenta confomr a lo siguiente:</th>
-          </tr>
-          <tr class="row11">
-            <td colspan="11">1.- Nombre del proveedor del bien, servicio o crédito, según corresponda, que pretende pagarse:</td>
-          </tr>
-          <tr class="row12">
-            <td colspan="11">FACTOR GF LEASING SAPI DE CV.</td>
-          </tr>
-          <tr class="row14">
-            <td colspan="11" rowspan="2">2.- Bien, servicio o crédito, a pagar____________ PRESTAMO PERSONAL____________. En su caso, el número de identificación generado por el proveedor (dato no obligatorio):_______________.</td>
-          </tr>
-          <tr class="row17">
-            <td colspan="11" rowspan="2">3.- Peridicidad del pago (Facturación) (Ejemplo: semanal, quincenal, mensual, bimestral, semestral, anual, etc.):____________________ o , en su caso, el día específico en el que se solicita realizar el pago:______NA_______.</td>
-          </tr>
-          <tr class="row20">
-            <td colspan="11" rowspan="2">4.- Nombre del banco que lleva la cuenta de depósito a la vista o de ahorro en el que se realizará el cargo:<br />NA</td>
-          </tr>
-          <tr class="row23">
-            <td colspan="11">5.- Cualquiera de los Datos de identificación de la cuenta, siguientes:</td>
-          </tr>
-          <tr class="row25">
-            <td colspan="11" align="center">Número de tarjeta de débito (16 dígitos): ____________________________________.</td>
-          </tr>
-          <tr class="row26">
-            <td colspan="11" align="center"><span style="font-family:Arial ; font-size:8pt">Bancaria Estandarizada ("CLABE") de la cuenta (18 dígitos):_______________________________.</span></td>
-          </tr>
-          <tr class="row27">
-            <td colspan="11" align="center">Número del teléfono móvil asociado a la cuenta:_______________________________.</td>
-          </tr>
-          <tr class="row29">
-            <td colspan="11">6.- Monto máximo fijo del cargo autorizado por periodo de facturación: $________________________________.</td>
-          </tr>
-          <tr class="row31">
-            <td colspan="11" rowspan="2">En lugar del monto máximo fijo, tratándose del pago de créditos revolventes asociados a tarjetas de crédito, el  titular de la cuenta podrá optar por autorizar alguna de las opciones de cargo siguientes:</td>
-          </tr>
-          <tr class="row33">
-            <td colspan="5"></td>
-            <td colspan="6" align="center"> <span style="font-family: Arial; font-size:8pt">(Marcar con una X la opción que, en su caso, corresponda)</span></td>
-          </tr>
-          <tr class="row34">
-            <td colspan="11" align="center">El importe del pago mínimo del periodo:(  )                                                                                                                                 </td>
-          </tr>
-          <tr class="row35">
-            <td colspan="11" align="center">El saldo total para no generar intereses en el periodo:      (   ),   ó                                                                                                      </td>
-          </tr>
-          <tr class="row36">
-            <td colspan="11" align="center">Un monto fijo: (  ) (incluir monto) $______________                                                                                                                          </td>
-          </tr>
-          <tr class="row38">
-            <td colspan="7">7.- Esta autorización es por el plazo indeterminado ( X ), o vence el: __________________________________.</td>
-          </tr>
-          <tr class="row40">
-            <td colspan="11">Estoy enterado de que en cualquier momento podré solicitar la cancelación de la presente domiciliación sin costo a mi cargo.</td>
-            <td ></td>
-          </tr>
-          <tr class="row45">
-            <td colspan="11" align="center">A t e n t a m e n t e</td>
-          </tr>
-          <tr class="row50">
-            <td colspan="11" align="center">__________________________________________________________________</td>
-          </tr>
-          <tr class="row51">
-            <td colspan="11" align="center">(NOMBRE O RAZÓN SOCIAL DEL TITULAR DE LA CUENTA)</td>
-          </tr>
-          <tr class="row52">
-            <td colspan="11"></td>
-          </tr>
-          <tr class="row53">
-            <td colspan="11" align="center"><span style="font-family:Arial; font-size:6pt">Formato de acuerdo a la circular 3/2012, publicada en DOF el 2 de Marzo de 2012</span></td>
-          </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div style="position: relative;">
+            <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/banorte.png" alt="logo leasing" style="max-width: 50%;">
+        </div>
+    <div>
+        
+            <div class="row">
+                <div class="column" align="center"><span style="font-family:Arial; font-size:13pt">Formato para solicitar la Domiciliación</span></div>
+            </div>
+            <div class="row">
+                <div class="column" align="right">a <%= @dia %> de <%= @mes %> de <%= @anio %> </div>
+            </div>
+            <div class="row">
+                <div class="column" align="right">  </div>
+            </div>
+
+            <div class="row">
+                <div class="column" rowspan="2" align="center">Solicito y autorizo que con base en la información que se indica en esta comunicación</br>se realicen cargos periódicos en mi cuenta confome a lo siguiente:</div>
+            </div>
+            <div class="row">
+                <div class="column">1.- Nombre del proveedor del bien, servicio o crédito, según corresponda, que pretende pagarse:</div>
+            </div>
+            <div class="row">
+                <div class="column">FACTOR GF LEASING SAPI DE CV.</div>
+            </div>
+
+            <div class="row14">
+                <td colspan="24" rowspan="2">2.- Bien, servicio o crédito, a pagar____________ PRESTAMO PERSONAL____________. En su caso, el número de identificación generado por el proveedor (dato no obligatorio):_______________.</td>
+            </div>
+            <div class="row17">
+                <td colspan="24" rowspan="2">3.- Peridicidad del pago (Facturación) (Ejemplo: semanal, quincenal, mensual, bimesdival, semesdival, anual, etc.):____________________ o , en su caso, el día específico en el que se solicita realizar el pago:______NA_______.</td>
+            </div>
+            <div class="row20">
+                <td colspan="24" rowspan="2">4.- Nombre del banco que lleva la cuenta de depósito a la vista o de ahorro en el que se realizará el cargo:<br />NA</td>
+            </div>
+            <div class="row23">
+                <td colspan="24">5.- Cualquiera de los Datos de identificación de la cuenta, siguientes:</td>
+            </div>
+            <div class="row25">
+                <td colspan="24" align="center">Número de tarjeta de débito (16 dígitos): ____________________________________.</td>
+            </div>
+            <div class="row26">
+                <td colspan="24" align="center"><span style="font-family:Arial ; font-size:8pt">Bancaria Estandarizada ("CLABE") de la cuenta (18 dígitos):_______________________________.</span></td>
+            </div>
+            <div class="row27">
+                <td colspan="24" align="center">Número del teléfono móvil asociado a la cuenta:_______________________________.</td>
+            </div>
+            <div class="row29">
+                <td colspan="24">6.- Monto máximo fijo del cargo autorizado por periodo de facturación: $________________________________.</td>
+            </div>
+            <div class="row31">
+                <td colspan="24" rowspan="2">En lugar del monto máximo fijo, divatándose del pago de créditos revolventes asociados a tarjetas de crédito, el  titular de la cuenta podrá optar por autorizar alguna de las opciones de cargo siguientes:</td>
+            </div>
+            <div class="row33">
+                <%# <td colspan="5"></td> %>
+                <td colspan="24" align="center"> <span style="font-family: Arial; font-size:8pt">(Marcar con una X la opción que, en su caso, corresponda)</span></td>
+            </div>
+            <div class="row34">
+                <td colspan="24" align="center">El importe del pago mínimo del periodo:(  )                                                                                                                                 </td>
+            </div>
+            <div class="row35">
+                <td colspan="24" align="center">El saldo total para no generar intereses en el periodo:      (   ),   ó                                                                                                      </td>
+            </div>
+            <div class="row36">
+                <td colspan="24" align="center">Un monto fijo: (  ) (incluir monto) $______________                                                                                                                          </td>
+            </div>
+            <div class="row38">
+                <td colspan="24">7.- Esta autorización es por el plazo indeterminado ( X ), o vence el: __________________________________.</td>
+            </div>
+            <div class="row40">
+                <td colspan="24">Estoy enterado de que en cualquier momento podré solicitar la cancelación de la presente domiciliación sin costo a mi cargo.</td>
+                <td ></td>
+            </div>
+            <div class="row45">
+                <td colspan="24" align="center">A t e n t a m e n t e</td>
+            </div>
+            <div class="row50">
+                <td colspan="24" align="center">__________________________________________________________________</td>
+            </div>
+            <div class="row51">
+                <td colspan="24" align="center">(NOMBRE O RAZÓN SOCIAL DEL TITULAR DE LA CUENTA)</td>
+            </div>
+            <div class="row52">
+                <td colspan="24"></td>
+            </div>
+            <div class="row53">
+                <td colspan="24" align="center"><span style="font-family:Arial; font-size:6pt">Formato de acuerdo a la circular 3/2012, publicada en DOF el 2 de Marzo de 2012</span></td>
+        </table>
+    </div>
   </body>
 </html>
