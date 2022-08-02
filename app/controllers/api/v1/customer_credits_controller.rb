@@ -55,15 +55,15 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
           @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
                                 end_date: @end_date, fixed_payment: @fixed_payment.round(2))
-        if @customer_credit.status == 'SI'
+          if @customer_credit.status == 'SI'
+              render 'api/v1/customer_credits/show'
+              raise ActiveRecord::Rollback
+          elsif @customer_credit.status == 'PR'
+              #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
+              send_committee_mail(@customer_credit)
+          else
             render 'api/v1/customer_credits/show'
-            raise ActiveRecord::Rollback
-        else
-          render 'api/v1/customer_credits/show'
         end
-      else
-        error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-        raise ActiveRecord::Rollback
       end
     end
    end
