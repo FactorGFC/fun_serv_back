@@ -35,6 +35,7 @@
 #  customer_id       :uuid             not null
 #  payment_period_id :uuid
 #  term_id           :uuid
+#  user_id           :uuid
 #
 # Indexes
 #
@@ -42,6 +43,7 @@
 #  index_customer_credits_on_customer_id        (customer_id)
 #  index_customer_credits_on_payment_period_id  (payment_period_id)
 #  index_customer_credits_on_term_id            (term_id)
+#  index_customer_credits_on_user_id            (user_id)
 #
 # Foreign Keys
 #
@@ -49,13 +51,15 @@
 #  fk_rails_...  (customer_id => customers.id)
 #  fk_rails_...  (payment_period_id => payment_periods.id)
 #  fk_rails_...  (term_id => terms.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class CustomerCredit < ApplicationRecord
   include Swagger::Blocks
   include Swagger::CustomerCreditSchema
   belongs_to :customer
   belongs_to :payment_period 
-  belongs_to :term
+  belongs_to :term, optional: true
+  belongs_to :user, optional: true
   #belongs_to :credit_rating
   
   has_many :sim_customer_payments, dependent: :destroy
@@ -63,6 +67,7 @@ class CustomerCredit < ApplicationRecord
   has_many :current_payments, -> { current_customer_payments }, class_name: 'SimCustomerPayment'
   has_many :pending_payments, -> { pending_customer_payments }, class_name: 'SimCustomerPayment'
   has_many :credit_analysis
+
   
   validates :start_date, presence: true
   validates :status, presence: true

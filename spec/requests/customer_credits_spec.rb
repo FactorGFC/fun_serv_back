@@ -13,7 +13,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
       FactoryBot.create_list(:customer_credit, 10)
       get '/api/v1/customer_credits', params: { token: token.token, secret_key: my_app.secret_key }
     end
-
+    
     it { expect(response).to have_http_status(200) }
     it 'mande la lista des credito al clientes' do
       json = JSON.parse(response.body)
@@ -57,7 +57,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
                                                    customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
                                                                       total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01',
                                                                       attached: 'https://anexo.pdf', rate: '18.5', customer_id: @customer.id, payment_period_id: @payment_period.id,
-                                                                      term_id: @term.id } }
+                                                                      term_id: @term.id, user_id: @user.id } }
       end
       it { expect(response).to have_http_status(200) }
 
@@ -67,7 +67,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
                                                      customer_credit: { total_requested: '100000.00', capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
                                                                         total_payments: '0.00', balance: '266000.00', status: 'AC', start_date: '2021-02-01', end_date: '2021-04-01',
                                                                         attached: 'https://anexo.pdf', rate: '18.5',  customer_id: @customer.id,
-                                                                        payment_period_id: @payment_period.id, term_id: @term.id } }
+                                                                        payment_period_id: @payment_period.id, term_id: @term.id, user_id: @user.id } }
         end.to change(CustomerCredit, :count).by(1)
       end
       it 'responde con la cadena creada' do
@@ -163,7 +163,7 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at:
           DateTime.now + 10.minutes, user: @user, my_app: @my_app)
-        @customer_credit = FactoryBot.create(:customer_credit)
+          @customer_credit = FactoryBot.create(:customer_credit)
       end
       it {
         delete api_v1_customer_credit_path(@customer_credit), params:

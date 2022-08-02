@@ -37,6 +37,7 @@ class User < ApplicationRecord
   has_many :options, through: :user_options
   has_many :user_privileges
   has_many :customers
+  has_many :customer_credits
   validates :email, presence: true, email: true, uniqueness: true
   validates :password, presence: true, on: :create
   validates :name, presence: true

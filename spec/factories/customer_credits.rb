@@ -34,6 +34,7 @@
 #  customer_id       :uuid             not null
 #  payment_period_id :uuid
 #  term_id           :uuid
+#  user_id           :uuid
 #
 # Indexes
 #
@@ -41,6 +42,7 @@
 #  index_customer_credits_on_customer_id        (customer_id)
 #  index_customer_credits_on_payment_period_id  (payment_period_id)
 #  index_customer_credits_on_term_id            (term_id)
+#  index_customer_credits_on_user_id            (user_id)
 #
 # Foreign Keys
 #
@@ -48,6 +50,7 @@
 #  fk_rails_...  (customer_id => customers.id)
 #  fk_rails_...  (payment_period_id => payment_periods.id)
 #  fk_rails_...  (term_id => terms.id)
+#  fk_rails_...  (user_id => users.id)
 #
 
 #
@@ -87,10 +90,10 @@ FactoryBot.define do
     extra1 { "MyString" }
     extra2 { "MyString" }
     extra3 { "MyString" }
-
     association :customer, factory: :customer
     association :term, factory: :term
     association :payment_period, factory: :payment_period
+    association :user, factory: :user
     #association :credit_rating, factory: :credit_rating
   
   end
