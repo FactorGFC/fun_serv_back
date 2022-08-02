@@ -303,9 +303,10 @@ class ApplicationController < ActionController::Base
     @mailer_mail_to
   end
 
+  #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDARLO EN S3
+  #TO DO: DESPUES DEBE ADJUNTARSE ESTE PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PD
   def generate_customer_credit_request_report_pdf
-    #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDARLO EN S3
-    #TO DO: DESPUES DEBE ADJUNTARSE ESTE PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PD
+    @mail_factor = 'sistemasfgfc@gmail.com'
     @folio = @customer_credit.id
     @lugar = 'Chihuahua, Chihuahua'
     get_customer_credit_data

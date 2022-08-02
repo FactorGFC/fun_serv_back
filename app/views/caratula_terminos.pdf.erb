@@ -4,7 +4,7 @@
       <%= wicked_pdf_stylesheet_link_tag 'application' %>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style type="text/css">
-      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:11pt; background-color:white }
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:6pt; background-color:white }
       table { border-collapse:collapse; page-break-after:always }
     </style>
   </head>
@@ -19,23 +19,20 @@
           <tr class="row1"> 
           </tr>
           <tr class="row2">
-            <td colspan="5" align="center">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</td>
+            <th colspan="5" align="center">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</th>
           </tr>
           <tr class="row3">
             <td colspan="5"></td>
           </tr>
           <tr class="row4">
             <td align="right">Número:</td>
-            <td align="center" colspan="4">0</td>
+            <td align="center" colspan="4"><%= @folio %></td>
           </tr>
           <tr class="row5">
             <td colspan="5"></td>
           </tr>
-          <tr class="row6">
-            <td colspan="12" bgcolor="#C0C0C0"></td>
-          </tr>
           <tr class="row7">
-            <th colspan="12" align="center">CÁRATULA DE TÉRMINOS</th>
+            <th colspan="24" align="center"><span align="center">CÁRATULA DE TÉRMINOS</span></th>
           </tr>
           <tr class="row8">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">GENERALES</font></th>
@@ -50,37 +47,35 @@
           </tr>
           <tr class="row11">
             <td colspan="3" align="center">CORREO ELECTRÓNICO</td>
-            <td colspan="9"></td>
+            <td colspan="9"><%= @mail_factor %></td>
           </tr>
           <tr class="row12">
             <td colspan="3" align="center">CUENTA DE CHEQUES DEL ACREEDOR DONDE SE EL ACREDITADO DEBE REALIZAR LOS PAGOS</td>
-            <td colspan="9">Número: <span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:10pt">1057424003 </span><span style="color:#000000; font-family:'Arial'; font-size:10pt"><br />
-Institución bancaria: </span><span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:10pt">Banco Mercantil del Norte, Sociedad Anónima, Institución de Banca Múltiple, Grupo Financiero Banorte</span><span style="color:#000000; font-family:'Arial'; font-size:10pt"><br />
-Clave Bancaria Estandarizada (CLABE): </span><span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:10pt">072150010574240031</span><span style="color:#000000; font-family:'Arial'; font-size:10pt"> <br />
-Titular: Factor GFC Leasing, S.A.P.I. de C.V.</span></td>
-          </tr>
-          <tr class="row13">
-            <td colspan="3">&nbsp;</td>
-            <td colspan="9">0</td>
+            <td colspan="9">Número: <span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:6pt">1057424003 </span>
+            <span style="color:#000000; font-family:'Arial'; font-size:6pt"><br>Institución bancaria: </span>
+            <span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:6pt">Banco Mercantil del Norte, Sociedad Anónima, Institución de Banca Múltiple, Grupo Financiero Banorte</span>
+            <span style="color:#000000; font-family:'Arial'; font-size:6pt"><br> Clave Bancaria Estandarizada (CLABE): </span>
+            <span style="font-weight:bold; color:#000000; font-family:'Arial'; font-size:6pt">072150010574240031</span>
+            <span style="color:#000000; font-family:'Arial'; font-size:6pt"> <br>Titular: Factor GFC Leasing, S.A.P.I. de C.V.</span></td>
           </tr>
           <tr class="row14">
-            <td colspan="3" align="center">DOMICILIO</td>
-            <td colspan="9">CALLE , NUMERO  COLONIA , C.P.  , </td>
+            <td colspan="3" align="center">DOMICILIO CLIENTE</td>
+            <td colspan="9"> Calle <%= @calle %> , <%= @numero_exterior %>  <%= @colonia %> , C.P. <%= @codigo_postal %>  </td>
           </tr>
           <tr class="row15">
             <td colspan="3" align="center">CORREO ELECTRÓNICO</td>
-            <td colspan="9">0</td>
+            <td colspan="9"><%= @email  %></td>
           </tr>
           <tr class="row16">
             <td colspan="3" align="center">EMPRESA EN LA QUE LABORA</td>
-            <td colspan="9">0</td>
+            <td colspan="9"><%= @company %></td>
           </tr>
           <tr class="row17">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">PRÉSTAMO</font></th>
           </tr>
           <tr class="row18">
             <td colspan="3" align="center">IMPORTE</td>
-            <td colspan="9">$0.00  (PESOS 00/100 M.N.)</td>
+            <td colspan="9"><%= number_to_currency(@monto_total_solicitado)%>  (PESOS 00/100 M.N.)</td>
           </tr>
           <tr class="row19">
 
@@ -89,16 +84,16 @@ Titular: Factor GFC Leasing, S.A.P.I. de C.V.</span></td>
           <tr class="row20">
 
             <td colspan="3" align="center">NÚMERO DE CUENTA DEL ACREDITADO</td>
-            <td colspan="9">0</td>
+            <td colspan="9"><%= @cuenta_bancaria %></td>
           </tr>
           <tr class="row21">
 
             <td colspan="3" align="center">INSTITUCIÓN FINANCIERA</td>
-            <td colspan="9">0</td>
+            <td colspan="9"><%= @banco %></td>
           </tr>
           <tr class="row22">
             <td colspan="3" align="center">CLABE</td>
-            <td colspan="9">0</td>
+            <td colspan="9"><%= @cuenta_clabe %></td>
           </tr>
           <tr class="row23">
             <td colspan="3" align="center">CONDICIONES PRECEDENTES A LA DISPOSICIÓN</td>
@@ -108,38 +103,38 @@ Titular: Factor GFC Leasing, S.A.P.I. de C.V.</span></td>
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">DESTINO</font></th>
           </tr>
           <tr class="row25">
-            <td colspan="12">0</td>
+            <td colspan="12"><%= @destino %></td>
           </tr>
           <tr class="row26">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">PLAZO DEL CONTRATO</font></th>
           </tr>
           <tr class="row27">
-            <td colspan="12">Iniciará a partir del día  del mes de  del año , para concluir el dia  del mes de  del año .</td>
+            <td colspan="12">Iniciará a partir del <%= @dia_inicio %>  del <%= @mes_inicio %> del <%= @anio_inicio %> , para concluir el <%= @dia_fin %>  del <%= @mes_fin %> del año <%= @anio_fin %> .</td>
           </tr>
           <tr class="row28">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">COMISIONES</font></th>
           </tr>
           <tr class="row29">
             <td colspan="3" align="center">COMISIÓN POR APRETURA</td>
-            <td colspan="9">0% ( ) del importe total del credito</td>
+            <td colspan="9">0% (<%= @intereses %> ) del importe total del credito</td>
           </tr>
           <tr class="row30">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">PAGO DE CAPITAL</font></th>
           </tr>
           <tr class="row31">
             <td colspan="4" align="center">NÚMERO DE PAGOS</td>
-            <td colspan="8">0</td>
+            <td colspan="8"><%= @total_pagos %></td>
           </tr>
           <tr class="row32">
             <td colspan="4" align="center">CONDICIONES ESPECIALES</td>
-            <td colspan="8">&nbsp;NA</td>
+            <td colspan="8">NA</td>
           </tr>
           <tr class="row33">
             <th colspan="12" bgcolor="#C0C0C0" ><font color="FAFAFA">INTERESES</font></th>
           </tr>
           <tr class="row34">
             <td colspan="5" align="center">TASA DE INTERÉS ORDINARIO FIJA</td>
-            <td colspan="7">0.0% ( )</td>
+            <td colspan="7">0.0% ( <%= number_to_currency( @intereses)%>)</td>
           </tr>
         </tbody>
     </table>
