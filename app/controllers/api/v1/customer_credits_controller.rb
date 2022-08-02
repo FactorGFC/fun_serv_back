@@ -62,10 +62,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
               send_committee_mail(@customer_credit)
           else
-            render 'api/v1/customer_credits/show'
+            render 'api/v1/customer_credits/show' 
         end
+      else
+        error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+        raise ActiveRecord::Rollback
       end
-    end
+      end
    end
 
   def update
@@ -203,7 +206,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             end
           end
         else
-          puts '55555555555555555555555555555'
           capital = payment_amount.to_f - interests.to_f - iva.to_f
           payment = capital.to_f + interests.to_f + iva.to_f
         end
