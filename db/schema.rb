@@ -168,6 +168,8 @@ ActiveRecord::Schema.define(version: 2022_07_27_191525) do
     t.decimal "iva_percent", precision: 15, scale: 4
     t.string "credit_folio"
     t.string "currency"
+    t.decimal "insurance", precision: 15, scale: 4
+    t.decimal "commission", precision: 15, scale: 4
     t.uuid "user_id"
     t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"

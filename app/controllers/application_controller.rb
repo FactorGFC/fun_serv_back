@@ -548,6 +548,7 @@ end
 
     # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
     File.delete(Rails.root.join("solicitud.pdf"))if File.exist?(Rails.root.join("solicitud.pdf"))
+    File.delete(Rails.root.join("terminos2.pdf"))if File.exist?(Rails.root.join("terminos2.pdf"))
     File.delete(Rails.root.join("kyc.pdf"))if File.exist?(Rails.root.join("kyc.pdf"))
     File.delete(Rails.root.join("carta_deposito.pdf"))if File.exist?(Rails.root.join("carta_deposito.pdf"))
     File.delete(Rails.root.join("domiciliacion.pdf"))if File.exist?(Rails.root.join("domiciliacion.pdf"))
