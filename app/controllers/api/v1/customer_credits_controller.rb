@@ -14,62 +14,68 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def show; end
 
   def create
-    @customer_credit = CustomerCredit.new(customer_credits_params)
-    @customer = Customer.where(id: @customer_credit.customer_id)
     ActiveRecord::Base.transaction do
-      @capital = 0
-      @customer_credit.capital = @capital
-      @interests = 0
-      @customer_credit.interests = @interests
-      @iva = 0
-      @customer_credit.iva = @iva
-      @total_debt = 0
-      @customer_credit.total_debt = @total_debt
-      @total_payments = 0
-      @customer_credit.total_payments = @total_payments
-      @fixed_payment = 0
-      @payment_amount = params[:payment_amount]
-      @customer_credit.fixed_payment = @fixed_payment
-      @customer_credit.balance = 1
-      @anuality_date = 1
-      @anuality = params[:anuality]
-     # puts 'balance ' + @customer_credit.balance.inspect
-      @end_date = @customer_credit.start_date
-      @customer_credit.end_date = @end_date
-      if @customer_credit.save
-        @payment_periods = PaymentPeriod.where(id: @customer_credit.payment_period_id)
-        @payment_period = @payment_periods[0]
-        if @payment_period.blank?
-          @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
-          error_array!(@error_desc, :not_found)
-          raise ActiveRecord::Rollback
-          end       
-       @terms = Term.where(id: @customer_credit.term_id)
-        @term = @terms[0]
-        if @term.blank?
-          puts 'term' + @term.inspect
-          term = 0
-        else
-          term = @term.value
-        end
-        calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
-          @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
-                                end_date: @end_date, fixed_payment: @fixed_payment.round(2))
-          if @customer_credit.status == 'SI'
-              render 'api/v1/customer_credits/show'
-              raise ActiveRecord::Rollback
-          elsif @customer_credit.status == 'PR'
-              #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
-              send_committee_mail(@customer_credit)
-          else
-            render 'api/v1/customer_credits/show' 
-        end
-      else
-        error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+      @error_desc = []
+      @customer_credit = CustomerCredit.new(customer_credits_params)
+      @respuesta = Customer.where(id: @customer_credit.customer_id)
+      @customer = @respuesta[0]
+      if @customer.blank?
+        error_array!(@error_desc, :unprocessable_entity)
+        @error_desc.push("No existe el @customer: #{@customer_credit.customer_id}")
         raise ActiveRecord::Rollback
+      else
+        @capital = 0
+        @customer_credit.capital = @capital
+        @interests = 0
+        @customer_credit.interests = @interests
+        @iva = 0
+        @customer_credit.iva = @iva
+        @total_debt = 0
+        @customer_credit.total_debt = @total_debt
+        @total_payments = 0
+        @customer_credit.total_payments = @total_payments
+        @fixed_payment = 0
+        @payment_amount = params[:payment_amount]
+        @customer_credit.fixed_payment = @fixed_payment
+        @customer_credit.balance = 1
+        @anuality_date = 1
+        @anuality = params[:anuality]
+        @end_date = @customer_credit.start_date
+        @customer_credit.end_date = @end_date
+        if @customer_credit.save
+          @payment_periods = PaymentPeriod.where(id: @customer_credit.payment_period_id)
+          @payment_period = @payment_periods[0]
+          if @payment_period.blank?
+            @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
+            error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
+          end       
+            @terms = Term.where(id: @customer_credit.term_id)
+            @term = @terms[0]
+          if @term.blank?
+            term = 0
+          else
+            term = @term.value
+          end
+            calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
+            @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
+                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2))
+          if @customer_credit.status == 'SI'
+                render 'api/v1/customer_credits/show'
+                raise ActiveRecord::Rollback
+          elsif @customer_credit.status == 'PR'
+                #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
+                send_committee_mail(@customer_credit)
+          else
+              render 'api/v1/customer_credits/show' 
+          end
+        else
+          error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+          raise ActiveRecord::Rollback
+        end
       end
-      end
-   end
+    end
+  end
 
   def update
     @customer_credit.update(customer_credits_params)
@@ -91,7 +97,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     params.require(:customer_credit).permit(:total_requested, :capital, :interests, :iva, :total_debt,
                                             :total_payments, :status, :start_date, :attached,
                                             :rate, :debt_time,:destination, :amount_allowed, :time_allowed, :iva_percent,
-                                            :customer_id, :term_id, :payment_period_id, :currency, :user_id )
+                                            :customer_id, :term_id, :payment_period_id, :currency , :user_id )
   end
 
 
@@ -137,14 +143,14 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         #Se valida si es el primer pago del credito
         #La fecha del primer pago va a sera al inicio del periodo siguiente a partir de la fecha actual mas los dias configurados en el parametro
         if i == 1
-        #Si la fecha es menor o igual a 15 el primer pago sera el dia ultimo del mes, si no el pago sera el dia 15 del siguiente mes
-        if (start_date.day <= 15)
-          payment_date = start_date.end_of_month 
+         #Si la fecha es menor o igual a 15 el primer pago sera el dia ultimo del mes, si no el pago sera el dia 15 del siguiente mes
+          if (start_date.day <= 15)
+            payment_date = start_date.end_of_month 
+          else
+            payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15)
+          end
+          #Si no es el primer pago se revisa en que fecha estamos
         else
-          payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15)
-        end
-        #Si no es el primer pago se revisa en que fecha estamos
-         else
           #Si el dia es 15 el pago es el fin de mes
           if (start_date.day == 15)
             payment_date  = start_date.end_of_month 
@@ -156,8 +162,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             else
               payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15) 
             end
-         end
-         end
+          end
+        end
       else
         @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Meses(12), Quincenas(24), Semanas(52)")
         error_array!(@error_desc, :unprocessable_entity)
@@ -176,8 +182,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         iva = interests.to_f * (iva_percent.to_f / 100)
         current_debt = remaining_debt.to_f
         if i == term
-        payment = current_debt.to_f + interests.to_f + iva.to_f
-        capital = payment.to_f - interests.to_f - iva.to_f
+          payment = current_debt.to_f + interests.to_f + iva.to_f
+          capital = payment.to_f - interests.to_f - iva.to_f
         elsif @anuality.present? && anuality_date.present?
           #Se guardan numeros de pagos cuando debe de ser la anualidad
           if (payment_date.month == anuality_date && payment_date.day == 15) 
@@ -228,10 +234,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       break if (remaining_debt.to_f < payment)
     end
     @total_debt = @total_debt + @capital + @interests + @iva
-
-   
-
-  end     
   end
 
   # TO DO: MOVER ESTE METODO AL PUNTO DONDE COMITÉ Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
@@ -285,5 +287,4 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     SecureRandom.hex
   end
 
-
-
+end
