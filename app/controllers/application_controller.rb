@@ -399,12 +399,12 @@ class ApplicationController < ActionController::Base
 
     # GUARDA EL PDF EN MEMORIA
     pdf = render_to_string pdf: @filename, template: "solicitud.pdf.erb", encoding: "UTF-8"
-    path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    @path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     # puts "path"
     # puts path
     # puts "path"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf,path)
+    s3_save(pdf,@path)
     # puts "TERMINA DE GUARDAR EN S3"
     
     @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
@@ -419,9 +419,9 @@ class ApplicationController < ActionController::Base
     # DESCOMENTAR
     @kyc_filename = "customer_credit_kyc_report_#{@folio}.pdf"
     pdf_nyc = render_to_string pdf: @kyc_filename, template: "kyc.pdf.erb", encoding: "UTF-8"
-    path_kyc = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
+    @path_kyc = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_nyc,path_kyc)
+    s3_save(pdf_nyc,@path_kyc)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_kyc = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename}"
     # puts 
@@ -433,9 +433,9 @@ class ApplicationController < ActionController::Base
 
     @carta_deposito_filename = "customer_credit_carta_deposito_report_#{@folio}.pdf"
     pdf_carta_deposito = render_to_string pdf: @carta_deposito_filename, template: "carta_conformidad_deposito.pdf.erb", encoding: "UTF-8"
-    path_carta_deposito = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
+    @path_carta_deposito = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_carta_deposito,path_carta_deposito)
+    s3_save(pdf_carta_deposito,@path_carta_deposito)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_carta_deposito = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename}"
     # puts 
@@ -448,9 +448,9 @@ class ApplicationController < ActionController::Base
     
     @domiciliacion_filename = "customer_credit_domiciliacion_report_#{@folio}.pdf"
     pdf_domiciliacion = render_to_string pdf: @domiciliacion_filename, template: "domiciliacion.pdf.erb", encoding: "UTF-8"
-    path_domiciliacion = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
+    @path_domiciliacion = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_domiciliacion,path_domiciliacion)
+    s3_save(pdf_domiciliacion,@path_domiciliacion)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_domiciliacion = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@domiciliacion_filename}"
     # puts 
@@ -461,9 +461,9 @@ class ApplicationController < ActionController::Base
 
     @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
     pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
-    path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
+    @path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_privacidad,path_privacidad)
+    s3_save(pdf_privacidad,@path_privacidad)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
     # puts 
@@ -475,9 +475,9 @@ class ApplicationController < ActionController::Base
     
     @caratula_terminos_filename = "customer_credit_caratula_terminos_report_#{@folio}.pdf"
     pdf_caratula_terminos = render_to_string pdf: @caratula_terminos_filename, template: "caratula_terminos.pdf.erb", encoding: "UTF-8"
-    path_caratula_terminos = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @caratula_terminos_filename }"
+    @path_caratula_terminos = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @caratula_terminos_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_caratula_terminos,path_caratula_terminos)
+    s3_save(pdf_caratula_terminos,@path_caratula_terminos)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_caratula_terminos = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@caratula_terminos_filename}"
     # puts 
@@ -489,9 +489,9 @@ class ApplicationController < ActionController::Base
 
     @prestamo_filename = "customer_credit_prestamo_report_#{@folio}.pdf"
     pdf_prestamo = render_to_string pdf: @prestamo_filename, template: "prestamo.pdf.erb", encoding: "UTF-8"
-    path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
+    @path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_prestamo,path_prestamo)
+    s3_save(pdf_prestamo,@path_prestamo)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_prestamo = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@prestamo_filename}"
     # puts 
@@ -503,9 +503,9 @@ class ApplicationController < ActionController::Base
 
     @terminos2_filename = "customer_credit_terminos2_report_#{@folio}.pdf"
     pdf_terminos2 = render_to_string pdf: @terminos2_filename, template: "terminos2.pdf.erb", encoding: "UTF-8"
-    path_terminos2 = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @terminos2_filename }"
+    @path_terminos2 = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @terminos2_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_terminos2,path_terminos2)
+    s3_save(pdf_terminos2,@path_terminos2)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_terminos2 = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@terminos2_filename}"
     # puts 
@@ -517,9 +517,9 @@ class ApplicationController < ActionController::Base
 
     @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
     pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
-    path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
+    @path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    s3_save(pdf_pagare,path_pagare)
+    s3_save(pdf_pagare,@path_pagare)
     # puts "TERMINA DE GUARDAR EN S3"
     @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
     # puts 
@@ -557,6 +557,9 @@ class ApplicationController < ActionController::Base
     File.delete(Rails.root.join("prestamo.pdf"))if File.exist?(Rails.root.join("prestamo.pdf"))
     File.delete(Rails.root.join("caratula_terminos.pdf"))if File.exist?(Rails.root.join("caratula_terminos.pdf"))
     File.delete(Rails.root.join("final_#{@folio}.pdf"))if File.exist?(Rails.root.join("final_#{@folio}.pdf"))
+
+    # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
+    borra
   end
 
   def nomina_env 
@@ -665,6 +668,37 @@ class ApplicationController < ActionController::Base
     response = execute_statement(@query)
     @customer_company_address_data = response
 
+  end
+
+  def borra
+    #delete files from bucket
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_kyc}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_carta_deposito}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_domiciliacion}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_privacidad}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_caratula_terminos}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_prestamo}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_terminos2}")
+    obj.delete
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("#{@path_pagare}")
+    obj.delete
   end
 
 end
