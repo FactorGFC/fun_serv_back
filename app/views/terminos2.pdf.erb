@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= wicked_pdf_stylesheet_link_tag 'application' %>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:10pt; background-color:white }
+      a.comment-indicator:hover + div.comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em }
+      a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em }
+      div.comment { display:none }
+    </style>
+  </head>
+  <body>
+  <div>
+      <table>
+        <tbody>
+          <tr class="row0">
+            <div style="position: relative;">
+              <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;">
+            </div>
+            <br>
+          </tr>
+          <tr class="row2">
+            <th colspan="12" bgcolor="#C0C0C0">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</th>
+          </tr>
+          <tr class="row4">
+            <td colspan="9" align="left">Número</td>
+            <td colspan="2"><%= @folio%></td>  
+          </tr>
+          <tr class="row6">
+            <td  colspan="3">PERIODO PARA EL COMPUTO DE INTERESES</td>
+            <td > $ - ? </td>
+          </tr>
+          <tr class="row7">
+            <td  colspan="3">PERIODO PARA EL PAGO DE INTERESES</td>
+            <td > $ - ?</td>
+            <td  colspan="8">(Iniciando el, )</td>
+          </tr>
+          <tr class="row8">
+            <td  colspan="3">FECHA DE CORTE PARA EL COMPUTO DE INTERESES</td>
+            <td > $ - ?</td>
+          </tr>
+          <tr class="row9">
+            <td colspan="3"><p style="color:#FF0000";>TASA QUE SUSTITUTIVA DE LA TASA DE INTERÉS ORDINARIA</p></td>
+            <td colspan="9"><p style="color:#FF0000";>NA</p></td>
+          </tr>
+          <tr class="row10">
+            <td colspan="3">FACTOR PARA DETERMINAR LA TASA DE INTERÉS MORATORIA</td>
+            <td colspan="9">2 veces la tasa de interés ordinaria</td>
+          </tr>
+          <tr class="row12">
+            <th colspan="12" bgcolor="#C0C0C0">COSTO ANUAL TOTAL</th>
+          </tr>
+          <tr class="row14">
+            <td colspan="3">CAT PROMEDIO</td>
+            <td >0.0%</td>
+            <td >()</td>
+            <td  colspan="3">SIN IVA INCLUIDO</td>
+          </tr>
+          <tr class="row16">
+            <th colspan="12" bgcolor="#C0C0C0">AUTORIZACIÓN PARA HACER USO DE LOS DATOS PERSONALES PARA MERCADEO:</th>
+          </tr>
+          <tr class="row18">
+            <td >SI_____X_____</td>
+            <td  colspan="2">NO________</td>
+          </tr>
+          <tr class="row20">
+            <td colspan="12" align="center"><center>Leído que fue el presente por las partes y enteradas de su contenido y alcance legal, lo firman en dos tantos, en la ciudad de Chihuahua, estado de Chihuahua, a los XX del mes de XX del año XXXX .</center> </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <br>
+      <div class="row23">
+        <div colspan="12" align="center"><center><b>EL ACREDITADO</b></center></div>
+      </div>
+      <br>
+      <br>
+      <div class="row27">
+        <div colspan="12"><center><b><%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %></b></center></div>
+      </div>
+      <br>
+      <div class="row29">
+        <div colspan="12" align="center"><center><b>EL ACREEDOR</b></center></div>
+      </div>
+      <br>
+      <div class="row30">
+        <div colspan="12"><center>FACTOR GFC LEASING, S.A.P.I. DE C.V. REPRESENTADO EN ESTE ACTO POR:</center></div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <div>
+        <div>
+          <div>
+            <div class="row35">
+              <div class="col"><center><b>JORGE FERNANDO GARCIA SCHMITT</b></center></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div>
+        <div>
+          <div>
+            <div class="row37">
+              <div class="col"><center><b>TESTIGOS</b></center></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <div>
+        <div>
+          <div>
+            <div class="row" style="text-align:center;">
+              <div class="col" style="display:inline-block;float:none;"><b>JONATHAN JOSUE SAGREDO AVITIA<b></div>
+              <div class="col" style="display:inline-block;float:none;"><b>MONICA JUDITH TRILLO ACOSTA<b></div>
+            </div>
+          </div>
+       </div>
+      </div>
+    </div>
+  </body>
+</html>

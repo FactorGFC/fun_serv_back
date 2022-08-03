@@ -487,19 +487,33 @@ class ApplicationController < ActionController::Base
   #   end
   #  # # @file << CombinePDF.load(Rails.root.join('caratula_terminos.pdf'), allow_optional_content: true)
 
-  @prestamo_filename = "customer_credit_prestamo_report_#{@folio}.pdf"
-  pdf_prestamo = render_to_string pdf: @prestamo_filename, template: "prestamo.pdf.erb", encoding: "UTF-8"
-  path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
-  puts "INTENTA GUARDAR EN S3"
-  s3_save(pdf_prestamo,path_prestamo)
-  puts "TERMINA DE GUARDAR EN S3"
-  @url_prestamo = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@prestamo_filename}"
-  puts 
-  puts @url_prestamo
-  File.open('prestamo.pdf', "wb") do |cd_file|
-    cd_file.write open(@url_prestamo).read
-  end
+  # @prestamo_filename = "customer_credit_prestamo_report_#{@folio}.pdf"
+  # pdf_prestamo = render_to_string pdf: @prestamo_filename, template: "prestamo.pdf.erb", encoding: "UTF-8"
+  # path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
+  # puts "INTENTA GUARDAR EN S3"
+  # s3_save(pdf_prestamo,path_prestamo)
+  # puts "TERMINA DE GUARDAR EN S3"
+  # @url_prestamo = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@prestamo_filename}"
+  # puts 
+  # puts @url_prestamo
+  # File.open('prestamo.pdf', "wb") do |cd_file|
+  #   cd_file.write open(@url_prestamo).read
+  # end
  # # @file << CombinePDF.load(Rails.root.join('prestamo.pdf'), allow_optional_content: true)
+
+ @terminos2_filename = "customer_credit_terminos2_report_#{@folio}.pdf"
+pdf_terminos2 = render_to_string pdf: @terminos2_filename, template: "terminos2.pdf.erb", encoding: "UTF-8"
+path_terminos2 = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @terminos2_filename }"
+puts "INTENTA GUARDAR EN S3"
+s3_save(pdf_terminos2,path_terminos2)
+puts "TERMINA DE GUARDAR EN S3"
+@url_terminos2 = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@terminos2_filename}"
+puts 
+puts @url_terminos2
+File.open('terminos2.pdf', "wb") do |cd_file|
+  cd_file.write open(@url_terminos2).read
+end
+# # @file << CombinePDF.load(Rails.root.join('terminos2.pdf'), allow_optional_content: true)
 
   #   @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
   #   pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
