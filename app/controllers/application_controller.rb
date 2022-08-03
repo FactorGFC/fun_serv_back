@@ -260,8 +260,8 @@ class ApplicationController < ActionController::Base
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
     end
     response = execute_statement(@query)
-    generate_customer_credit_request_report_pdf
-    if response.blank?
+    # generate_customer_credit_request_report_pdf
+    unless response.blank?
       @cliente = Customer.find(@customer_credit.customer_id)
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
         end
         mail_to = mailer_mode_to(mailer_signatory['email'])
         #email, name, subject, title, content
-        SendMailMailer.send_mail_committee(mail_to,
+        SendMailMailer.committee(mail_to,
           mailer_signatory['name'],
           # "Facot GFC Global - Credi Global - #{mailer_signatory['name']} - Favor de aprovar o rechazar propuesta de credito",
           "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
