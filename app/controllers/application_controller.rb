@@ -398,161 +398,164 @@ class ApplicationController < ActionController::Base
     @filename = "customer_credit_request_report_#{@folio}.pdf"
 
     # GUARDA EL PDF EN MEMORIA
-    # pdf = render_to_string pdf: @filename, template: "solicitud.pdf.erb", encoding: "UTF-8"
-    # path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    pdf = render_to_string pdf: @filename, template: "solicitud.pdf.erb", encoding: "UTF-8"
+    path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     # puts "path"
     # puts path
     # puts "path"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(pdf,path)
+    s3_save(pdf,path)
     # puts "TERMINA DE GUARDAR EN S3"
     
-    # @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     # puts 
     # puts @url
-    # File.open('solicitud.pdf', "wb") do |cd_file|
-    #   cd_file.write open(@url).read
-    # end
+    File.open('solicitud.pdf', "wb") do |cd_file|
+      cd_file.write open(@url).read
+    end
 
-    # @file = CombinePDF.new
-    # @file << CombinePDF.load(Rails.root.join('solicitud.pdf'), allow_optional_content: true)
-    # # DESCOMENTAR
-    # @kyc_filename = "customer_credit_kyc_report_#{@folio}.pdf"
-    # pdf_nyc = render_to_string pdf: @kyc_filename, template: "kyc.pdf.erb", encoding: "UTF-8"
-    # path_kyc = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
+    @file = CombinePDF.new
+    @file << CombinePDF.load(Rails.root.join('solicitud.pdf'), allow_optional_content: true)
+    # DESCOMENTAR
+    @kyc_filename = "customer_credit_kyc_report_#{@folio}.pdf"
+    pdf_nyc = render_to_string pdf: @kyc_filename, template: "kyc.pdf.erb", encoding: "UTF-8"
+    path_kyc = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(pdf_nyc,path_kyc)
+    s3_save(pdf_nyc,path_kyc)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_kyc = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename}"
+    @url_kyc = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@kyc_filename}"
     # puts 
     # puts @url_kyc
-    # File.open('kyc.pdf', "wb") do |cd_file|
-    #   cd_file.write open(@url_kyc).read
-    # end
-    # @file << CombinePDF.load(Rails.root.join('kyc.pdf'), allow_optional_content: true)
+    File.open('kyc.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_kyc).read
+    end
+    @file << CombinePDF.load(Rails.root.join('kyc.pdf'), allow_optional_content: true)
 
-    # @carta_deposito_filename = "customer_credit_carta_deposito_report_#{@folio}.pdf"
-    # pdf_carta_deposito = render_to_string pdf: @carta_deposito_filename, template: "carta_conformidad_deposito.pdf.erb", encoding: "UTF-8"
-    # path_carta_deposito = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
+    @carta_deposito_filename = "customer_credit_carta_deposito_report_#{@folio}.pdf"
+    pdf_carta_deposito = render_to_string pdf: @carta_deposito_filename, template: "carta_conformidad_deposito.pdf.erb", encoding: "UTF-8"
+    path_carta_deposito = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(pdf_carta_deposito,path_carta_deposito)
+    s3_save(pdf_carta_deposito,path_carta_deposito)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_carta_deposito = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename}"
+    @url_carta_deposito = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@carta_deposito_filename}"
     # puts 
     # puts @url_carta_deposito
-    # File.open('carta_deposito.pdf', "wb") do |cd_file|
-    #   cd_file.write open(@url_carta_deposito).read
-    # end
-    # @file << CombinePDF.load(Rails.root.join('carta_deposito.pdf'), allow_optional_content: true)
+    File.open('carta_deposito.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_carta_deposito).read
+    end
+    @file << CombinePDF.load(Rails.root.join('carta_deposito.pdf'), allow_optional_content: true)
 
     
-    # @domiciliacion_filename = "customer_credit_domiciliacion_report_#{@folio}.pdf"
-    # pdf_domiciliacion = render_to_string pdf: @domiciliacion_filename, template: "domiciliacion.pdf.erb", encoding: "UTF-8"
-    # path_domiciliacion = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
+    @domiciliacion_filename = "customer_credit_domiciliacion_report_#{@folio}.pdf"
+    pdf_domiciliacion = render_to_string pdf: @domiciliacion_filename, template: "domiciliacion.pdf.erb", encoding: "UTF-8"
+    path_domiciliacion = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @domiciliacion_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(pdf_domiciliacion,path_domiciliacion)
+    s3_save(pdf_domiciliacion,path_domiciliacion)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_domiciliacion = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@domiciliacion_filename}"
+    @url_domiciliacion = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@domiciliacion_filename}"
     # puts 
     # puts @url_domiciliacion
-    # File.open('domiciliacion.pdf', "wb") do |cd_file|
-    #   cd_file.write open(@url_domiciliacion).read
-    # end
+    File.open('domiciliacion.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_domiciliacion).read
+    end
 
-    # @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
-    # pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
-    # path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
+    @privacidad_filename = "customer_credit_privacidad_report_#{@folio}.pdf"
+    pdf_privacidad = render_to_string pdf: @privacidad_filename, template: "privacidad.pdf.erb", encoding: "UTF-8"
+    path_privacidad = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @privacidad_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(pdf_privacidad,path_privacidad)
+    s3_save(pdf_privacidad,path_privacidad)
     # puts "TERMINA DE GUARDAR EN S3"
-    # @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
+    @url_privacidad = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@privacidad_filename}"
     # puts 
     # puts @url_privacidad
-    # File.open('privacidad.pdf', "wb") do |cd_file|
-    #   cd_file.write open(@url_privacidad).read
-    # end
-    # # @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
+    File.open('privacidad.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_privacidad).read
+    end
+    @file << CombinePDF.load(Rails.root.join('privacidad.pdf'), allow_optional_content: true)
     
-  #   @caratula_terminos_filename = "customer_credit_caratula_terminos_report_#{@folio}.pdf"
-  #   pdf_caratula_terminos = render_to_string pdf: @caratula_terminos_filename, template: "caratula_terminos.pdf.erb", encoding: "UTF-8"
-  #   path_caratula_terminos = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @caratula_terminos_filename }"
-  #   puts "INTENTA GUARDAR EN S3"
-  #   s3_save(pdf_caratula_terminos,path_caratula_terminos)
-  #   puts "TERMINA DE GUARDAR EN S3"
-  #   @url_caratula_terminos = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@caratula_terminos_filename}"
-  #   puts 
-  #   puts @url_caratula_terminos
-  #   File.open('caratula_terminos.pdf', "wb") do |cd_file|
-  #     cd_file.write open(@url_caratula_terminos).read
-  #   end
-  #  # # @file << CombinePDF.load(Rails.root.join('caratula_terminos.pdf'), allow_optional_content: true)
-
-  # @prestamo_filename = "customer_credit_prestamo_report_#{@folio}.pdf"
-  # pdf_prestamo = render_to_string pdf: @prestamo_filename, template: "prestamo.pdf.erb", encoding: "UTF-8"
-  # path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
-  # puts "INTENTA GUARDAR EN S3"
-  # s3_save(pdf_prestamo,path_prestamo)
-  # puts "TERMINA DE GUARDAR EN S3"
-  # @url_prestamo = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@prestamo_filename}"
-  # puts 
-  # puts @url_prestamo
-  # File.open('prestamo.pdf', "wb") do |cd_file|
-  #   cd_file.write open(@url_prestamo).read
-  # end
- # # @file << CombinePDF.load(Rails.root.join('prestamo.pdf'), allow_optional_content: true)
-
- @terminos2_filename = "customer_credit_terminos2_report_#{@folio}.pdf"
-pdf_terminos2 = render_to_string pdf: @terminos2_filename, template: "terminos2.pdf.erb", encoding: "UTF-8"
-path_terminos2 = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @terminos2_filename }"
-puts "INTENTA GUARDAR EN S3"
-s3_save(pdf_terminos2,path_terminos2)
-puts "TERMINA DE GUARDAR EN S3"
-@url_terminos2 = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@terminos2_filename}"
-puts 
-puts @url_terminos2
-File.open('terminos2.pdf', "wb") do |cd_file|
-  cd_file.write open(@url_terminos2).read
-end
-# # @file << CombinePDF.load(Rails.root.join('terminos2.pdf'), allow_optional_content: true)
-
-  #   @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
-  #   pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
-  #   path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
-  #   puts "INTENTA GUARDAR EN S3"
-  #   s3_save(pdf_pagare,path_pagare)
-  #   puts "TERMINA DE GUARDAR EN S3"
-  #   @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
-  #   puts 
-  #   puts @url_pagare
-  #   File.open('pagare.pdf', "wb") do |cd_file|
-  #     cd_file.write open(@url_pagare).read
-  #   end
-  #  # # @file << CombinePDF.load(Rails.root.join('pagare.pdf'), allow_optional_content: true)
-
-    
-    # @file.save "final_#{@folio}.pdf"
-    # file = File.open(Rails.root.join("final_#{@folio}.pdf"))
-    # @final_filename = "customer_credit_final_report_#{@folio}.pdf"
-    # path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    @caratula_terminos_filename = "customer_credit_caratula_terminos_report_#{@folio}.pdf"
+    pdf_caratula_terminos = render_to_string pdf: @caratula_terminos_filename, template: "caratula_terminos.pdf.erb", encoding: "UTF-8"
+    path_caratula_terminos = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @caratula_terminos_filename }"
     # puts "INTENTA GUARDAR EN S3"
-    # s3_save(file,path_final)
+    s3_save(pdf_caratula_terminos,path_caratula_terminos)
     # puts "TERMINA DE GUARDAR EN S3"
-    # file.close
-    
-    # @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    @url_caratula_terminos = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@caratula_terminos_filename}"
     # puts 
-    # puts @url_final
+    # puts @url_caratula_terminos
+    File.open('caratula_terminos.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_caratula_terminos).read
+    end
+    @file << CombinePDF.load(Rails.root.join('caratula_terminos.pdf'), allow_optional_content: true)
+
+    @prestamo_filename = "customer_credit_prestamo_report_#{@folio}.pdf"
+    pdf_prestamo = render_to_string pdf: @prestamo_filename, template: "prestamo.pdf.erb", encoding: "UTF-8"
+    path_prestamo = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @prestamo_filename }"
+    # puts "INTENTA GUARDAR EN S3"
+    s3_save(pdf_prestamo,path_prestamo)
+    # puts "TERMINA DE GUARDAR EN S3"
+    @url_prestamo = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@prestamo_filename}"
+    # puts 
+    # puts @url_prestamo
+    File.open('prestamo.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_prestamo).read
+    end
+    @file << CombinePDF.load(Rails.root.join('prestamo.pdf'), allow_optional_content: true)
+
+    @terminos2_filename = "customer_credit_terminos2_report_#{@folio}.pdf"
+    pdf_terminos2 = render_to_string pdf: @terminos2_filename, template: "terminos2.pdf.erb", encoding: "UTF-8"
+    path_terminos2 = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @terminos2_filename }"
+    # puts "INTENTA GUARDAR EN S3"
+    s3_save(pdf_terminos2,path_terminos2)
+    # puts "TERMINA DE GUARDAR EN S3"
+    @url_terminos2 = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@terminos2_filename}"
+    # puts 
+    # puts @url_terminos2
+    File.open('terminos2.pdf', "wb") do |cd_file|
+    cd_file.write open(@url_terminos2).read
+    end
+    @file << CombinePDF.load(Rails.root.join('terminos2.pdf'), allow_optional_content: true)
+
+    @pagare_filename = "customer_credit_pagare_report_#{@folio}.pdf"
+    pdf_pagare = render_to_string pdf: @pagare_filename, template: "pagare.pdf.erb", encoding: "UTF-8"
+    path_pagare = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{ @pagare_filename }"
+    # puts "INTENTA GUARDAR EN S3"
+    s3_save(pdf_pagare,path_pagare)
+    # puts "TERMINA DE GUARDAR EN S3"
+    @url_pagare = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@pagare_filename}"
+    # puts 
+    # puts @url_pagare
+    File.open('pagare.pdf', "wb") do |cd_file|
+      cd_file.write open(@url_pagare).read
+    end
+    @file << CombinePDF.load(Rails.root.join('pagare.pdf'), allow_optional_content: true)
+
+    
+    @file.save "final_#{@folio}.pdf"
+    file = File.open(Rails.root.join("final_#{@folio}.pdf"))
+    @final_filename = "customer_credit_final_report_#{@folio}.pdf"
+    path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    # puts "INTENTA GUARDAR EN S3"
+    s3_save(file,path_final)
+    # puts "TERMINA DE GUARDAR EN S3"
+    file.close
+    
+    @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    puts 
+    puts @url_final
     # byebug
 
     # @request.update(attached: @url)
 
     # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
     File.delete(Rails.root.join("solicitud.pdf"))if File.exist?(Rails.root.join("solicitud.pdf"))
-    File.delete(Rails.root.join("terminos2.pdf"))if File.exist?(Rails.root.join("terminos2.pdf"))
     File.delete(Rails.root.join("kyc.pdf"))if File.exist?(Rails.root.join("kyc.pdf"))
     File.delete(Rails.root.join("carta_deposito.pdf"))if File.exist?(Rails.root.join("carta_deposito.pdf"))
     File.delete(Rails.root.join("domiciliacion.pdf"))if File.exist?(Rails.root.join("domiciliacion.pdf"))
     File.delete(Rails.root.join("privacidad.pdf"))if File.exist?(Rails.root.join("privacidad.pdf"))
+    File.delete(Rails.root.join("terminos2.pdf"))if File.exist?(Rails.root.join("terminos2.pdf"))
+    File.delete(Rails.root.join("pagare.pdf"))if File.exist?(Rails.root.join("pagare.pdf"))
+    File.delete(Rails.root.join("prestamo.pdf"))if File.exist?(Rails.root.join("prestamo.pdf"))
+    File.delete(Rails.root.join("caratula_terminos.pdf"))if File.exist?(Rails.root.join("caratula_terminos.pdf"))
     File.delete(Rails.root.join("final_#{@folio}.pdf"))if File.exist?(Rails.root.join("final_#{@folio}.pdf"))
   end
 
