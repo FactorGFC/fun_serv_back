@@ -1,25 +1,37 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+#NOMINA BACKEND
 
-Things you may want to cover:
+Necessary steps to get the
+application up and running:
 
-* Ruby version
 
-* System dependencies
+* Ruby version: '2.7.6'
 
-* Configuration
+* System dependencies:
+    node.js
+    pg db
+    
+* Configuration:
 
-* Database creation
+    rvm install "2.7.6"
+    * borrar gemfile.lock
+    bundle install
+    * probar con
+    rails s
 
-* Database initialization
+* Database creation: *ver scripts para poblar db
+
+* Database initialization:
+
+- Correr:
+  rake db:migrate
+  rake db:test:prepare
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
+    bundle exec rspec
 
 * Deployment instructions
-
+    commit and push
 * ...
 # nomina_backend
