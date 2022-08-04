@@ -199,7 +199,7 @@ class ApplicationController < ActionController::Base
         @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         mail_to = mailer_mode_to(mailer_signatory['email'])
         #email, name, subject, title, content
-        SendMailMailer.send_mail_committee(mail_to,
+        SendMailMailer.committee(mail_to,
           mailer_signatory['name'],
           "Nomina GFC- #{mailer_signatory['name']} - El comité y la empresa han aceptado la propuesta de credito",
           # @current_user.name,
@@ -237,10 +237,9 @@ class ApplicationController < ActionController::Base
         @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         mail_to = mailer_mode_to(mailer_signatory['email'])
         #email, name, subject, title, content
-        SendMailMailer.send_mail_committee(mail_to,
+        SendMailMailer.committee(mail_to,
           mailer_signatory['name'],
           "Factor GFC Global - Credi Global - El comité y la empresa han aceptado la propuesta de credito - #{mailer_signatory['tipo']}",
-          # @current_user.name,
           "Revisar como #{mailer_signatory['tipo']}",
           [@callback_url_analyst,@customer_credit]
         ).deliver_now
@@ -260,8 +259,8 @@ class ApplicationController < ActionController::Base
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
     end
     response = execute_statement(@query)
-    # generate_customer_credit_request_report_pdf
-    unless response.blank?
+     generate_customer_credit_request_report_pdf
+    if response.blank?
       @cliente = Customer.find(@customer_credit.customer_id)
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
@@ -276,20 +275,17 @@ class ApplicationController < ActionController::Base
         #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
         @customer_credit_signatory = CustomerCreditsSignatory.new(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
         if @customer_credit_signatory.save
+          mail_to = mailer_mode_to(mailer_signatory['email'])
+          SendMailMailer.committee(mail_to,
+            mailer_signatory['name'],
+            "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
+            "Aprobar como #{mailer_signatory['tipo']}",
+            [@callback_url_committee,@customer_credit,@cliente.name]
+          ).deliver_now
         else 
           error_array!(@customer_credit_signatory.errors.full_messages, :unprocessable_entity)
           raise ActiveRecord::Rollback
         end
-        mail_to = mailer_mode_to(mailer_signatory['email'])
-        #email, name, subject, title, content
-        SendMailMailer.committee(mail_to,
-          mailer_signatory['name'],
-          # "Facot GFC Global - Credi Global - #{mailer_signatory['name']} - Favor de aprovar o rechazar propuesta de credito",
-          "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
-          # @current_user.name,
-          "Aprobar como #{mailer_signatory['tipo']}",
-          [@callback_url_committee,@customer_credit,@cliente.name]
-        ).deliver_now
       end
     end
   end
@@ -304,7 +300,7 @@ class ApplicationController < ActionController::Base
   end
 
   #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDARLO EN S3
-  #TO DO: DESPUES DEBE ADJUNTARSE ESTE PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PD
+  #ADJUNTA UN PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PDF
   def generate_customer_credit_request_report_pdf
     @mail_factor = 'sistemasfgfc@gmail.com'
     @folio = @customer_credit.id
@@ -544,22 +540,13 @@ class ApplicationController < ActionController::Base
     puts @url_final
     # byebug
 
-    # @request.update(attached: @url)
-
-    # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
-    File.delete(Rails.root.join("solicitud.pdf"))if File.exist?(Rails.root.join("solicitud.pdf"))
-    File.delete(Rails.root.join("kyc.pdf"))if File.exist?(Rails.root.join("kyc.pdf"))
-    File.delete(Rails.root.join("carta_deposito.pdf"))if File.exist?(Rails.root.join("carta_deposito.pdf"))
-    File.delete(Rails.root.join("domiciliacion.pdf"))if File.exist?(Rails.root.join("domiciliacion.pdf"))
-    File.delete(Rails.root.join("privacidad.pdf"))if File.exist?(Rails.root.join("privacidad.pdf"))
-    File.delete(Rails.root.join("terminos2.pdf"))if File.exist?(Rails.root.join("terminos2.pdf"))
-    File.delete(Rails.root.join("pagare.pdf"))if File.exist?(Rails.root.join("pagare.pdf"))
-    File.delete(Rails.root.join("prestamo.pdf"))if File.exist?(Rails.root.join("prestamo.pdf"))
-    File.delete(Rails.root.join("caratula_terminos.pdf"))if File.exist?(Rails.root.join("caratula_terminos.pdf"))
-    File.delete(Rails.root.join("final_#{@folio}.pdf"))if File.exist?(Rails.root.join("final_#{@folio}.pdf"))
-
+    @customer_credit.update(attached: @url_final)
+    puts @customer_credit.id
+    puts @customer_credit.id
+    puts @customer_credit.id
+    puts @customer_credit.id
     # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
-    borra
+    borra_documentos
   end
 
   def nomina_env 
@@ -670,7 +657,20 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def borra
+  def borra_documentos
+
+    # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
+    File.delete(Rails.root.join("solicitud.pdf"))if File.exist?(Rails.root.join("solicitud.pdf"))
+    File.delete(Rails.root.join("kyc.pdf"))if File.exist?(Rails.root.join("kyc.pdf"))
+    File.delete(Rails.root.join("carta_deposito.pdf"))if File.exist?(Rails.root.join("carta_deposito.pdf"))
+    File.delete(Rails.root.join("domiciliacion.pdf"))if File.exist?(Rails.root.join("domiciliacion.pdf"))
+    File.delete(Rails.root.join("privacidad.pdf"))if File.exist?(Rails.root.join("privacidad.pdf"))
+    File.delete(Rails.root.join("terminos2.pdf"))if File.exist?(Rails.root.join("terminos2.pdf"))
+    File.delete(Rails.root.join("pagare.pdf"))if File.exist?(Rails.root.join("pagare.pdf"))
+    File.delete(Rails.root.join("prestamo.pdf"))if File.exist?(Rails.root.join("prestamo.pdf"))
+    File.delete(Rails.root.join("caratula_terminos.pdf"))if File.exist?(Rails.root.join("caratula_terminos.pdf"))
+    File.delete(Rails.root.join("final_#{@folio}.pdf"))if File.exist?(Rails.root.join("final_#{@folio}.pdf"))
+
     #delete files from bucket
     bucket = s3.bucket(bucket_name)
     obj = bucket.object("#{@path}")
