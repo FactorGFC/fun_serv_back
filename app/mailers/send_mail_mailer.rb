@@ -23,7 +23,27 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
-  def committee(email, name, subject, title, content)
+  def send_email_account_status(email, name, subject, title, content)
+    # wb = xlsx_package.workbook
+    # wb.styles do |s|
+    #     header_cell = s.add_style bg_color: "EFEFEF", 
+    #         fg_color: "00", 
+    #         sz: 14,
+    #         alignment: { horizontal: :center }
+    #     wb.add_worksheet(name: "Estado de cuenta") do |sheet|
+    #         sheet.add_row ["Número de pago", "Monto", "Deuda actual", "Deuda restante", "Fecha de pago", "Estatus"], 
+    #             :style => [header_cell, header_cell, header_cell, header_cell]
+    #         content.each do |t|
+    #             sheet.add_row [t[:pay_number], 
+    #                 t[:payment], 
+    #                 t[:current_debt], 
+    #                 t[:remaining_debt],
+    #                 t[:payment_date],
+    #                 t[:status]]
+    #         end
+    #     end
+    # end
+    # attachments["estado de cuenta.xlsx"] = wb
     @email_name = name
     @content = content
     @title = title

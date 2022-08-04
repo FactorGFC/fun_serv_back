@@ -20,6 +20,8 @@ gem 'jbuilder', '~> 2.7'
 gem 'materialize-sass'
 gem 'omniauth-google-oauth2'
 gem 'valid_email'
+gem 'caxlsx'
+gem 'caxlsx_rails'
 gem 'bootsnap', '1.4.3', require: false
 gem 'rack-cors'
 gem 'rest-client'

@@ -44,6 +44,37 @@ class SessionsController < ApplicationController
       error_array!(@error_desc, :not_found)
     end
   end
+
+#MAILER DE ESTADO DE CUENTA
+  def send_account_status_mailer
+    @id = params[:id]
+    response = get_credit_payments(@id)
+    unless response.blank?
+      SendMailMailer.send_email_account_status(
+            "dgonzalez@factorgfc.com", #response[0]['email'],
+            response[0]['name'],
+            "Estado de cuenta",
+            "Estado de cuenta",
+            response
+          ).deliver_now
+      render json: { message: response }, status: 200
+    else
+      render json: { message: 'No se encontraron registros' }, status: 400
+    end
+  end
+
+  def get_credit_payments(id)
+    @query = 
+    "select p.pay_number, p.current_debt, p.remaining_debt, p.payment, p.capital, p.interests, p.payment_date, p.status,
+    (select email from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id))),
+    (select name from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id)))
+    from sim_customer_payments p
+    where customer_credit_id = '#{id}'"
+    response = execute_statement(@query)
+    return response
+  end
+
+
 #CUANDO EL CLIENTE/EMPLEADO RECHAZA EL CREDITO
   def get_callback_decline
     @error_desc = []
