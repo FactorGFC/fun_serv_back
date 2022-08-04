@@ -390,18 +390,17 @@ class ApplicationController < ActionController::Base
     @creditos_personales = @customer_credit_data[0]["creditos_personales"]
     @creditos_lp = @customer_credit_data[0]["creditos_lp"]
     @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
+    get_credit_payments(@customer_credit.id)
+    puts "@amortizacion"
+    puts  @amortizacion[0].inspect
+    puts "@amortizacion"
 
     @file = CombinePDF.new
+    @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
     
-    render_pdf_to_s3("solicitud")
-    render_pdf_to_s3("kyc")
-    render_pdf_to_s3("carta_deposito")
-    render_pdf_to_s3("domiciliacion")
-    render_pdf_to_s3("privacidad")
-    render_pdf_to_s3("prestamo")
-    render_pdf_to_s3("terminos2")
-    render_pdf_to_s3("pagare")
-    render_pdf_to_s3("caratula_terminos")
+    @documents_array.each do |v|
+      render_pdf_to_s3(v)
+    end
 
     @file.save "final_#{@folio}.pdf"
     file = File.open(Rails.root.join("final_#{@folio}.pdf"))
@@ -530,12 +529,8 @@ class ApplicationController < ActionController::Base
     @filename = "customer_credit_#{nombre_del_documento}_report_#{@folio}.pdf"
     pdf = render_to_string pdf: @filename, template: "#{nombre_del_documento}.pdf.erb", encoding: "UTF-8"
     @path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
-    # puts "INTENTA GUARDAR EN S3"
     s3_save(pdf,@path)
-    # puts "TERMINA DE GUARDAR EN S3"
     @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
-    # puts 
-    # puts @url_("#{nombre_del_documento}")
     File.open("#{nombre_del_documento}.pdf", "wb") do |cd_file|
       cd_file.write open(@url).read
     end
@@ -545,28 +540,15 @@ class ApplicationController < ActionController::Base
 
   def borra_documentos
 
-    # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
-    borra_de_local("solicitud")
-    borra_de_local("kyc")
-    borra_de_local("carta_deposito")
-    borra_de_local("domiciliacion")
-    borra_de_local("privacidad")
-    borra_de_local("terminos2")
-    borra_de_local("pagare")
-    borra_de_local("prestamo")
-    borra_de_local("caratula_terminos")
+    @documents_array.each do |v|
+      # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
+      borra_de_local(v)
+      #BORRA ARCHIVOS GUARDADOS EN BUCKET S3
+      borra_de_s3(v)
+    end
     borra_de_local("final_#{@folio}")
 
-    #BORRA ARCHIVOS GUARDADOS EN BUCKET S3
-    borra_de_s3("solicitud")
-    borra_de_s3("kyc")
-    borra_de_s3("carta_deposito")
-    borra_de_s3("domiciliacion")
-    borra_de_s3("privacidad")
-    borra_de_s3("terminos2")
-    borra_de_s3("pagare")
-    borra_de_s3("prestamo")
-    borra_de_s3("caratula_terminos")
+
   end
 
   def borra_de_local(nombre_del_documento)
@@ -577,6 +559,16 @@ class ApplicationController < ActionController::Base
     bucket = s3.bucket(bucket_name)
     obj = bucket.object("nomina_customer_documents/#{nomina_env}/#{@folio}/customer_credit_#{nombre_del_documento}_report_#{@folio}.pdf")
     obj.delete
+  end
+
+  def get_credit_payments(id)
+    @query = 
+    "select p.pay_number, p.current_debt, p.remaining_debt, p.payment, p.capital, p.interests, p.payment_date, p.status,
+    (select email from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id))),
+    (select name from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id)))
+    from sim_customer_payments p
+    where customer_credit_id = '#{id}'"
+    @amortizacion = execute_statement(@query)
   end
 
 end

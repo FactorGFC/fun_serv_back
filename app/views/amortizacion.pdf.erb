@@ -1,0 +1,51 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <%= wicked_pdf_stylesheet_link_tag 'application' %>
+        <title>Tabla de amortizacion</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style type="text/css">
+            html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
+            div.comment { display:none }
+            div { border-collapse:hidden; page-break-after:always border-style:hidden }
+        </style>
+    </head>
+
+    <body>
+    <div>
+    <div style="position: relative;">
+        <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
+    </div>
+    <div class="row">
+        <h4 style='text-align: left;'>
+        TABLA DE AMORTIZACION
+        </h4>
+    </div>
+    <br>
+    <div>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
+                <tr>
+                    <th>Número de pago</th>
+                    <th>Monto</th>
+                    <th>Deuda actual</th>
+                    <th>Deuda restante</th>
+                    <th>Fecha de pago</th>
+                    <th>Estatus</th>
+                </tr>
+            </thead>
+            <tbody style="border: 1px solid #ddd;  padding: 8px; text-align: center;">
+                <% @amortizacion.each do |payment| %>
+                    <tr>
+                        <td> <%= payment['pay_number'] %></td>
+                        <td> <%= number_to_currency(payment['payment']) %></td>
+                        <td> <%= number_to_currency(payment['current_debt']) %></td>
+                        <td> <%= number_to_currency(payment['remaining_debt']) %></td>
+                        <td> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
+                        <td> <%= payment['status'] %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</body>
