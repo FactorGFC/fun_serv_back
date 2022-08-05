@@ -27,7 +27,6 @@ class PaymentCredit < ApplicationRecord
     validates :customer_credit, presence: true, uniqueness: { scope: :pc_type }
     validates :pc_type, presence: true
     validates :total, presence: true
-    establish_connection :"#{Rails.env}"
 
     def self.custom_update_or_create(payment, customer_credit, pc_type, total)
         # Validando que no se creen dos registros para el mismo pago y el mismo credito
