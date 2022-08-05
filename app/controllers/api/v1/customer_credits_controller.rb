@@ -38,18 +38,26 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @payment_amount = params[:payment_amount]
         @customer_credit.fixed_payment = @fixed_payment
         @customer_credit.balance = 1
-        @anuality_date = 1
+        @anuality_date = params[:anuality_date]
         @anuality = params[:anuality]
         @end_date = @customer_credit.start_date
         @customer_credit.end_date = @end_date
-        if @customer_credit.save
-          @payment_periods = PaymentPeriod.where(id: @customer_credit.payment_period_id)
+        if @customer_credit.save  
+          @payment_periods = PaymentPeriod.where(key: @customer.salary_period)
           @payment_period = @payment_periods[0]
           if @payment_period.blank?
             @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
-          end       
+          end 
+          @salary = @customer.salary.to_f
+          @total_requested = @customer_credit.total_requested.to_f
+          if(@total_requested > (@salary.to_f * @payment_period.value.to_f))
+            @error_desc.push("El total del credito no puede ser mayor a un año de sueldo del empleado")
+            error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
+          end
+                  
             @terms = Term.where(id: @customer_credit.term_id)
             @term = @terms[0]
           if @term.blank?
@@ -186,27 +194,23 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           capital = payment.to_f - interests.to_f - iva.to_f
         elsif @anuality.present? && anuality_date.present?
           #Se guardan numeros de pagos cuando debe de ser la anualidad
-          if (payment_date.month == anuality_date && payment_date.day == 15) 
+          if (payment_date.month == anuality_date.to_i && payment_date.day == 15) 
             @number_anuality.push i 
           end
-          customer_salary = @customer[0].salary.to_f
-          max_salary = customer_salary * 0.10
-          if @anuality.to_f > max_salary.to_f
-            @error_desc.push('La anualidad no puede ser mayor al 10% del salario')
+          max_anuality = total_requested * 0.10
+          if @anuality.to_f > max_anuality.to_f
+            @error_desc.push('La anualidad no puede ser mayor al 10% del credito')
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           else
+
             if @number_anuality.include?(i)
-              puts 'iiiiii' + i.inspect
               payment = @anuality.to_f
-              puts 'payment' + payment.inspect
               capital = payment.to_f - interests.to_f - iva.to_f
-              puts 'payment_amount' + payment_amount.inspect
-              puts 'remaining_debt' + remaining_debt.inspect
-              puts 'term 1 ' + term.inspect
-              term = ((Math.log (1/(1-((rate_with_iva.to_f * remaining_debt.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
-              puts 'term 2 ' + term.inspect
+             # term = ((Math.log (1/(1-((rate_with_iva.to_f * remaining_debt.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
             else
+              puts'remaining_debt' + remaining_debt.inspect
+            
               capital = payment_amount.to_f - interests.to_f - iva.to_f
               payment = capital.to_f + interests.to_f + iva.to_f
             end
@@ -216,6 +220,11 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           payment = capital.to_f + interests.to_f + iva.to_f
         end
         remaining_debt = remaining_debt.to_f - capital.to_f
+        if(remaining_debt < 0)
+          payment = current_debt.to_f + interests.to_f + iva.to_f
+          capital = payment.to_f - interests.to_f - iva.to_f
+          #break
+        end
       end
       @capital += capital
       @interests += interests
@@ -231,7 +240,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       end
       start_date = payment_date
       @end_date = payment_date
-      break if (remaining_debt.to_f < payment)
+      break if (remaining_debt.to_f < 0)
     end
     @total_debt = @total_debt + @capital + @interests + @iva
   end

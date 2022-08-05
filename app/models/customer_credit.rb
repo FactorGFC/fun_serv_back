@@ -57,7 +57,7 @@ class CustomerCredit < ApplicationRecord
   include Swagger::Blocks
   include Swagger::CustomerCreditSchema
   belongs_to :customer
-  belongs_to :payment_period 
+  belongs_to :payment_period, optional: true
   belongs_to :term, optional: true
   belongs_to :user, optional: true
   #belongs_to :credit_rating
