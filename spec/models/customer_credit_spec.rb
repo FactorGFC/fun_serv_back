@@ -68,7 +68,7 @@ RSpec.describe CustomerCredit, type: :model do
   it { should validate_presence_of :fixed_payment }
   it { should validate_presence_of :rate }
   it { should belong_to(:customer) }
-  it { should belong_to(:payment_period) }
+  #it { should belong_to(:payment_period) }
   #it { should belong_to(:term) }
   #it { should belong_to(:user)}
  # it { should belong_to(:credit_rating) }
