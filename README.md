@@ -1,6 +1,4 @@
-# README
-
-#NOMINA BACKEND
+# NOMINA BACKEND
 
 Necessary steps to get the
 application up and running:
@@ -9,29 +7,29 @@ application up and running:
 * Ruby version: '2.7.6'
 
 * System dependencies:
-    node.js
-    pg db
+   - node.js
+   - pg db
     
 * Configuration:
 
     rvm install "2.7.6"
     * borrar gemfile.lock
-    bundle install
+   - bundle install
     * probar con
-    rails s
+   - rails s
 
 * Database creation: *ver scripts para poblar db
 
 * Database initialization:
 
 - Correr:
-  rake db:migrate
-  rake db:test:prepare
+-rake db:migrate
+-rake db:test:prepare
 
 * How to run the test suite
-    bundle exec rspec
+    - bundle exec rspec
 
 * Deployment instructions
-    commit and push
+    - commit and push
 * ...
 # nomina_backend

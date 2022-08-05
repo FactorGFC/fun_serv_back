@@ -259,6 +259,7 @@ class ApplicationController < ActionController::Base
     end
     response = execute_statement(@query)
      generate_customer_credit_request_report_pdf
+     # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
     if response.blank?
       @cliente = Customer.find(@customer_credit.customer_id)
       @mailer_signatories = response.to_a
@@ -390,11 +391,7 @@ class ApplicationController < ActionController::Base
     @creditos_personales = @customer_credit_data[0]["creditos_personales"]
     @creditos_lp = @customer_credit_data[0]["creditos_lp"]
     @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
-    get_credit_payments(@customer_credit.id)
-    puts "@amortizacion"
-    puts  @amortizacion[0].inspect
-    puts "@amortizacion"
-
+    @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
     @file = CombinePDF.new
     @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
     
@@ -480,7 +477,7 @@ class ApplicationController < ActionController::Base
 
   def get_customer_credit_data
 
-    @query = "SELECT ter.value numero_pagos, ter.description plazo , pap.value periodo_pago, 
+    @query = "SELECT ter.value numero_pagos, ter.description plazo , 
     cus.credit_lp creditos_lp,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
     con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
     peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name nombre, peo.last_name apellido_paterno, peo.second_last_name apellido_materno, peo.gender pf_genero, 
@@ -494,7 +491,7 @@ class ApplicationController < ActionController::Base
     JOIN contributors con ON (cus.contributor_id = con.id)
     JOIN terms ter ON (ter.id = cuc.term_id)
     JOIN customer_personal_references cpr ON (cpr.customer_id = cus.id)
-    JOIN payment_periods pap ON (pap.id = cuc.payment_period_id)
+
     LEFT JOIN people peo ON (peo.id = con.person_id)
     LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
     JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
@@ -540,36 +537,28 @@ class ApplicationController < ActionController::Base
 
   def borra_documentos
 
-    @documents_array.each do |v|
+    @documents_array.each do |document_name|
       # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
-      borra_de_local(v)
+      borra_de_local(document_name)
       #BORRA ARCHIVOS GUARDADOS EN BUCKET S3
-      borra_de_s3(v)
+      borra_de_s3(document_name)
     end
     borra_de_local("final_#{@folio}")
 
 
   end
 
-  def borra_de_local(nombre_del_documento)
-    File.delete(Rails.root.join("#{nombre_del_documento}.pdf"))if File.exist?(Rails.root.join("#{nombre_del_documento}.pdf"))
+  def borra_de_local(document_name)
+    File.delete(Rails.root.join("#{document_name}.pdf"))if File.exist?(Rails.root.join("#{document_name}.pdf"))
   end
 
-  def borra_de_s3(nombre_del_documento)
+  def borra_de_s3(document_name)
     bucket = s3.bucket(bucket_name)
-    obj = bucket.object("nomina_customer_documents/#{nomina_env}/#{@folio}/customer_credit_#{nombre_del_documento}_report_#{@folio}.pdf")
+    obj = bucket.object("nomina_customer_documents/#{nomina_env}/#{@folio}/customer_credit_#{document_name}_report_#{@folio}.pdf")
     obj.delete
   end
 
-  def get_credit_payments(id)
-    @query = 
-    "select p.pay_number, p.current_debt, p.remaining_debt, p.payment, p.capital, p.interests, p.payment_date, p.status,
-    (select email from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id))),
-    (select name from users where id = (select user_id from customers where id = (select customer_id from customer_credits c where id=p.customer_credit_id)))
-    from sim_customer_payments p
-    where customer_credit_id = '#{id}'"
-    @amortizacion = execute_statement(@query)
-  end
+
 
 end
 
