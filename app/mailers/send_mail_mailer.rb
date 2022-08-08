@@ -23,6 +23,13 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
+  def committee(email, name, subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end
+
   def send_email_account_status(email, name, subject, title, content)
     # wb = xlsx_package.workbook
     # wb.styles do |s|

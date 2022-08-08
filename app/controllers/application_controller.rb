@@ -257,7 +257,7 @@ class ApplicationController < ActionController::Base
     response = execute_statement(@query)
      generate_customer_credit_request_report_pdf
      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
-    if response.blank?
+    unless response.blank?
       @cliente = Customer.find(@customer_credit.customer_id)
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
