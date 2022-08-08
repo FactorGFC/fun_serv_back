@@ -96,4 +96,41 @@ class CustomerCredit < ApplicationRecord
     folio = t.to_i
     self[:credit_folio] = "CN#{folio.to_s}"
   end
+
+  def self.get_customer_credit_data(id)
+
+    @query = "SELECT ter.value numero_pagos, ter.description plazo , 
+    cus.credit_lp creditos_lp,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
+    con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
+    peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name nombre, peo.last_name apellido_paterno, peo.second_last_name apellido_materno, peo.gender pf_genero, 
+    peo.nationality pf_nacionalidad, peo.birthplace pf_lugar_nacimiento, peo.birthdate pf_fecha_nacimiento, peo.martial_status pf_estado_civil,peo.martial_regime pf_regimen_marital,peo.senior_dependents dependientes_mayores,peo.minior_dependents dependientes_menores,peo.housing_type tipo_vivienda, peo.id_type pf_tipo_identificacion, peo.identification pf_numero_identificacion, 
+    peo.phone pf_telefono, peo.mobile pf_celular, peo.email pf_correo, peo.fiel pf_fiel, lee.fiscal_regime pm_regimen_fiscal, lee.rfc pm_rfc, lee.rug pm_rug, lee.business_name pm_nombre, lee.phone pm_telefono, lee.mobile pm_celular, 
+    lee.email pm_correo, lee.business_email pm_correo_negocio, lee.main_activity pm_actividad_pricipal, lee.fiel pm_fiel, coa.street calle, coa.suburb colonia, coa.external_number numero_exterior,coa.apartment_number numero_apartamento, coa.postal_code codigo_postal,
+    sta.name estado, mun.name municipio, cou.name pais,com.business_name nombre_empresa , com.start_date fecha_inicio_labores, com.sector giro_empresa,com.contributor_id company_contributor_id, cpr
+    FROM customer_credits cuc
+    JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN companies com ON (cus.company_id = com.id)
+    JOIN contributors con ON (cus.contributor_id = con.id)
+    JOIN terms ter ON (ter.id = cuc.term_id)
+    JOIN customer_personal_references cpr ON (cpr.customer_id = cus.id)
+    LEFT JOIN people peo ON (peo.id = con.person_id)
+    LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
+    JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+    JOIN states sta ON (sta.id = coa.state_id)
+    JOIN municipalities mun ON (mun.id = coa.municipality_id)
+    JOIN countries cou ON (cou.id = sta.country_id)
+            WHERE cuc.id = ':customer_credit_id';"
+    @query = @query.gsub ':customer_credit_id', id.to_s
+    begin
+      result = self.connection.exec_query(@query, :skip_logging)
+      self.connection.close
+    rescue => e
+      Debug.exception e, 'exec_q'
+      self.connection.close
+      result = nil
+    end
+    return result
+
+  end
+
 end

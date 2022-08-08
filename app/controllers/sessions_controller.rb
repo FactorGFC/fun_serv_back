@@ -48,7 +48,6 @@ class SessionsController < ApplicationController
 #MAILER DE ESTADO DE CUENTA
   def send_account_status_mailer
     @id = params[:id]
-    # response = get_credit_payments(@id)
     response = PaymentCredit.get_credit_payments(@id)
     unless response.blank?
       SendMailMailer.send_email_account_status(

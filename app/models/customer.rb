@@ -75,4 +75,28 @@ class Customer < ApplicationRecord
   validates :status, presence: true
   validates :salary, presence: true
   validates :salary_period, presence: true
+
+  def self.get_customer_company_address(id)
+    @query = "SELECT  coa.suburb colonia,coa.street calle, coa.external_number numero_exterior,
+    coa.postal_code codigo_postal, mun.name municipio, sta.name estado
+    FROM customer_credits cuc
+      JOIN customers cus ON (cus.id = cuc.customer_id)
+      JOIN contributors con ON (cus.contributor_id = con.id)
+      JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+      JOIN states sta ON (sta.id = coa.state_id)
+      JOIN municipalities mun ON (mun.id = coa.municipality_id)
+              WHERE cuc.id = ':customer_credit_id';"
+    @query = @query.gsub ':customer_credit_id', id.to_s
+    begin
+      result = self.connection.exec_query(@query, :skip_logging)
+      self.connection.close
+    rescue => e
+      Debug.exception e, 'exec_q'
+      self.connection.close
+      result = nil
+    end
+    return result
+
+  end
+
 end
