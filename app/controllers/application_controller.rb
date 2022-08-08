@@ -6,7 +6,6 @@ require 'open-uri'
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
-  # respond_to :json
 
   include ActionView::Helpers::AssetTagHelper
   
@@ -23,7 +22,7 @@ class ApplicationController < ActionController::Base
 
     if token.nil? || !token.is_valid? || !@my_app.is_your_token?(token)
       # render json: {error: "Tu Token es inv�lido" }, status: :unauthorized
-      error!('Tu token es inválido ', :unauthorized)
+      error!('Tu token es inválido', :unauthorized)
     else
       @current_user = token.user
     end
@@ -108,8 +107,6 @@ class ApplicationController < ActionController::Base
       raise ActiveRecord::Rollback
     end
   end
-
-
 
   private
 
@@ -299,8 +296,7 @@ class ApplicationController < ActionController::Base
     @mailer_mail_to
   end
 
-  #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDARLO EN S3
-  #ADJUNTA UN PDF CON EL SIGUIENTE PARA HACER UNO SOLO CON EL CONBINE PDF
+  #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDA EN S3
   def generate_customer_credit_request_report_pdf
     @mail_factor = 'sistemasfgfc@gmail.com'
     @folio = @customer_credit.id
@@ -353,7 +349,6 @@ class ApplicationController < ActionController::Base
     @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
     @company_municipio_name = @customer_company_address_data[0]["municipio"]
     @company_state_name = @customer_company_address_data[0]["estado"]
-
     @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
     @giro_empresa = @customer_credit_data[0]["giro_empresa"]
     @salario = @customer_credit_data[0]["salario"]
@@ -402,86 +397,24 @@ class ApplicationController < ActionController::Base
     @file.save "final_#{@folio}.pdf"
     file = File.open(Rails.root.join("final_#{@folio}.pdf"))
     @final_filename = "customer_credit_final_report_#{@folio}.pdf"
-    path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
-    s3_save(file,path_final)
+    path_final = "nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@final_filename}"
+    Document.s3_save(file,path_final)
     file.close
     
-    @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+    @url_final = "https://#{Document.bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@final_filename}"
 
     @customer_credit.update(attached: @url_final)
     # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
-    borra_documentos
-  end
-
-  def nomina_env 
-    if ENV['RAILS_ENV'] == 'development'
-      trae_local_env
-    elsif ENV['RAILS_ENV'] == 'test'
-      trae_local_env
-    else 
-      return trae_nomina_env
-    end
-  end
-
-  def trae_local_env
-    unless ENV['LOCAL_NOMINA_ENV'].blank?
-      return ENV['LOCAL_NOMINA_ENV']
-    else
-      @error_desc.push("No se encontró la variable de entorno LOCAL_NOMINA_ENV")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-     end
-  end
-
-  def trae_nomina_env
-    unless ENV['NOMINA_ENV'].blank?
-        return ENV['NOMINA_ENV']
-      else
-        @error_desc.push("No se encontró la variable de entorno NOMINA_ENV")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      end
-  end
-
-  def s3_save(file, s3_path)
-    obj = s3.bucket(bucket_name).object(s3_path)
-    obj.put(
-      body: file,
-      acl: "public-read" # optional: makes the file readable by anyone
-      )
-  end
-
-  def s3    
-      unless ENV['LOCAL_ACCESS_KEY_ID'].blank? || ENV['LOCAL_AWS_REGION'].blank?  || ENV['LOCAL_SECRET_ACCESS_KEY'].blank? || ENV['LOCAL_BUCKET_NAME'].blank?
-        return Aws::S3::Resource.new(
-          access_key_id:   ENV['LOCAL_ACCESS_KEY_ID'] ,
-          region: ENV['LOCAL_AWS_REGION'],
-          secret_access_key:  ENV['LOCAL_SECRET_ACCESS_KEY']
-        )
-      else
-        @error_desc.push("No se encontraron las variables de entorno para AWS")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      end
-  end
-
-  def bucket_name
-    unless ENV['LOCAL_BUCKET_NAME'].blank?
-      return ENV['LOCAL_BUCKET_NAME']
-    else
-      @error_desc.push("No se encontró la variable de entorno LOCAL_BUCKET_NAME")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-    end
+    Document.borra_documentos(@documents_array,@folio)
   end
 
   def render_pdf_to_s3(nombre_del_documento)
 
     @filename = "customer_credit_#{nombre_del_documento}_report_#{@folio}.pdf"
     pdf = render_to_string pdf: @filename, template: "#{nombre_del_documento}.pdf.erb", encoding: "UTF-8"
-    @path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
-    s3_save(pdf,@path)
-    @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    @path = "nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@filename}"
+    Document.s3_save(pdf,@path)
+    @url = "https://#{Document.bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@filename}"
     File.open("#{nombre_del_documento}.pdf", "wb") do |cd_file|
       cd_file.write open(@url).read
     end
@@ -489,26 +422,4 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def borra_documentos
-
-    @documents_array.each do |document_name|
-      # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
-      borra_de_local(document_name)
-      #BORRA ARCHIVOS GUARDADOS EN BUCKET S3
-      borra_de_s3(document_name)
-    end
-    borra_de_local("final_#{@folio}")
-  end
-
-  def borra_de_local(document_name)
-    File.delete(Rails.root.join("#{document_name}.pdf"))if File.exist?(Rails.root.join("#{document_name}.pdf"))
-  end
-
-  def borra_de_s3(document_name)
-    bucket = s3.bucket(bucket_name)
-    obj = bucket.object("nomina_customer_documents/#{nomina_env}/#{@folio}/customer_credit_#{document_name}_report_#{@folio}.pdf")
-    obj.delete
-  end
-
 end
-
