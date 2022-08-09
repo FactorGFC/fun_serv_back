@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_08_215221) do
+ActiveRecord::Schema.define(version: 2022_08_09_220728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -179,7 +179,6 @@ ActiveRecord::Schema.define(version: 2022_08_08_215221) do
   end
 
   create_table "customer_credits_signatories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "customer_credit_id", null: false
     t.string "signatory_token"
     t.datetime "signatory_token_expiration"
     t.string "status"
@@ -187,6 +186,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_215221) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "notes"
     t.uuid "user_id", null: false
+    t.uuid "customer_credit_id", null: false
     t.index ["customer_credit_id"], name: "index_customer_credits_signatories_on_customer_credit_id"
     t.index ["user_id"], name: "index_customer_credits_signatories_on_user_id"
   end

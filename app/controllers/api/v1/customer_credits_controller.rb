@@ -129,24 +129,30 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     total_requested = @customer_credit.total_requested
     company_rate = @company.company_rate
     seniority = @customer.seniority
-    if company_rate == 'FACTOR'
-     @rates = ExtRate.where(rate_type: 'FACTOR_R' )
-     @customer_credit.rate = @rates[0].value
-     @commissions = ExtRate.where(rate_type: 'FACTOR_C')
-     @commission_per = @commissions[0].value
-    else
-      @commissions = ExtRate.where(rate_type: 'GPA')
+    unless seniority.blank?
+      if company_rate == 'FACTOR'
+      @rates = ExtRate.where(rate_type: 'FACTOR_R' )
+      @customer_credit.rate = @rates[0].value
+      @commissions = ExtRate.where(rate_type: 'FACTOR_C')
       @commission_per = @commissions[0].value
-      if seniority < 4
-        @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
-        @customer_credit.rate = @rates[0].value
-      elsif seniority >= 4 && seniority < 9
-        @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
-        @customer_credit.rate = @rates[0].value
-      else seniority >= 9
-        @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
-        @customer_credit.rate = @rates[0].value
+      else
+        @commissions = ExtRate.where(rate_type: 'GPA')
+        @commission_per = @commissions[0].value
+        if seniority < 4
+          @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
+          @customer_credit.rate = @rates[0].value
+        elsif seniority >= 4 && seniority < 9
+          @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
+          @customer_credit.rate = @rates[0].value
+        else seniority >= 9
+          @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
+          @customer_credit.rate = @rates[0].value
+        end
       end
+    else
+     @error_desc.push("Cliente no tiene capturada su antiguedad")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
     end
     client_rate = @customer_credit.rate
     rate = (client_rate.to_f / payment_period.to_f) / 100
