@@ -5,7 +5,7 @@
 #  id               :uuid             not null, primary key
 #  balance          :decimal(15, 4)
 #  business_name    :string           not null
-#  company_rate     :decimal(, )
+#  company_rate     :string
 #  credit_available :decimal(15, 4)
 #  credit_limit     :decimal(15, 4)
 #  document         :string
@@ -34,7 +34,7 @@ FactoryBot.define do
     document { "Documentación" }
     sector { "Financiero" }
     subsector { "Banca" }
-    company_rate {"12.5"}
+    company_rate {"EXTERNO"}
     association :contributor, factory: :contributor
     end
 end

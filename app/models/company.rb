@@ -7,7 +7,7 @@ end
 #  id               :uuid             not null, primary key
 #  balance          :decimal(15, 4)
 #  business_name    :string           not null
-#  company_rate     :decimal(, )
+#  company_rate     :string
 #  credit_available :decimal(15, 4)
 #  credit_limit     :decimal(15, 4)
 #  document         :string

@@ -17,10 +17,10 @@
 #
 FactoryBot.define do
   factory :term do
-    key { "12m" }
-    description { "Doce meses" }
-    value { 12 }
-    term_type { "ME" }
+    key { "72 pagos" }
+    description { "Credito a 3 años" }
+    value { 72 }
+    term_type { "Quincenal" }
     credit_limit { "100000.00" }
     extra1 { "MyString" }
     extra2 { "MyString" }

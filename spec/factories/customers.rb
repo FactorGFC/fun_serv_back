@@ -75,7 +75,7 @@ FactoryBot.define do
     extra2 { "MyString" }
     extra3 { "MyString" }
     immediate_superior {"Raul Gutierrez Molinar"} 
-    seniority {"5"} 
+    seniority {"2"} 
     ontime_bonus {"825.30"}
     assist_bonus {"825.30"}
     food_vouchers {"245.00"} 

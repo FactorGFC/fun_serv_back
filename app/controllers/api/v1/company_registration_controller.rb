@@ -53,7 +53,9 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
               raise ActiveRecord::Rollback
             end
       #Aqui se debde de crear company
-      @company = Company.new(contributor_id: @contributor.id, business_name: company_params[:business_name], start_date: company_params[:start_date], credit_limit: company_params[:credit_limit], credit_available: company_params[:credit_available], document: company_params[:document], sector: company_params[:sector], subsector: company_params[:subsector] )
+      @company = Company.new(contributor_id: @contributor.id, business_name: company_params[:business_name], start_date: company_params[:start_date], 
+                              credit_limit: company_params[:credit_limit], credit_available: company_params[:credit_available], document: company_params[:document], 
+                              sector: company_params[:sector], subsector: company_params[:subsector], company_rate: company_params[:company_rate] )
             #create_contributor_documents
             if @company.save
               unless @legal_entity.blank?
@@ -94,7 +96,7 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
   end
 
   def company_params
-    params.require(:company).permit(:business_name, :start_date, :credit_limit, :credit_available, :document, :sector, :subsector)
+    params.require(:company).permit(:business_name, :start_date, :credit_limit, :credit_available, :document, :sector, :subsector, :company_rate)
   end
 
   def create_contributor_documents

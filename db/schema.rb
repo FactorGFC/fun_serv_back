@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_27_191525) do
+ActiveRecord::Schema.define(version: 2022_08_08_215221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2022_07_27_191525) do
     t.string "document"
     t.string "sector"
     t.string "subsector"
-    t.decimal "company_rate"
+    t.string "company_rate"
     t.uuid "contributor_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -168,9 +168,9 @@ ActiveRecord::Schema.define(version: 2022_07_27_191525) do
     t.decimal "iva_percent", precision: 15, scale: 4
     t.string "credit_folio"
     t.string "currency"
+    t.uuid "user_id"
     t.decimal "insurance", precision: 15, scale: 4
     t.decimal "commission", precision: 15, scale: 4
-    t.uuid "user_id"
     t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"
     t.index ["payment_period_id"], name: "index_customer_credits_on_payment_period_id"

@@ -16,12 +16,35 @@
 #
 FactoryBot.define do
   factory :ext_rate do
-    key { "tiie_28dias" }
-    description { "Tasa de interés interbancaria a 28 días" }
-    start_date { "2020-06-12" }
-    end_date { "2020-06-12" }
-    value { "5.7347" }
-    rate_type { "porcentaje" }
+    key { "Iva_16" }
+    description { "Taza de empleados de factor" }
+    start_date { "2022-01-01" }
+    end_date { "2022-12-31" }
+    value { "12.5" }
+    rate_type { "IVA" }
     max_value { "" }
+    
+    factory :er_factor do
+      key { "EXTERNO" }
+      description { "Taza de empleados de factor" }
+      start_date { "2022-01-01" }
+      end_date { "2022-12-31" }
+      value { "1" }
+      rate_type { "GPA" }
+      max_value { "" }
+     end
+     factory :er_externo do
+      key { "FAC" }
+      description { "Comision por apertura para GPA" }
+      start_date { "2022-01-01" }
+      end_date { "2022-12-31" }
+      value { "1" }
+      rate_type { "EXT_ONE_YEARS" }
+      max_value { "" }
+     end
+    end
   end
-end
+ 
+  
+  
+

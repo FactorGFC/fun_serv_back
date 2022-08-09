@@ -79,7 +79,7 @@ class CustomerCredit < ApplicationRecord
   validates :total_payments, presence: true
   validates :balance, presence: true
   validates :fixed_payment, presence: true
-  validates :rate, presence: true
+  #validates :rate, presence: true
   
   before_create :calculate_balance_credit
   before_create :create_folio

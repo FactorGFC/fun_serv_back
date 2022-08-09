@@ -8,6 +8,7 @@
 #  attached          :string
 #  balance           :decimal(15, 4)   not null
 #  capital           :decimal(15, 4)   not null
+#  commission        :decimal(15, 4)
 #  credit_folio      :string
 #  currency          :string
 #  debt_time         :decimal(15, 4)
@@ -17,6 +18,7 @@
 #  extra2            :string
 #  extra3            :string
 #  fixed_payment     :decimal(15, 4)   not null
+#  insurance         :decimal(15, 4)
 #  interests         :decimal(15, 4)   not null
 #  iva               :decimal(15, 4)   not null
 #  iva_percent       :decimal(15, 4)

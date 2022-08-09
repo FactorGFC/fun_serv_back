@@ -16,9 +16,9 @@
 #
 FactoryBot.define do
   factory :payment_period do
-    key { "Mensual" }
-    description { "Pago Mensual" }
-    value { 12 }
+    key { "Quincenal" }
+    description { "Numero de pagos al año" }
+    value { 24 }
     pp_type { "Numero de pagos en el año" }
     extra1 { "MyString" }
     extra2 { "MyString" }

@@ -19,6 +19,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       @customer_credit = CustomerCredit.new(customer_credits_params)
       @respuesta = Customer.where(id: @customer_credit.customer_id)
       @customer = @respuesta[0]
+      @companies = Company.where(id: @customer.company_id)
+      @company = @companies[0]
       if @customer.blank?
         error_array!(@error_desc, :unprocessable_entity)
         @error_desc.push("No existe el @customer: #{@customer_credit.customer_id}")
@@ -26,6 +28,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       else
         @capital = 0
         @customer_credit.capital = @capital
+        @rate =0
+        @customer_credit.rate = @rate
         @interests = 0
         @customer_credit.interests = @interests
         @iva = 0
@@ -66,8 +70,14 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             term = @term.value
           end
             calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
+            @months = (@end_date.year * 12 + @end_date.month) - (@date.year * 12 + @date.month)
+            @debt_time = (@months/12)
+            @insurance_percent = GeneralParameter.get_general_parameter_value('SEGURO')
+            total_requested = @customer_credit.total_requested
+            iva_percent = @customer_credit.iva_percent
+            @insurance = total_requested.to_f * @debt_time * (1+(iva_percent/100)) * @insurance_percent.to_f
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
-                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2))
+                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, debt_time: @debt_time, insurance: @insurance)
           if @customer_credit.status == 'SI'
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
@@ -117,6 +127,27 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @dias_dispersion = params[:dias_dispersion]
     payment_period = @payment_period.value
     total_requested = @customer_credit.total_requested
+    company_rate = @company.company_rate
+    seniority = @customer.seniority
+    if company_rate == 'FACTOR'
+     @rates = ExtRate.where(rate_type: 'FACTOR_R' )
+     @customer_credit.rate = @rates[0].value
+     @commissions = ExtRate.where(rate_type: 'FACTOR_C')
+     @commission_per = @commissions[0].value
+    else
+      @commissions = ExtRate.where(rate_type: 'GPA')
+      @commission_per = @commissions[0].value
+      if seniority < 4
+        @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
+        @customer_credit.rate = @rates[0].value
+      elsif seniority >= 4 && seniority < 9
+        @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
+        @customer_credit.rate = @rates[0].value
+      else seniority >= 9
+        @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
+        @customer_credit.rate = @rates[0].value
+      end
+    end
     client_rate = @customer_credit.rate
     rate = (client_rate.to_f / payment_period.to_f) / 100
     diary_rate = ((client_rate.to_f/100) / 360)
@@ -129,16 +160,18 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     else
       if payment_amount.blank?
         payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-term.to_f)))
+
       elsif term == 0
         term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
       end 
     end 
     @fixed_payment = payment_amount.to_f
-    @commision = (total_requested.to_f * 0.01) * (1 + (iva_percent.to_f/100))
+    @commission = (total_requested.to_f * @commission_per.to_f/100) * (1 + (iva_percent.to_f/100))
     remaining_debt = 0
     actual_date = DateTime.now
     @number_anuality = []
     start_date = actual_date + @dias_dispersion.to_i.days
+    @date = start_date
     start_date += 1 until start_date.strftime('%u').to_i == 4
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales
@@ -209,8 +242,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               capital = payment.to_f - interests.to_f - iva.to_f
              # term = ((Math.log (1/(1-((rate_with_iva.to_f * remaining_debt.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
             else
-              puts'remaining_debt' + remaining_debt.inspect
-            
               capital = payment_amount.to_f - interests.to_f - iva.to_f
               payment = capital.to_f + interests.to_f + iva.to_f
             end
