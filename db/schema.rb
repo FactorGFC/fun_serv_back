@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_10_140306) do
+ActiveRecord::Schema.define(version: 2022_08_10_150336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -169,8 +169,6 @@ ActiveRecord::Schema.define(version: 2022_08_10_140306) do
     t.string "credit_folio"
     t.string "currency"
     t.uuid "user_id"
-    t.decimal "insurance", precision: 15, scale: 4
-    t.decimal "commission", precision: 15, scale: 4
     t.decimal "insurance1", precision: 15, scale: 4
     t.decimal "commission1", precision: 15, scale: 4
     t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
@@ -181,7 +179,6 @@ ActiveRecord::Schema.define(version: 2022_08_10_140306) do
   end
 
   create_table "customer_credits_signatories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "customer_credit_id", null: false
     t.string "signatory_token"
     t.datetime "signatory_token_expiration"
     t.string "status"
@@ -189,6 +186,7 @@ ActiveRecord::Schema.define(version: 2022_08_10_140306) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "notes"
     t.uuid "user_id", null: false
+    t.uuid "customer_credit_id", null: false
     t.index ["customer_credit_id"], name: "index_customer_credits_signatories_on_customer_credit_id"
     t.index ["user_id"], name: "index_customer_credits_signatories_on_user_id"
   end
