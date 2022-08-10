@@ -255,7 +255,7 @@ class ApplicationController < ActionController::Base
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
     end
     response = execute_statement(@query)
-    if Document.documents_mode
+    if documents_mode
      generate_customer_credit_request_report_pdf
     end
      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
@@ -425,6 +425,21 @@ class ApplicationController < ActionController::Base
     end
     @file << CombinePDF.load(Rails.root.join("#{nombre_del_documento}.pdf"), allow_optional_content: true)
 
+  end
+
+  def documents_mode
+    response = GeneralParameter.get_general_parameter_value('DOCUMENT_MODE')
+    unless response.blank?
+      unless @documents_mode == 'NO' 
+        return true
+      else
+        return false
+      end
+    else
+      @error_desc.push("No se encontró el parámetro general DOCUMENT_MODE")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
   end
 
 end

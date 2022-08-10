@@ -35,12 +35,6 @@ class Document < ApplicationRecord
   validates :document_type, presence: true
   validates :name, presence: true
   validates :description, presence: true
-
-  def self.error_array!(array, status)
-    @errors += array
-    response.status = status
-    render 'api/v1/errors'
-  end
     
   def self.nomina_env 
     if ENV['RAILS_ENV'] == 'development'
@@ -125,19 +119,5 @@ class Document < ApplicationRecord
     borra_de_local("final_#{folio}")
   end
 
-  def self.documents_mode
-    @documents_mode = GeneralParameter.get_general_parameter_value('DOCUMENT_MODE')
-    unless @documents_mode.blank?
-      unless @documents_mode == 'FRONT' 
-        return true
-      else
-        return false
-      end
-    else
-      @error_desc.push("No se encontró el parámetro general DOCUMENT_MODE")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-    end
-  end
 
 end
