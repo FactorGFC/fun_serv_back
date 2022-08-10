@@ -255,7 +255,9 @@ class ApplicationController < ActionController::Base
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
     end
     response = execute_statement(@query)
+    if Document.documents_mode
      generate_customer_credit_request_report_pdf
+    end
      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
     unless response.blank?
       @cliente = Customer.find(@customer_credit.customer_id)
