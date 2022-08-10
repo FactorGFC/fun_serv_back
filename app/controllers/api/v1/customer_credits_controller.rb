@@ -77,7 +77,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             iva_percent = @customer_credit.iva_percent
             @insurance = total_requested.to_f * @debt_time * (1+(iva_percent/100)) * @insurance_percent.to_f
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
-                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, debt_time: @debt_time, insurance: @insurance)
+                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, debt_time: @debt_time, insurance1: @insurance)
           if @customer_credit.status == 'SI'
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
