@@ -968,7 +968,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @query = "SELECT id, name, email
     FROM users
     WHERE job IN (':job', 'CONTROL', 'TESORERÍA', 'ADMINISTRADOR')
-    AND status = 'ACTIVO';"
+    AND status = 'AC';"
     @query = @query.gsub ':job', params[:job].to_s
     @financial_workers = execute_statement(@query)
     render json: @financial_workers
