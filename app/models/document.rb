@@ -35,6 +35,12 @@ class Document < ApplicationRecord
   validates :document_type, presence: true
   validates :name, presence: true
   validates :description, presence: true
+
+  def self.error_array!(array, status)
+    @errors += array
+    response.status = status
+    render 'api/v1/errors'
+  end
     
   def self.nomina_env 
     if ENV['RAILS_ENV'] == 'development'
