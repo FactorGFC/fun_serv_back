@@ -263,7 +263,6 @@ class ApplicationController < ActionController::Base
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
           unless @frontend_url.blank?
             @mailer_signatories.each do |mailer_signatory|
-              puts "ENTRA AL EACH MAILERS"
               begin
                 @token_commitee =  SecureRandom.hex
                 # TOKEN CON VIDA UTIL DE 7 DIAS
@@ -272,15 +271,7 @@ class ApplicationController < ActionController::Base
                 @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_commitee}"
               end while CustomerCredit.where(extra3: @token_commitee).any?
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-              puts "mailer_signatory['id']"
-              puts mailer_signatory['id']
-              puts "mailer_signatory['id']"
-              puts "Empieza el customer_credit_signatory"
               @customer_credit_signatory = CustomerCreditsSignatory.new(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
-              puts "@customer_credit_signatory.inspect"
-              puts @customer_credit_signatory.inspect
-              puts "@customer_credit_signatory.inspect"
-              puts "DESPUES DEL customer_credit_signatory"
               if @customer_credit_signatory.save
                 mail_to = mailer_mode_to(mailer_signatory['email'])
                 SendMailMailer.committee(mail_to,
@@ -443,11 +434,11 @@ class ApplicationController < ActionController::Base
         end
 
         @file.save "final_#{@folio}.pdf"
-        file = File.open(Rails.root.join("final_#{@folio}.pdf"))
+        file = URI.open(Rails.root.join("final_#{@folio}.pdf")).read
         @final_filename = "customer_credit_final_report_#{@folio}.pdf"
         path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
         s3_save(file,path_final)
-        file.close
+        # file.close
         
         @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
 
@@ -473,7 +464,7 @@ class ApplicationController < ActionController::Base
     @path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     s3_save(pdf,@path)
     @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
-    File.open("#{nombre_del_documento}.pdf", "wb") do |cd_file|
+    URI.open("#{nombre_del_documento}.pdf", "wb") do |cd_file|
       cd_file.write open(@url).read
     end
     @file << CombinePDF.load(Rails.root.join("#{nombre_del_documento}.pdf"), allow_optional_content: true)
