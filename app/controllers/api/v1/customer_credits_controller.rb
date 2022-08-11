@@ -84,6 +84,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           elsif @customer_credit.status == 'PR'
                 #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
                 send_committee_mail(@customer_credit)
+                render 'api/v1/customer_credits/show'
           else
               render 'api/v1/customer_credits/show' 
           end

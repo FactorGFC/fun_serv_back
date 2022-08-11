@@ -308,118 +308,139 @@ class ApplicationController < ActionController::Base
     @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
     @anio = Time.now.strftime("%Y")
     @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
+    unless @customer_credit_data.blank?
       @term = @customer_credit_data[0]["numero_pagos"]
-        @plazo = @customer_credit_data[0]["plazo"]   
-        @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
-        @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
-        @banco = @customer_credit_data[0]["banco"]
-        @calle = @customer_credit_data[0]["calle"]
-        @numero_exterior = @customer_credit_data[0]["numero_exterior"]
-        @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
-        @colonia = @customer_credit_data[0]["colonia"]
-        @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
-      # @suburb_type = @customer_credit_data[0][""]
-        @estado = @customer_credit_data[0]["estado"]
-        @country = @customer_credit_data[0]["pais"]
-        @municipio = @customer_credit_data[0]["municipio"]
-        @company = @customer_credit_data[0]["nombre_empresa"]
-        @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
-        @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
-        @giro_empresa = @customer_credit_data[0]["giro_empresa"]
-        @salario = @customer_credit_data[0]["salario"]
-        @total_gastos = @customer_credit_data[0]["total_gastos"]
-        @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
-        @ingreso_total = @customer_credit_data[0]["ingreso_total"]
-        @otros_ingresos = @customer_credit_data[0]["ingreso_total"]
-        @jefe_inmediato = @customer_credit_data[0]["jefe_inmediato"]
-        @regimen_fiscal = @customer_credit_data[0]["pm_regimen_fiscal"]
-        @rfc = @customer_credit_data[0]["pf_rfc"]
-        @curp =@customer_credit_data[0]["pf_curp"]
-        @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
-        @nombre = @customer_credit_data[0]["nombre"]
-        @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
-        @apellido_materno = @customer_credit_data[0]["apellido_materno"]
-        @sexo = @customer_credit_data[0]["pf_genero"]
-        @nacionalidad = @customer_credit_data[0]["pf_nacionalidad"]
-        @lugar_nacimiento = @customer_credit_data[0]["pf_lugar_nacimiento"]
-        @fecha_nacimiento = @customer_credit_data[0]["pf_fecha_nacimiento"].to_date 
-        @age = Date.today.year - @fecha_nacimiento.year
-        @age -= 1 if Date.today < @fecha_nacimiento + @age.years #for days before birthday
-        @estado_civil = @customer_credit_data[0]["pf_estado_civil"]
-        @regimen_marital = @customer_credit_data[0]["pf_regimen_marital"]
-        @dependientes_mayores =  @customer_credit_data[0]["dependientes_mayores"]
-        @dependientes_menores = @customer_credit_data[0]["dependientes_menores"]
-        @tipo_vivienda = @customer_credit_data[0]["tipo_vivienda"]
-        @identificacion_oficial = @customer_credit_data[0]["pf_tipo_identificacion"]
-        @ine = @customer_credit_data[0]["pf_numero_identificacion"]
-        @telefono = @customer_credit_data[0]["pf_telefono"]
-        @movil = @customer_credit_data[0]["pf_celular"]
-        @email = @customer_credit_data[0]["pf_correo"]
-        @gastos_renta = @customer_credit_data[0]["renta"]
-        @antiguedad = @customer_credit_data[0]["antiguedad"]
-        @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
-        @creditos_personales = @customer_credit_data[0]["creditos_personales"]
-        @creditos_lp = @customer_credit_data[0]["creditos_lp"]
-          @customer_id = @customer_credit.customer_id
-          @destino = @customer_credit.destination
-          @monto_total_solicitado = @customer_credit.total_requested
-          @capital = @customer_credit.capital
-          @intereses = @customer_credit.interests
-          @iva = @customer_credit.iva
-          @deuda_total = @customer_credit.total_debt
-          @total_pagos = @customer_credit.total_payments
-          @balance = @customer_credit.balance
-          @pagos_fijos = @customer_credit.fixed_payment
-          @status = @customer_credit.status
-          @fecha_inicio = @customer_credit.start_date
-          @dia_inicio = @fecha_inicio.strftime("%d")
-          @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
-          @anio_inicio = @fecha_inicio.strftime("%Y")
-          @fecha_fin = @customer_credit.end_date
-          @dia_fin = @fecha_fin.strftime("%d")
-          @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
-          @anio_fin = @fecha_fin.strftime("%Y")
-
-
-    # CUSTOMER COMPANY'S ADDRESS
-    @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
-    @company_colonia = @customer_company_address_data[0]["colonia"]
-    @company_calle = @customer_company_address_data[0]["calle"]
-    @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
-    @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
-    @company_municipio_name = @customer_company_address_data[0]["municipio"]
-    @company_state_name = @customer_company_address_data[0]["estado"]
-    
-    @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
-    @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
-    @file = CombinePDF.new
-    @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-    
-    @documents_array.each do |document_name|
-      render_pdf_to_s3(document_name)
+      @plazo = @customer_credit_data[0]["plazo"]   
+      @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
+      @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
+      @banco = @customer_credit_data[0]["banco"]
+      @calle = @customer_credit_data[0]["calle"]
+      @numero_exterior = @customer_credit_data[0]["numero_exterior"]
+      @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
+      @colonia = @customer_credit_data[0]["colonia"]
+      @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
+    # @suburb_type = @customer_credit_data[0][""]
+      @estado = @customer_credit_data[0]["estado"]
+      @country = @customer_credit_data[0]["pais"]
+      @municipio = @customer_credit_data[0]["municipio"]
+      @company = @customer_credit_data[0]["nombre_empresa"]
+      @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
+      @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
+      @giro_empresa = @customer_credit_data[0]["giro_empresa"]
+      @salario = @customer_credit_data[0]["salario"]
+      @total_gastos = @customer_credit_data[0]["total_gastos"]
+      @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
+      @ingreso_total = @customer_credit_data[0]["ingreso_total"]
+      @otros_ingresos = @customer_credit_data[0]["ingreso_total"]
+      @jefe_inmediato = @customer_credit_data[0]["jefe_inmediato"]
+      @regimen_fiscal = @customer_credit_data[0]["pm_regimen_fiscal"]
+      @rfc = @customer_credit_data[0]["pf_rfc"]
+      @curp =@customer_credit_data[0]["pf_curp"]
+      @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
+      @nombre = @customer_credit_data[0]["nombre"]
+      @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
+      @apellido_materno = @customer_credit_data[0]["apellido_materno"]
+      @sexo = @customer_credit_data[0]["pf_genero"]
+      @nacionalidad = @customer_credit_data[0]["pf_nacionalidad"]
+      @lugar_nacimiento = @customer_credit_data[0]["pf_lugar_nacimiento"]
+      @fecha_nacimiento = @customer_credit_data[0]["pf_fecha_nacimiento"].to_date 
+      @age = Date.today.year - @fecha_nacimiento.year
+      @age -= 1 if Date.today < @fecha_nacimiento + @age.years #for days before birthday
+      @estado_civil = @customer_credit_data[0]["pf_estado_civil"]
+      @regimen_marital = @customer_credit_data[0]["pf_regimen_marital"]
+      @dependientes_mayores =  @customer_credit_data[0]["dependientes_mayores"]
+      @dependientes_menores = @customer_credit_data[0]["dependientes_menores"]
+      @tipo_vivienda = @customer_credit_data[0]["tipo_vivienda"]
+      @identificacion_oficial = @customer_credit_data[0]["pf_tipo_identificacion"]
+      @ine = @customer_credit_data[0]["pf_numero_identificacion"]
+      @telefono = @customer_credit_data[0]["pf_telefono"]
+      @movil = @customer_credit_data[0]["pf_celular"]
+      @email = @customer_credit_data[0]["pf_correo"]
+      @gastos_renta = @customer_credit_data[0]["renta"]
+      @antiguedad = @customer_credit_data[0]["antiguedad"]
+      @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
+      @creditos_personales = @customer_credit_data[0]["creditos_personales"]
+      @creditos_lp = @customer_credit_data[0]["creditos_lp"]
+      @customer_id = @customer_credit.customer_id
+      @destino = @customer_credit.destination
+      @monto_total_solicitado = @customer_credit.total_requested
+      @capital = @customer_credit.capital
+      @intereses = @customer_credit.interests
+      @iva = @customer_credit.iva
+      @deuda_total = @customer_credit.total_debt
+      @total_pagos = @customer_credit.total_payments
+      @balance = @customer_credit.balance
+      @pagos_fijos = @customer_credit.fixed_payment
+      @status = @customer_credit.status
+      @fecha_inicio = @customer_credit.start_date
+      @dia_inicio = @fecha_inicio.strftime("%d")
+      @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
+      @anio_inicio = @fecha_inicio.strftime("%Y")
+      @fecha_fin = @customer_credit.end_date
+      @dia_fin = @fecha_fin.strftime("%d")
+      @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
+      @anio_fin = @fecha_fin.strftime("%Y")
+      # CUSTOMER COMPANY'S ADDRESS
+      @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
+      unless @customer_company_address_data.blank?
+        @company_colonia = @customer_company_address_data[0]["colonia"]
+        @company_calle = @customer_company_address_data[0]["calle"]
+        @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
+        @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
+        @company_municipio_name = @customer_company_address_data[0]["municipio"]
+        @company_state_name = @customer_company_address_data[0]["estado"]
+      else
+        @error_desc.push("No se encontró la informacion de la empresa del cliente")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+    else
+      @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
     end
+    @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
+    unless @referencias_personales.blank?
+      @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
+      unless @amortizacion.blank?
+      @file = CombinePDF.new
+      @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+      
+      @documents_array.each do |document_name|
+        render_pdf_to_s3(document_name)
+      end
 
-    @file.save "final_#{@folio}.pdf"
-    file = File.open(Rails.root.join("final_#{@folio}.pdf"))
-    @final_filename = "customer_credit_final_report_#{@folio}.pdf"
-    path_final = "nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@final_filename}"
-    Document.s3_save(file,path_final)
-    file.close
-    
-    @url_final = "https://#{Document.bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@final_filename}"
+      @file.save "final_#{@folio}.pdf"
+      file = File.open(Rails.root.join("final_#{@folio}.pdf"))
+      @final_filename = "customer_credit_final_report_#{@folio}.pdf"
+      path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+      s3_save(file,path_final)
+      file.close
+      
+      @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
 
-    @customer_credit.update(attached: @url_final)
-    # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
-    Document.borra_documentos(@documents_array,@folio)
+      @customer_credit.update(attached: @url_final)
+      # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
+      borra_documentos(@documents_array,@folio)
+      else
+        @error_desc.push("No se encontraron amortizaciones del cliente (get_credit_payments)")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+    else
+      @error_desc.push("No se encontraron refrencias personales del cliente")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
   end
 
   def render_pdf_to_s3(nombre_del_documento)
 
     @filename = "customer_credit_#{nombre_del_documento}_report_#{@folio}.pdf"
     pdf = render_to_string pdf: @filename, template: "#{nombre_del_documento}.pdf.erb", encoding: "UTF-8"
-    @path = "nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@filename}"
-    Document.s3_save(pdf,@path)
-    @url = "https://#{Document.bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{Document.nomina_env}/#{@folio}/#{@filename}"
+    @path = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
+    s3_save(pdf,@path)
+    @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@filename}"
     File.open("#{nombre_del_documento}.pdf", "wb") do |cd_file|
       cd_file.write open(@url).read
     end
@@ -440,6 +461,89 @@ class ApplicationController < ActionController::Base
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end
+  end
+
+  def nomina_env 
+    if ENV['RAILS_ENV'] == 'development'
+      trae_local_env
+    elsif ENV['RAILS_ENV'] == 'test'
+      trae_local_env
+    else 
+      return trae_nomina_env
+    end
+  end
+
+  def trae_local_env
+    unless ENV['LOCAL_NOMINA_ENV'].blank?
+      return ENV['LOCAL_NOMINA_ENV']
+    else
+      @error_desc.push("No se encontró la variable de entorno LOCAL_NOMINA_ENV")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+     end
+  end
+
+  def trae_nomina_env
+    unless ENV['NOMINA_ENV'].blank?
+        return ENV['NOMINA_ENV']
+      else
+        @error_desc.push("No se encontró la variable de entorno NOMINA_ENV")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+  end
+
+  def s3_save(file, s3_path)
+    obj = s3.bucket(bucket_name).object(s3_path)
+    obj.put(
+      body: file,
+      acl: "public-read" # optional: makes the file readable by anyone
+      )
+  end
+
+  def s3    
+      unless ENV['LOCAL_ACCESS_KEY_ID'].blank? || ENV['LOCAL_AWS_REGION'].blank?  || ENV['LOCAL_SECRET_ACCESS_KEY'].blank? || ENV['LOCAL_BUCKET_NAME'].blank?
+        return Aws::S3::Resource.new(
+          access_key_id:   ENV['LOCAL_ACCESS_KEY_ID'] ,
+          region: ENV['LOCAL_AWS_REGION'],
+          secret_access_key:  ENV['LOCAL_SECRET_ACCESS_KEY']
+        )
+      else
+        @error_desc.push("No se encontraron las variables de entorno para AWS")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+  end
+
+  def bucket_name
+    unless ENV['LOCAL_BUCKET_NAME'].blank?
+      return ENV['LOCAL_BUCKET_NAME']
+    else
+      @error_desc.push("No se encontró la variable de entorno LOCAL_BUCKET_NAME")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
+  end
+
+  def borra_de_local(document_name)
+    File.delete(Rails.root.join("#{document_name}.pdf"))if File.exist?(Rails.root.join("#{document_name}.pdf"))
+  end
+
+  def borra_de_s3(document_name,folio)
+    bucket = s3.bucket(bucket_name)
+    obj = bucket.object("nomina_customer_documents/#{nomina_env}/#{folio}/customer_credit_#{document_name}_report_#{folio}.pdf")
+    obj.delete
+  end
+
+  def borra_documentos(documents_array,folio)
+
+    documents_array.each do |document_name|
+      # BORRA ARCHIVOS GUARDADOS LOCALMENTE CUANDO YA NO SE REQUIEREN
+      borra_de_local(document_name)
+      #BORRA ARCHIVOS GUARDADOS EN BUCKET S3
+      borra_de_s3(document_name,folio)
+    end
+    borra_de_local("final_#{folio}")
   end
 
 end
