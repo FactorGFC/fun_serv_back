@@ -23,10 +23,14 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class CustomerCreditsSignatory < ApplicationRecord
-  belongs_to :customer_credit, :class_name => 'CustomerCredit',:foreign_key => 'customer_credit_id', :validate => true
+  # belongs_to :customer_credit, :class_name => 'CustomerCredit',:foreign_key => 'customer_credit_id', :validate => true
+  belongs_to :customer_credit
   # belongs_to :customer_credit
-  belongs_to :user, :class_name => 'User',:foreign_key => 'user_id', :validate => true
+  # belongs_to :user, :class_name => 'User',:foreign_key => 'user_id', :validate => true
+  belongs_to :user
   # belongs_to :user
+
+  has_many :users
 
   validates :signatory_token, presence: true
   validates :signatory_token_expiration, presence: true
