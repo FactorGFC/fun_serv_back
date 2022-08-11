@@ -271,6 +271,9 @@ class ApplicationController < ActionController::Base
                 @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_commitee}"
               end while CustomerCredit.where(extra3: @token_commitee).any?
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+              puts "mailer_signatory['id']"
+              puts mailer_signatory['id']
+              puts "mailer_signatory['id']"
               @customer_credit_signatory = CustomerCreditsSignatory.new(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
               if @customer_credit_signatory.save
                 mail_to = mailer_mode_to(mailer_signatory['email'])
@@ -474,7 +477,7 @@ class ApplicationController < ActionController::Base
   def documents_mode
     response = GeneralParameter.get_general_parameter_value('DOCUMENT_MODE')
     unless response.blank?
-      unless @documents_mode == 'NO' 
+      unless response == 'NO' 
         return true
       else
         return false
