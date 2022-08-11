@@ -263,6 +263,7 @@ class ApplicationController < ActionController::Base
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
           unless @frontend_url.blank?
             @mailer_signatories.each do |mailer_signatory|
+              puts "ENTRA AL EACH MAILERS"
               begin
                 @token_commitee =  SecureRandom.hex
                 # TOKEN CON VIDA UTIL DE 7 DIAS
@@ -274,7 +275,12 @@ class ApplicationController < ActionController::Base
               puts "mailer_signatory['id']"
               puts mailer_signatory['id']
               puts "mailer_signatory['id']"
+              puts "Empieza el customer_credit_signatory"
               @customer_credit_signatory = CustomerCreditsSignatory.new(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+              puts "@customer_credit_signatory.inspect"
+              puts @customer_credit_signatory.inspect
+              puts "@customer_credit_signatory.inspect"
+              puts "DESPUES DEL customer_credit_signatory"
               if @customer_credit_signatory.save
                 mail_to = mailer_mode_to(mailer_signatory['email'])
                 SendMailMailer.committee(mail_to,
