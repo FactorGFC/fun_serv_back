@@ -280,11 +280,12 @@ class ApplicationController < ActionController::Base
                   "Aprobar como #{mailer_signatory['tipo']}",
                   [@callback_url_committee,@customer_credit,@cliente.name]
                 ).deliver_now
-            else 
-              error_array!(@customer_credit_signatory.errors.full_messages, :unprocessable_entity)
-              raise ActiveRecord::Rollback
+              else 
+                @error_desc.push( @customer_credit_signatory.errors.full_messages,"Falla al guardar @customer_credit_signatory.save")
+                error_array!(@error_desc, :unprocessable_entity)
+                raise ActiveRecord::Rollback
+              end
             end
-          end
           else
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
             @error_desc.push("No se encontró parametro general FRONTEND_URL")
@@ -341,7 +342,7 @@ class ApplicationController < ActionController::Base
       @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
       @colonia = @customer_credit_data[0]["colonia"]
       @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
-    # @suburb_type = @customer_credit_data[0][""]
+      # @suburb_type = @customer_credit_data[0][""]
       @estado = @customer_credit_data[0]["estado"]
       @country = @customer_credit_data[0]["pais"]
       @municipio = @customer_credit_data[0]["municipio"]
@@ -425,25 +426,25 @@ class ApplicationController < ActionController::Base
     unless @referencias_personales.blank?
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
-      @file = CombinePDF.new
-      @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-      
-      @documents_array.each do |document_name|
-        render_pdf_to_s3(document_name)
-      end
+        @file = CombinePDF.new
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        
+        @documents_array.each do |document_name|
+          render_pdf_to_s3(document_name)
+        end
 
-      @file.save "final_#{@folio}.pdf"
-      file = File.open(Rails.root.join("final_#{@folio}.pdf"))
-      @final_filename = "customer_credit_final_report_#{@folio}.pdf"
-      path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
-      s3_save(file,path_final)
-      file.close
-      
-      @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+        @file.save "final_#{@folio}.pdf"
+        file = File.open(Rails.root.join("final_#{@folio}.pdf"))
+        @final_filename = "customer_credit_final_report_#{@folio}.pdf"
+        path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
+        s3_save(file,path_final)
+        file.close
+        
+        @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
 
-      @customer_credit.update(attached: @url_final)
-      # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
-      borra_documentos(@documents_array,@folio)
+        @customer_credit.update(attached: @url_final)
+        # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
+        borra_documentos(@documents_array,@folio)
       else
         @error_desc.push("No se encontraron amortizaciones del cliente (get_credit_payments)")
         error_array!(@error_desc, :not_found)
