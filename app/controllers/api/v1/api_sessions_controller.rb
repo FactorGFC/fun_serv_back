@@ -40,7 +40,7 @@ class Api::V1::ApiSessionsController < Api::V1::MasterApiController
                                   @user.name,
                                   'FactorGFC - Cambio de contraseña',
                                   'Recibimos una solicitud para cambiar tu contraseña',
-                                  "para cambiar tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/resetpwd/#{@reset_password_token.token}. 
+                                  "para cambiar tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/#/resetpwd/#{@reset_password_token.token}. 
                                   Por motivos de seguridad la liga solo estará vigente 24 horas.").deliver_now
         render 'api/v1/users_reset_password/show'
       else
