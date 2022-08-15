@@ -23,6 +23,7 @@ class SessionsController < ApplicationController
   def get_callback
     @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
+    unless @customer_credit_signatory.blank?
       if @customer_credit[0].extra2 > Time.now
         if @customer_credit.blank?
           @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}")
@@ -39,9 +40,14 @@ class SessionsController < ApplicationController
             error_array!(@error_desc, :not_found)
           end
         end
-    else
-      @error_desc.push("El token ha expirado.")
-      error_array!(@error_desc, :not_found)
+      else
+        @error_desc.push("El token ha expirado.")
+        error_array!(@error_desc, :not_found)
+      end
+    else 
+      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit")
+      error_array!(@error_desc, :unprocessable_entity)
+      # raise ActiveRecord::Rollback
     end
   end
 
@@ -68,24 +74,29 @@ class SessionsController < ApplicationController
   def get_callback_decline
     @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
-    if @customer_credit[0].extra2 > Time.now
-      if @customer_credit.blank?
-        @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}")
-        error_array!(@error_desc, :not_found)
-      else
-        if @customer_credit[0].status == 'PR'
-        @customer_credit.update(status: 'RECHAZADO')
-        @customer_credit.update(extra3: "#{params[:call_back_token]}-RECHAZADO")
-        render json: { message: 'Ok, Credito actualizado con exito RECHAZADO' }, status: 200
-        else
-          @error_desc.push("El credito ya ha sido actualizado por el cliente #{@customer_credit[0].status}")
+    unless @customer_credit.blank?
+      if @customer_credit[0].extra2 > Time.now
+        if @customer_credit.blank?
+          @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}")
           error_array!(@error_desc, :not_found)
-        end
+        else
+          if @customer_credit[0].status == 'PR'
+          @customer_credit.update(status: 'RECHAZADO')
+          @customer_credit.update(extra3: "#{params[:call_back_token]}-RECHAZADO")
+          render json: { message: 'Ok, Credito actualizado con exito RECHAZADO' }, status: 200
+          else
+            @error_desc.push("El credito ya ha sido actualizado por el cliente #{@customer_credit[0].status}")
+            error_array!(@error_desc, :not_found)
+          end
 
+        end
+      else
+        @error_desc.push("El token ha expirado.")
+        error_array!(@error_desc, :not_found)
       end
-    else
-      @error_desc.push("El token ha expirado.")
-      error_array!(@error_desc, :not_found)
+    else 
+      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit")
+      error_array!(@error_desc, :unprocessable_entity)
     end
   end
 
@@ -123,8 +134,10 @@ class SessionsController < ApplicationController
       end
     else
       # NO SE ENCONTRÓ EL TOKEN
-      render json: { message: 'Token de un solo uso ya fué utilizado!', status: false
-        }, status: 206
+      # render json: { message: 'Token de un solo uso ya fué utilizado!', status: false
+      #   }, status: 206
+      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit signatory")
+      error_array!(@error_desc, :unprocessable_entity)
     end
   end
 

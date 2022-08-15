@@ -14,12 +14,11 @@ Rails.application.routes.draw do
   post '/get_callback', to: 'sessions#get_callback'
   post '/get_callback_decline', to: 'sessions#get_callback_decline'
   post '/get_callback_token', to: 'sessions#get_callback_token'
+  post '/get_comitee_callback_token', to: 'sessions#get_comitee_callback_token'
   get '/account_status_mailer/:id', to: 'sessions#send_account_status_mailer'
   #borrar al finalizar pruebas
   # root :to => 'welcome#index', as: :home
 
-  
-  post '/get_comitee_callback_token', to: 'sessions#get_comitee_callback_token'
   resources :my_apps, except: %i[show index]
   resources :apidocs, only: [:index]
   namespace :api, defaults: { format: 'json' } do
