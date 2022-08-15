@@ -271,7 +271,9 @@ class ApplicationController < ActionController::Base
                 @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_commitee}"
               end while CustomerCredit.where(extra3: @token_commitee).any?
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-              customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+              customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
+              # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+              customer_credit_signatory.save
               unless customer_credit_signatory.blank?
                 mail_to = mailer_mode_to(mailer_signatory['email'])
                 SendMailMailer.committee(mail_to,
