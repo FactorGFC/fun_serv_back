@@ -91,6 +91,7 @@ Rails.application.routes.draw do
       get '/reports/user_id/:user_id/user_company', to: 'reports#user_company'
       get '/reports/user_id/:user_id/customer_user_association', to: 'reports#customer_user_association'  
       match '*unmatched', via: [:options], to: 'master_api#xhr_options_request'
+      # get '/get_solicitud_credito', to: 'reports#get_credito'
       # get '/get_solicitud_credito', to: 'reports#get_solicitud_credito'
     end
   end
