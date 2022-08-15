@@ -887,15 +887,12 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     render json: @user_supplier
   end
 
-  def supplier_user_association
-    @query = "SELECT sus.id supplier_user_id, sus.user_id, sus.supplier_id
-    FROM users usr, supplier_users sus, suppliers sup
-    WHERE usr.id = sus.user_id
-    AND sus.supplier_id = sup.id
-    AND usr.id = ':user_id';"
+  def customer_user_association
+    @query = "SELECT * from customers cus 
+    WHERE cus.user_id = ':user_id';"
     @query = @query.gsub ':user_id', params[:user_id].to_s
-    @supplier_user_association = execute_statement(@query)
-    render json: @supplier_user_association
+    @customer_user_association = execute_statement(@query)
+    render json: @customer_user_association
   end
 
   def company_user_association
@@ -2668,7 +2665,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   # Reporte para mostrar los datos del cliente a partir de un credito
 def get_credit_customer_report
   @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, cuc.start_date decha_credito, cuc.status status_credito, ter.value numero_pagos, pap.value periodo_pago, 
-  cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
+  cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.salary_period, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
   con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
   peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name || ' ' || peo.last_name || ' ' || peo.second_last_name pf_nombre, peo.gender pf_genero, 
   peo.nationality pf_nacionalidad, peo.birthplace pf_lugar_nacimiento, peo.birthdate pf_fecha_nacimiento, peo.martial_status pf_estado_civil, peo.id_type pf_tipo_identificacion, peo.identification pf_numero_identificacion, 
