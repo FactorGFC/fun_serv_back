@@ -122,10 +122,10 @@ class SessionsController < ApplicationController
   def get_comitee_callback_token
     @error_desc = []
     #OBTIENE EL SIGNATORY_TOKEN_EXPIRATION DE LA TABLA CUSTOMER_CREDITS_SIGNATORIES MEDIANTE EL TOKEN EN PARAMS
-    customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:call_back_token])
-    unless customer_credit_signatory.blank?
-      if customer_credit_signatory[0].signatory_token_expiration > Time.now
-          render json: { message: 'Token Ok', status: true , credit_id: customer_credit_signatory[0].customer_credit_id}, status: 200
+    @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:call_back_token])
+    if @customer_credit_signatory.blank?
+      if @customer_credit_signatory[0].signatory_token_expiration > Time.now
+          render json: { message: 'Token Ok', status: true , credit_id: @customer_credit_signatory[0].customer_credit_id}, status: 200
       else
         #EL TOKEN HA EXPIRADO
         render json: { message: 'Token expiró', status: false }, status: 206
@@ -134,10 +134,10 @@ class SessionsController < ApplicationController
       end
     else
       # NO SE ENCONTRÓ EL TOKEN
-      # render json: { message: 'Token de un solo uso ya fué utilizado!', status: false
-      #   }, status: 206
-      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit signatory")
-      error_array!(@error_desc, :unprocessable_entity)
+      render json: { message: "No se encontró registro", customer_credit_signatory: "#{@customer_credit_signatory.inspect}", status: false
+        }, status: 206
+      # @error_desc.push( ,"No encuentra el customer credit signatory")
+      # error_array!(@customer_credit_signatory.errors.full_messages, :unprocessable_entity)
     end
   end
 
