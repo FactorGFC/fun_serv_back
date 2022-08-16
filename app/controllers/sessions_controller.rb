@@ -123,7 +123,7 @@ class SessionsController < ApplicationController
     @error_desc = []
     #OBTIENE EL SIGNATORY_TOKEN_EXPIRATION DE LA TABLA CUSTOMER_CREDITS_SIGNATORIES MEDIANTE EL TOKEN EN PARAMS
     @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:call_back_token])
-    if @customer_credit_signatory.blank?
+    unless @customer_credit_signatory.blank?
       if @customer_credit_signatory[0].signatory_token_expiration > Time.now
           render json: { message: 'Token Ok', status: true , credit_id: @customer_credit_signatory[0].customer_credit_id}, status: 200
       else
