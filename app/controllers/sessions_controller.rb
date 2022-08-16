@@ -126,8 +126,8 @@ class SessionsController < ApplicationController
     @query = @query.gsub ':token', params[:call_back_token].to_s
     # @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:call_back_token])
     @customer_credit_signatory = execute_statement(@query)
-    @signatory_token_expiration = @customer_credit_signatory[0]['signatory_token_expiration']
     unless @customer_credit_signatory.blank?
+      @signatory_token_expiration = @customer_credit_signatory[0]['signatory_token_expiration']
       if @signatory_token_expiration > Time.now
           render json: { message: 'Token Ok', status: true , credit_id: @customer_credit_signatory[0]["customer_credit_id"]}, status: 200
       else
