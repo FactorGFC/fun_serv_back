@@ -326,7 +326,7 @@ class ApplicationController < ActionController::Base
   #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDA EN S3
   def generate_customer_credit_request_report_pdf
     @mail_factor = 'sistemasfgfc@gmail.com'
-    @folio = @customer_credit.id
+    @folio = @customer_credit.credit_folio
     @lugar = 'Chihuahua, Chihuahua'
     @date = Time.now.strftime("%d/%m/%Y")
     @dia = Time.now.strftime("%d")
