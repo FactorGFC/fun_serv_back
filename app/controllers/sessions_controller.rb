@@ -20,35 +20,26 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to '/'
   end
+
 #CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO
   def get_callback
-    @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
-    unless @customer_credit_signatory.blank?
+    unless @customer_credit.blank?
       if @customer_credit[0].extra2 > Time.now
-        if @customer_credit.blank?
-          @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}")
-          error_array!(@error_desc, :not_found)
-        else
           if @customer_credit[0].status == 'PR'
-            @customer_credit.update(status: 'ACEPTADO')
-            @customer_credit.update(extra3: "#{params[:call_back_token]}-ACEPTADO")
-            render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
+            @customer_credit.update(status: 'AC')
+            @customer_credit.update(extra3: "#{params[:call_back_token]}-AC")
             #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y DE LUZ VERDE
-            send_control_desk_mailer(@customer_credit)
+            send_control_desk_mailer(@customer_credit[0].id)
+            render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)' }, status: 200
           else
-            @error_desc.push("El credito ya ha sido actualizado por el cliente #{@customer_credit.status}")
-            error_array!(@error_desc, :not_found)
+            render json: { message: "El credito ya ha sido actualizado por el cliente #{@customer_credit.status}", status: false }, status: 206
           end
-        end
       else
-        @error_desc.push("El token ha expirado.")
-        error_array!(@error_desc, :not_found)
+        render json: { message: "Token expiró el #{@customer_credit[0].extra2}", status: false }, status: 206
       end
     else 
-      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit")
-      error_array!(@error_desc, :unprocessable_entity)
-      # raise ActiveRecord::Rollback
+      render json: { message: "No encuentra el customer credit", place: "get_callback",status: false }, status: 206
     end
   end
 
@@ -78,26 +69,22 @@ class SessionsController < ApplicationController
     unless @customer_credit.blank?
       if @customer_credit[0].extra2 > Time.now
         if @customer_credit.blank?
-          @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}")
-          error_array!(@error_desc, :not_found)
+          render json: { message: "No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}", status: false }, status: 206
         else
           if @customer_credit[0].status == 'PR'
-          @customer_credit.update(status: 'RECHAZADO')
-          @customer_credit.update(extra3: "#{params[:call_back_token]}-RECHAZADO")
-          render json: { message: 'Ok, Credito actualizado con exito RECHAZADO' }, status: 200
+          @customer_credit.update(status: 'RE')
+          @customer_credit.update(extra3: "#{params[:call_back_token]}-RE")
+          render json: { message: 'Ok, Credito actualizado con exito (RECHAZADO)' }, status: 200
           else
-            @error_desc.push("El credito ya ha sido actualizado por el cliente #{@customer_credit[0].status}")
-            error_array!(@error_desc, :not_found)
+            render json: { message: "El credito ya ha sido actualizado por el cliente (#{@customer_credit[0].status})", status: false }, status: 206
           end
 
         end
       else
-        @error_desc.push("El token ha expirado.")
-        error_array!(@error_desc, :not_found)
+        render json: { message: "Token expiró el #{@customer_credit[0].extra2}", status: false }, status: 206
       end
     else 
-      @error_desc.push( @customer_credit.errors.full_messages,"No encuentra el customer credit")
-      error_array!(@error_desc, :unprocessable_entity)
+      render json: { message: "No encuentra el customer credit", status: false }, status: 206
     end
   end
 
@@ -106,12 +93,10 @@ class SessionsController < ApplicationController
     customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
     unless customer_credit.blank?
       if customer_credit[0].extra2 > Time.now
-          render json: { message: 'Token Ok', status: true }, status: 200
+          render json: { message: 'Token vigente', status: true }, status: 200
       else
         #EL TOKEN HA EXPIRADO
-        render json: { message: 'Token expiró', status: false }, status: 206
-        @error_desc.push("El token ha expirado.")
-        error_array!(@error_desc, :not_found)
+        render json: { message: "Token expiró el #{customer_credit[0].extra2}", status: false }, status: 206
       end
     else
       # NO SE ENCONTRÓ EL TOKEN
@@ -121,32 +106,19 @@ class SessionsController < ApplicationController
   end
 
   def get_comitee_callback_token
-    #OBTIENE EL SIGNATORY_TOKEN_EXPIRATION DE LA TABLA CUSTOMER_CREDITS_SIGNATORIES MEDIANTE EL TOKEN EN PARAMS
-    # @query = "SELECT * FROM public.customer_credits_signatories
-    # WHERE signatory_token = ':token'"
-    # @query = @query.gsub ':token', params[:call_back_token].to_s
     @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:call_back_token])
-    # @customer_credit_signatory = execute_statement(@query)
     unless @customer_credit_signatory.blank?
-      puts "/////////////////////////////////////////////////////////////////////////////////////////"
-      puts "@customer_credit_signatory.inspect"
-      puts @customer_credit_signatory[0].inspect
-      puts "/////////////////////////////////////////////////////////////////////////////////////////"
       @signatory_token_expiration = @customer_credit_signatory[0].signatory_token_expiration
       if @signatory_token_expiration > Time.now
           render json: { message: 'Token Ok', status: true , credit_id: @customer_credit_signatory[0]["customer_credit_id"]}, status: 200
       else
         #EL TOKEN HA EXPIRADO
         render json: { message: 'Token expiró', status: false }, status: 206
-        # @error_desc.push("El token ha expirado.")
-        # error_array!(@error_desc, :not_found)
       end
     else
       # NO SE ENCONTRÓ EL TOKEN
       render json: { message: "No se encontró registro", customer_credit_signatory: "#{@customer_credit_signatory[0].inspect}", status: false
         }, status: 206
-      # @error_desc.push( ,"No encuentra el customer credit signatory")
-      # error_array!(@customer_credit_signatory.errors.full_messages, :unprocessable_entity)
     end
   end
 
