@@ -259,9 +259,6 @@ class ApplicationController < ActionController::Base
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
-        if documents_mode
-          generate_customer_credit_request_report_pdf
-        end
         @cliente = Customer.find(@customer_credit.customer_id)
         unless @cliente.blank?
           @mailer_signatories = response.to_a
@@ -292,6 +289,9 @@ class ApplicationController < ActionController::Base
                 error_array!(@error_desc, :unprocessable_entity)
                 # raise ActiveRecord::Rollback
               end
+            end
+            if documents_mode
+              generate_customer_credit_request_report_pdf
             end
           else
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
