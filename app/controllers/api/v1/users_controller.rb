@@ -43,7 +43,7 @@ class Api::V1::UsersController < Api::V1::MasterApiController
                                   @user.name,
                                   'FactorGFC - ¡Bienvenido a nuestro sistema de solicitud de credito!',
                                   'Bienvenido a nuestro sistema de solicitud de credito.',
-                                  "tu usuario ya fue dado de alta en el sistema, para crear tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/#{@reset_password_token.token}. 
+                                  "tu usuario ya fue dado de alta en el sistema, para crear tu contraseña puedes entrar a la siguiente liga: #{@frontend_url}/#/resetpwd/#{@reset_password_token.token}.
                                   Por motivos de seguridad la liga solo estará vigente 24 horas.").deliver_now
         render 'api/v1/users_reset_password/show'
       else
