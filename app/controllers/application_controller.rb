@@ -259,7 +259,7 @@ class ApplicationController < ActionController::Base
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
-        unless documents_mode
+        if documents_mode
           generate_customer_credit_request_report_pdf
         end
         @cliente = Customer.find(@customer_credit.customer_id)
