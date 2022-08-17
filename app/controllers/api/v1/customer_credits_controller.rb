@@ -24,7 +24,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       if @customer.blank?
         error_array!(@error_desc, :unprocessable_entity)
         @error_desc.push("No existe el @customer: #{@customer_credit.customer_id}")
-        puts "55-*/5-*5/-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*/5-*5"
         raise ActiveRecord::Rollback
       else
         @capital = 0
@@ -53,7 +52,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           if @payment_period.blank?
             @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
             error_array!(@error_desc, :not_found)
-            puts "4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4-*/4"
             raise ActiveRecord::Rollback
           end 
           @salary = @customer.salary.to_f
@@ -61,7 +59,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           if(@total_requested > (@salary.to_f * @payment_period.value.to_f))
             @error_desc.push("El total del credito no puede ser mayor a un año de sueldo del empleado")
             error_array!(@error_desc, :not_found)
-            puts "7/-/7/7/*7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7*/7"
             raise ActiveRecord::Rollback
           end
                   
@@ -92,7 +89,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               render 'api/v1/customer_credits/show' 
           end
         else
-          puts "-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9-9"
           error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
           raise ActiveRecord::Rollback
         end

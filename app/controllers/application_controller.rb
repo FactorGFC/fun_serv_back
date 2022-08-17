@@ -89,7 +89,6 @@ class ApplicationController < ActionController::Base
       if @term.blank?
         @error_desc.push("No existe un plazo con el id: #{term_id}")
         error_array!(@error_desc, :not_found)
-        puts "55555555555555555555555555555555555555555555555555555555555"
         raise ActiveRecord::Rollback
       else
         @payment_periods = PaymentPeriod.where(id: payment_period_id)
@@ -97,7 +96,6 @@ class ApplicationController < ActionController::Base
         if @payment_period.blank?
           @error_desc.push("No existe un periodo con el id: #{payment_period_id}")
           error_array!(@error_desc, :not_found)
-          puts "44444444444444444444444444444444444444444444444444444444"
           raise ActiveRecord::Rollback
         end
       end      
@@ -106,7 +104,6 @@ class ApplicationController < ActionController::Base
       #render 'api/v1/customer_credits/show'
     else
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-      puts "3333333333333333333333333333333333333333333333333333333"
       raise ActiveRecord::Rollback
     end
   end
@@ -157,7 +154,6 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No existe el periodo de pago: #{payment_period}, El tipo de periodo de debe de ser: Meses(12), Meses(12), Quncenas(24), Semanas(52)")
         error_array!(@error_desc, :unprocessable_entity)
-        puts "11111111111111111111111111111111111111111111111111111111"
         raise ActiveRecord::Rollback
       end
       sim_customer_payments = SimCustomerPayment.create(customer_credit_id: customer_credit_id, pay_number: i, current_debt: current_debt.round(2), remaining_debt:  remaining_debt.round(2),
@@ -166,7 +162,6 @@ class ApplicationController < ActionController::Base
       if sim_customer_payments.blank?
         @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
         error_array!(@error_desc, unprocessable_entity)
-        puts "222222222222222222222222222222222222222222222222222222222"
         raise ActiveRecord::Rollback
       end
       @end_date = payment_date
@@ -287,7 +282,6 @@ class ApplicationController < ActionController::Base
               else 
                 @error_desc.push( customer_credit_signatory.errors.full_messages,"Falla al guardar customer_credit_signatory.save")
                 error_array!(@error_desc, :unprocessable_entity)
-                # raise ActiveRecord::Rollback
               end
             end
             if documents_mode
@@ -297,25 +291,21 @@ class ApplicationController < ActionController::Base
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
             @error_desc.push("No se encontró parametro general FRONTEND_URL")
             error_array!(@error_desc, :not_found)
-            # raise ActiveRecord::Rollback
           end
         else
           # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
           @error_desc.push("No se encontró cliente")
           error_array!(@error_desc, :not_found)
-          # raise ActiveRecord::Rollback
         end
       else
         # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
         @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
       end
     else
       # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
       @error_desc.push("No se encontró el credito")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
     end
   end
 
@@ -422,12 +412,12 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No se encontró la informacion de la empresa del cliente")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+        
       end
     else
       @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      
     end
     @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
     unless @referencias_personales.blank?
@@ -455,12 +445,12 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No se encontraron amortizaciones del cliente (get_credit_payments)")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+        
       end
     else
       @error_desc.push("No se encontraron refrencias personales del cliente")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      
     end
   end
 
@@ -489,7 +479,7 @@ class ApplicationController < ActionController::Base
     else
       @error_desc.push("No se encontró el parámetro general DOCUMENT_MODE")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      
     end
   end
 
@@ -509,7 +499,7 @@ class ApplicationController < ActionController::Base
     else
       @error_desc.push("No se encontró la variable de entorno LOCAL_NOMINA_ENV")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      
      end
   end
 
@@ -519,7 +509,7 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No se encontró la variable de entorno NOMINA_ENV")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+        
       end
   end
 
@@ -541,7 +531,7 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No se encontraron las variables de entorno para AWS")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+        
       end
   end
 
@@ -551,7 +541,7 @@ class ApplicationController < ActionController::Base
     else
       @error_desc.push("No se encontró la variable de entorno LOCAL_BUCKET_NAME")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      
     end
   end
 
