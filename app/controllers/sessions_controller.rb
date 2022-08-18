@@ -2,6 +2,7 @@
 require 'json'
 
 class SessionsController < ApplicationController
+
   def create
     auth = { email: params[:email], password: params[:password] }
     user = User.from_omniauth(auth)
@@ -131,5 +132,28 @@ class SessionsController < ApplicationController
     @mailer_mail_to
   end
 
+  def update_user
+    @user = User.where(reset_password_token: params['reset_password_token'])
+      unless @user.blank?
+        if @user.update(password: params['password'],reset_password_token: "#{params['reset_password_token']}-utilizado" )
+          render json: { message: 'Update ok', status: true , user: @user.inspect}, status: 200
+        else
+          render json: { message: "Hubo un error al actualizar contraseña", user: "#{@user.inspect}", status: false}, status: 206
+        end
+      else
+        # NO SE ENCONTRÓ EL TOKEN
+      render json: { message: "No se encontró registro", user: "#{@user.inspect}", status: false}, status: 206
+      end
+  end
+
+  def get_reset_pwd_token
+    @user_where = User.where(reset_password_token: params[:reset_password_token])
+    @user = @user_where[0]
+    if @user.blank?
+      render json: { message: "No se encontró registro", user: "#{@user.inspect}", status: false}, status: 206
+    else
+      render json: { message: 'Ok', status: true , user: @user.inspect}, status: 200
+    end
+  end
 
 end

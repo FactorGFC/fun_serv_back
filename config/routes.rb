@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   post '/get_callback_token', to: 'sessions#get_callback_token'
   post '/get_comitee_callback_token', to: 'sessions#get_comitee_callback_token'
   get '/account_status_mailer/:id', to: 'sessions#send_account_status_mailer'
+  get '/get_reset_pwd_token', to: 'sessions#get_reset_pwd_token'
+  patch '/update_user_pwd', to: 'sessions#update_user'
   #borrar al finalizar pruebas
   # root :to => 'welcome#index', as: :home
 
