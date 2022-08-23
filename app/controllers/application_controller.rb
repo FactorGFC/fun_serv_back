@@ -282,6 +282,7 @@ class ApplicationController < ActionController::Base
               else 
                 @error_desc.push( customer_credit_signatory.errors.full_messages,"Falla al guardar customer_credit_signatory.save")
                 error_array!(@error_desc, :unprocessable_entity)
+                raise ActiveRecord::Rollback
               end
             end
             if documents_mode
@@ -291,21 +292,25 @@ class ApplicationController < ActionController::Base
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
             @error_desc.push("No se encontró parametro general FRONTEND_URL")
             error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
           end
         else
           # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
           @error_desc.push("No se encontró cliente")
           error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
         end
       else
         # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
         @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
         error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
       end
     else
       # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
       @error_desc.push("No se encontró el credito")
       error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
     end
   end
 
@@ -417,7 +422,7 @@ class ApplicationController < ActionController::Base
     else
       @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
       error_array!(@error_desc, :not_found)
-      
+      raise ActiveRecord::Rollback
     end
     @referencias_personales = CustomerPersonalReference.where(customer_id: @customer_credit.customer_id)
     unless @referencias_personales.blank?
@@ -445,12 +450,12 @@ class ApplicationController < ActionController::Base
       else
         @error_desc.push("No se encontraron amortizaciones del cliente (get_credit_payments)")
         error_array!(@error_desc, :not_found)
-        
+        raise ActiveRecord::Rollback
       end
     else
       @error_desc.push("No se encontraron refrencias personales del cliente")
       error_array!(@error_desc, :not_found)
-      
+      raise ActiveRecord::Rollback
     end
   end
 
