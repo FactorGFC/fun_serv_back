@@ -2671,6 +2671,24 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     render json: @get_company
   end
 
+  def get_customer
+    @query = "SELECT cus.*, con.*, peo.*, lee.*, coa.*
+    FROM customer_credits cuc
+    JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN contributors con ON (cus.contributor_id = con.id)
+    LEFT JOIN people peo ON (peo.id = con.person_id)
+    LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
+    JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+    JOIN states sta ON (sta.id = coa.state_id)
+    JOIN municipalities mun ON (mun.id = coa.municipality_id)
+    JOIN countries cou ON (cou.id = sta.country_id)
+    WHERE cuc.id = ':customer_credit_id';"
+
+    @query = @query.gsub ':customer_credit_id', params[:customer_credit_id].to_s
+    @get_credit_customer_report = execute_statement(@query)
+    render json: @get_credit_customer_report
+  end
+
   # Reporte para mostrar los datos del cliente a partir de un credito
 def get_credit_customer_report
   @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
