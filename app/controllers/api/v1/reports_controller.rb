@@ -2663,7 +2663,10 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def get_company
-    @query = "select * from companies"
+    @query = "select com.* , concat (peo.rfc, lee.rfc ) rfc from companies com
+    JOIN contributors con ON (com.contributor_id = con.id)
+    left JOIN people peo ON (peo.id = con.person_id)
+    left JOIN legal_entities lee ON (lee.id = con.legal_entity_id);"
     @get_company = execute_statement(@query)
     render json: @get_company
   end
