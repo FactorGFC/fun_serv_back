@@ -150,7 +150,7 @@
           </tr>
           <tr class="row26">
             <td colspan="11" ><%= @company %></td>
-            <td colspan="4" >?</td>
+            <td colspan="4" ><%= @puesto %></td>
             <td colspan="6" ><%= @antiguedad %></td>
           </tr>
           <tr class="row27">
@@ -301,18 +301,18 @@
           <tr class="row53">
             <td colspan="9" ><%= number_to_currency(@total_gastos)%> </td>
             <th colspan="3" align="left">TARJETAS DE CERDITO COMERCIAL</th>
-            <td colspan="1"><%= @creditos_lp.empty? ? '': 'X' %></td>
+            <td colspan="1"><%= @creditos_lp.blank? ? '': 'X' %></td>
             <th colspan="4" align="left">HIPOTECARIO</th>
-            <td ><%= @creditos_personales.empty? ? '': 'X' %></td>
+            <td ><%= @creditos_personales.blank? ? '': 'X' %></td>
             <th colspan="2" align="left">OTROS</th>
-            <td colspan="2"><%= @creditos_personales.empty? ? '': 'X' %></td>
+            <td colspan="2"><%= @creditos_personales.blank? ? '': 'X' %></td>
           </tr>
           <tr class="row54">
             <td colspan="9" ></td>
             <th colspan="3" align="left">TARJETAS DE CREDITO BANCARIO</th>
-            <td ><%= @creditos_lp.empty? ? '': 'X' %></td>
+            <td ><%= @creditos_lp.blank? ? '': 'X' %></td>
             <th colspan="4" align="left">AUTOMOVIL</th>
-            <td ><%= @creditos_personales.empty? ? '': 'X' %></td>
+            <td ><%= @creditos_personales.blank? ? '': 'X' %></td>
             <td  colspan="5"></td>
           </tr>
           <tr class="row55">

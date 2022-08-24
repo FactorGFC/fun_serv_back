@@ -101,7 +101,7 @@ class CustomerCredit < ApplicationRecord
 
   def self.get_customer_credit_data(id)
 
-    @query = "SELECT ter.value numero_pagos, ter.description plazo , 
+    @query = "SELECT ter.value numero_pagos, ter.description plazo, us.job puesto,
     cus.credit_lp creditos_lp,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
     con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
     peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name nombre, peo.last_name apellido_paterno, peo.second_last_name apellido_materno, peo.gender pf_genero, 
@@ -111,6 +111,7 @@ class CustomerCredit < ApplicationRecord
     sta.name estado, mun.name municipio, cou.name pais,com.business_name nombre_empresa , com.start_date fecha_inicio_labores, com.sector giro_empresa,com.contributor_id company_contributor_id
     FROM customer_credits cuc
     JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN users us ON (us.id = cus.user_id)
     JOIN companies com ON (cus.company_id = com.id)
     JOIN contributors con ON (cus.contributor_id = con.id)
     JOIN terms ter ON (ter.id = cuc.term_id)

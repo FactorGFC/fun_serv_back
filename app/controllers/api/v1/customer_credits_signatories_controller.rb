@@ -27,12 +27,13 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
 
       def signature
         @error_desc = []
-        puts params.inspect
+        # puts params.inspect
         @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params[:signatory_token])
         if @customer_credit_signatory[0].signatory_token_expiration > Time.now
             if @customer_credit_signatory.blank?
-                @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:signatory_token]}")
-                error_array!(@error_desc, :not_found)
+                # @error_desc.push("No se encontró una solicitud de crédito con el token: #{params[:signatory_token]}")
+                # error_array!(@error_desc, :not_found)
+                render json: { message: "No se encontró una solicitud de crédito con el token: #{params[:signatory_token]}"  }, status: 206
             else
                 if @customer_credit_signatory[0].status == 'PR'
                 @customer_credit_signatory.update(status: params[:status])
@@ -54,8 +55,9 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
 
                 render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
                 else
-                @error_desc.push("El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory.status}")
-                error_array!(@error_desc, :not_found)
+                # @error_desc.push("El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory.status}")
+                # error_array!(@error_desc, :not_found)
+                render json: { message: "El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory.status}"  }, status: 206
                 end
             end
         else

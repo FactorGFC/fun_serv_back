@@ -250,7 +250,7 @@ class ApplicationController < ActionController::Base
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
       WHERE u.role_id = r.id
-      AND r.name IN ('Analista', 'Comité','Empresa')"
+      AND r.name IN ('Comité','Empresa','Director')"
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
@@ -334,7 +334,9 @@ class ApplicationController < ActionController::Base
     @anio = Time.now.strftime("%Y")
     @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
     unless @customer_credit_data.blank?
+      # @suburb_type = @customer_credit_data[0][""]
       @term = @customer_credit_data[0]["numero_pagos"]
+      @puesto = @customer_credit_data[0]["puesto"]
       @plazo = @customer_credit_data[0]["plazo"]   
       @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
       @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
@@ -344,7 +346,6 @@ class ApplicationController < ActionController::Base
       @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
       @colonia = @customer_credit_data[0]["colonia"]
       @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
-      # @suburb_type = @customer_credit_data[0][""]
       @estado = @customer_credit_data[0]["estado"]
       @country = @customer_credit_data[0]["pais"]
       @municipio = @customer_credit_data[0]["municipio"]
@@ -405,20 +406,28 @@ class ApplicationController < ActionController::Base
       @dia_fin = @fecha_fin.strftime("%d")
       @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
       @anio_fin = @fecha_fin.strftime("%Y")
-      # CUSTOMER COMPANY'S ADDRESS
-      @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
-      unless @customer_company_address_data.blank?
-        @company_colonia = @customer_company_address_data[0]["colonia"]
-        @company_calle = @customer_company_address_data[0]["calle"]
-        @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
-        @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
-        @company_municipio_name = @customer_company_address_data[0]["municipio"]
-        @company_state_name = @customer_company_address_data[0]["estado"]
-      else
-        @error_desc.push("No se encontró la informacion de la empresa del cliente")
-        error_array!(@error_desc, :not_found)
-        
-      end
+      # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
+      # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
+      # unless ary.include?(nil)
+        # CUSTOMER COMPANY'S ADDRESS
+        @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
+        unless @customer_company_address_data.blank?
+          @company_colonia = @customer_company_address_data[0]["colonia"]
+          @company_calle = @customer_company_address_data[0]["calle"]
+          @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
+          @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
+          @company_municipio_name = @customer_company_address_data[0]["municipio"]
+          @company_state_name = @customer_company_address_data[0]["estado"]
+        else
+          @error_desc.push("No se encontró la informacion de la empresa del cliente")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        end
+      # else
+        # @error_desc.push("No se encontró un dato del cliente", ary.select {|k,v| k.blank?})
+        # error_array!(@error_desc, :not_found)
+        # raise ActiveRecord::Rollback
+      # end
     else
       @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
       error_array!(@error_desc, :not_found)
