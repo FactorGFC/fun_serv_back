@@ -54,6 +54,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
           end 
+          @user_id = @customer_credit.user_id
+          if @user_id.blank?
+            @error_desc.push("Se debe de mandar el usuario firmado")
+            error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
+          end 
           @salary = @customer.salary.to_f
           @total_requested = @customer_credit.total_requested.to_f
           if(@total_requested > (@salary.to_f * @payment_period.value.to_f))
@@ -76,8 +82,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             total_requested = @customer_credit.total_requested
             iva_percent = @customer_credit.iva_percent
             @insurance = total_requested.to_f * @debt_time * (1+(iva_percent/100)) * @insurance_percent.to_f
+            if @new_term.blank?
+              @new_term_id = @customer_credit.term_id
+            end
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
-                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, debt_time: @debt_time, insurance1: @insurance)
+                                  end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
+                                  debt_time: @debt_time, insurance1: @insurance, term_id: @new_term_id)
           if @customer_credit.status == 'SI'
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
@@ -170,6 +180,18 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
       elsif term == 0
         term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
+        @new_terms = Term.where(value: term)
+        @new_term = @new_terms[0]
+        if @new_term.blank?
+          @new_term = Term.new(key:term.to_s + ' pagos', description: 'Crédito', value: term, term_type: @customer.salary_period, credit_limit: '100000', extra1: 'CUSTOM'  )
+          unless @new_term.save
+            render json: { error: @term.errors }, status: :unprocessable_entity
+            raise ActiveRecord::Rollback
+          end
+          @new_term_id = @new_term.id
+        else
+          @new_term_id = @new_term.id
+        end
       end 
     end 
     @fixed_payment = payment_amount.to_f
@@ -332,6 +354,10 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
   def token
     SecureRandom.hex
+  end
+
+  def terms_params
+    params.require(:term).permit(:key, :description, :value, :term_type, :credit_limit)
   end
 
 end
