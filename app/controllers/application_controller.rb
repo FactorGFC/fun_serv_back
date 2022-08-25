@@ -233,9 +233,46 @@ class ApplicationController < ActionController::Base
         @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         mail_to = mailer_mode_to(mailer_signatory['email'])
         #email, name, subject, title, content
-        SendMailMailer.committee(mail_to,
+        SendMailMailer.commitee(mail_to,
           mailer_signatory['name'],
-          "Factor GFC Global - Credi Global - El comité y la empresa han aceptado la propuesta de credito - #{mailer_signatory['tipo']}",
+          "Factor GFC Global - Credi Global - Revisar Credito - #{mailer_signatory['tipo']}",
+          "Revisar como #{mailer_signatory['tipo']}",
+          [@callback_url_analyst,@customer_credit]
+        ).deliver_now
+      end
+    end
+  end
+
+  def send_analyst_mailer1(customer_credit)
+    @customer_credit =  CustomerCredit.find(customer_credit)
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Analista')"
+    else
+      error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+    end
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        # begin
+          # @token_control_desk =  SecureRandom.hex
+          # TOKEN CON VIDA UTIL DE 7 DIAS
+          # @token_control_desk_expiry = Time.now + 7.day
+          # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
+          # end while CustomerCredit.where(extra3: @token_control_desk).any?
+        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.analyst1(mail_to,
+          mailer_signatory['name'],
+          "Factor GFC Global - Credi Global - Direccion, comité y la empresa han aceptado la propuesta de credito - #{mailer_signatory['tipo']}",
           "Revisar como #{mailer_signatory['tipo']}",
           [@callback_url_analyst,@customer_credit]
         ).deliver_now
@@ -250,7 +287,7 @@ class ApplicationController < ActionController::Base
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
       WHERE u.role_id = r.id
-      AND r.name IN ('Comité','Empresa','Director')"
+      AND r.name IN ('Comité','Empresa','Director','Cliente')"
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
@@ -259,13 +296,16 @@ class ApplicationController < ActionController::Base
           @mailer_signatories = response.to_a
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
           unless @frontend_url.blank?
+            if documents_mode
+              generate_customer_credit_request_report_pdf
+            end
             @mailer_signatories.each do |mailer_signatory|
               begin
                 @token_commitee =  SecureRandom.hex
                 # TOKEN CON VIDA UTIL DE 7 DIAS
                 @token_commitee_expiry = Time.now + 7.day
                 #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
-                @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_commitee}"
+                @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
               end while CustomerCredit.where(extra3: @token_commitee).any?
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
               customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
@@ -284,9 +324,6 @@ class ApplicationController < ActionController::Base
                 error_array!(@error_desc, :unprocessable_entity)
                 raise ActiveRecord::Rollback
               end
-            end
-            if documents_mode
-              generate_customer_credit_request_report_pdf
             end
           else
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)

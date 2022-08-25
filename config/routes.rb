@@ -18,6 +18,12 @@ Rails.application.routes.draw do
   get '/account_status_mailer/:id', to: 'sessions#send_account_status_mailer'
   get '/get_reset_pwd_token', to: 'sessions#get_reset_pwd_token'
   patch '/update_user_pwd', to: 'sessions#update_user'
+  post '/customer_credit_signatory', to: 'sessions#signature'
+  get '/terms', to: 'sessions#terms'
+  get '/get_customer_credits', to: 'sessions#customer_credits'
+  get '/get_credit_customer_report', to: 'sessions#get_credit_customer_report'
+  get '/payment_periods', to: 'sessions#payment_periods'
+  get '/ext_rates', to: 'sessions#ext_rates'
   #borrar al finalizar pruebas
   # root :to => 'welcome#index', as: :home
 
@@ -74,7 +80,7 @@ Rails.application.routes.draw do
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'
       #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
       #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
-      post '/customer_credit_signatory/:signatory_token', to: 'customer_credits_signatories#signature'
+      # post '/customer_credit_signatory/:signatory_token', to: 'customer_credits_signatories#signature'
       #get '/user_registration', to: 'user_registration#create'
       post '/company_registration', to: 'company_registration#create'
       post '/user_registration', to: 'user_registration#create'
