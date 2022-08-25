@@ -242,7 +242,7 @@ class SessionsController < ApplicationController
 
   def get_credit_customer_report
     @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
-    cuc.start_date decha_credito, cuc.status status_credito, pap.value periodo_pago, 
+    cuc.start_date fecha_credito, cuc.status status_credito, pap.value periodo_pago, 
      cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, 
      cus.salary_period, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
      con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, 
@@ -271,4 +271,23 @@ class SessionsController < ApplicationController
     @get_credit_customer_report = execute_statement(@query)
     render json: @get_credit_customer_report
    end
+
+   def sim_customer_payments
+    @sim_customer_payment = SimCustomerPayment.where(customer_credit_id: params[:id])
+    unless @sim_customer_payment.blank?
+      render json: { message: 'Ok', status: true , data: @sim_customer_payment}, status: 200
+    else
+      render json: { message: 'No se encuentra el sim customer payment'}, status: 206
+    end
+  end
+
+   def contributor_documents
+    @contributor_documents = ContributorDocument.where( contributor_id: params[:id])
+    unless @contributor_documents.blank?
+      render json: { message: 'Ok', status: true , data: @contributor_documents}, status: 200
+    else
+      render json: { message: 'No se encuentra el sim customer payment'}, status: 206
+    end
+  end
+
 end
