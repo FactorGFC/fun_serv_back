@@ -287,7 +287,7 @@ class ApplicationController < ActionController::Base
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
       WHERE u.role_id = r.id
-      AND r.name IN ('Comité','Empresa','Director','Cliente')"
+      AND r.name IN ('Comité','Empresa','Director','Clientes')"
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
@@ -296,9 +296,6 @@ class ApplicationController < ActionController::Base
           @mailer_signatories = response.to_a
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
           unless @frontend_url.blank?
-            if documents_mode
-              generate_customer_credit_request_report_pdf
-            end
             @mailer_signatories.each do |mailer_signatory|
               begin
                 @token_commitee =  SecureRandom.hex

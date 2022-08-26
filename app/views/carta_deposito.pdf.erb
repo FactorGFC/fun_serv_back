@@ -41,7 +41,6 @@
                 <div class="row">
                 <div class="lcolumn">Comisión por apertura de 1%"</div>
                 <% @percentage = @monto_total_solicitado.to_f*1.to_f / 100 %>
-                <% puts @percentage %>
                 <div class="rcolumn"><%= number_to_currency(@percentage) %>
                 </div>
                 <div class="row">
