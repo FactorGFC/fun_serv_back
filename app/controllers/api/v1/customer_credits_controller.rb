@@ -92,12 +92,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
           elsif @customer_credit.status == 'PR'
-                if documents_mode
-                  generate_customer_credit_request_report_pdf
-                end
                 #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
                 send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
+                if documents_mode
+                  generate_customer_credit_request_report_pdf
+                end
           else
               render 'api/v1/customer_credits/show' 
           end
