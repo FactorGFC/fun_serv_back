@@ -88,7 +88,8 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
         raise ActiveRecord::Rollback
       end
       if params[:type] == 'customer'
-        @customer = Customer.new(contributor_id: @contributor.id, attached: customer_params[:attached], customer_type: customer_params[:customer_type], name: @person.first_name,
+        name = @person.first_name + ' ' + @person.last_name + ' ' + @person.second_last_name
+        @customer = Customer.new(contributor_id: @contributor.id, attached: customer_params[:attached], customer_type: customer_params[:customer_type], name: name,
                                  status: customer_params[:status], user_id: customer_params[:user_id], salary_period: customer_params[:salary_period], salary: customer_params[:salary],
                                  other_income: customer_params[:other_income], net_expenses: customer_params[:net_expenses], family_expenses: customer_params[:family_expenses],
                                  house_rent: customer_params[:house_rent], credit_cp: customer_params[:credit_cp], credit_lp: customer_params[:credit_lp], immediate_superior: customer_params[:immediate_superior], 
