@@ -13,39 +13,63 @@
 
     <body>
     <div>
-    <div style="position: relative;">
-        <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
-    </div>
-    <div class="row">
-        <h4 style='text-align: left;'>
-        TABLA DE AMORTIZACION
-        </h4>
-    </div>
-    <br>
-    <div>
-        <table style="border-collapse: collapse; width: 100%;">
-            <thead style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
-                <tr>
-                    <th>Número de pago</th>
-                    <th>Monto</th>
-                    <th>Deuda actual</th>
-                    <th>Deuda restante</th>
-                    <th>Fecha de pago</th>
-                    <th>Estatus</th>
-                </tr>
-            </thead>
-            <tbody style="border: 1px solid #ddd;  padding: 8px; text-align: center;">
-                <% @amortizacion.each do |payment| %>
+        <div style="position: relative;">
+            <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
+        </div>
+        <div class="row" style="float: right;">
+            <div class="col">
+                Número de crédito: <%= @folio %>
+            </div><br>
+            <div class="col">
+                Importe del crédito: <%= number_to_currency(@monto_total_solicitado) %>
+            </div><br>
+            <div class="col">
+                Nombre del empleado: <%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %>
+            </div><br>
+            <div class="col">
+                Fecha de Inicio: <%= @fecha_inicio.strftime("%d/%m/%Y") %>
+            </div><br>
+            <div class="col" align="right">
+                Plazo: <%= @plazo %>
+            </div><br>
+            <div class="col" align="right">
+                Numero de pagos: <%= @plazo_key %>
+            </div><br>
+            <div class="col" align="right">
+                Tasa: <%= @tasa %>
+            </div><br>
+        </div>
+        <div class="row">
+            <h4 style='text-align: left;'>
+            TABLA DE AMORTIZACION
+            </h4>
+        </div>
+        <br>
+        <div>
+            <table style="border-collapse: collapse; width: 100%;">
+                <thead style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
                     <tr>
-                        <td> <%= payment['pay_number'] %></td>
-                        <td> <%= number_to_currency(payment['payment']) %></td>
-                        <td> <%= number_to_currency(payment['current_debt']) %></td>
-                        <td> <%= number_to_currency(payment['remaining_debt']) %></td>
-                        <td> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
-                        <td> <%= payment['status'] %></td>
+                        <th>Número de pago</th>
+                        <th>Monto</th>
+                        <th>Deuda actual</th>
+                        <th>Deuda restante</th>
+                        <th>Fecha de pago</th>
+                        <th>Estatus</th>
                     </tr>
-                <% end %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody style="border: 1px solid #ddd;  padding: 8px; text-align: center;">
+                    <% @amortizacion.each do |payment| %>
+                        <tr>
+                            <td> <%= payment['pay_number'] %></td>
+                            <td> <%= number_to_currency(payment['payment']) %></td>
+                            <td> <%= number_to_currency(payment['current_debt']) %></td>
+                            <td> <%= number_to_currency(payment['remaining_debt']) %></td>
+                            <td> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
+                            <td> <%= payment['status'] %></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>

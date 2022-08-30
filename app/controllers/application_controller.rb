@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
         @payment_periods = PaymentPeriod.where(id: payment_period_id)
         @payment_period = @payment_periods[0]
         if @payment_period.blank?
-          @error_desc.push("No existe un periodo con el id: #{payment_period_id}")
+          @error_desc.push("No existe un periodo con el id2: #{payment_period_id}")
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         end
@@ -359,7 +359,9 @@ class ApplicationController < ActionController::Base
 
   #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDA EN S3
   def generate_customer_credit_request_report_pdf
-    @mail_factor = 'sistemasfgfc@gmail.com'
+    # @mail_factor = 'sistemasfgfc@gmail.com'
+    # @mail_factor = 'mescobedo@factorgfc.com'
+    @mail_factor = GeneralParameter.get_general_parameter_value('CONTACT_MAIL')
     @folio = @customer_credit.credit_folio
     @lugar = 'Chihuahua, Chihuahua'
     @date = Time.now.strftime("%d/%m/%Y")
@@ -372,6 +374,8 @@ class ApplicationController < ActionController::Base
       @term = @customer_credit_data[0]["numero_pagos"]
       @puesto = @customer_credit_data[0]["puesto"]
       @plazo = @customer_credit_data[0]["plazo"]   
+      @plazo_key = @customer_credit_data[0]["plazo_key"]     
+      @plazo_type = @customer_credit_data[0]["plazo_type"]   
       @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
       @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
       @banco = @customer_credit_data[0]["banco"]
@@ -424,6 +428,8 @@ class ApplicationController < ActionController::Base
       @customer_id = @customer_credit.customer_id
       @destino = @customer_credit.destination
       @monto_total_solicitado = @customer_credit.total_requested
+      @intereses_apertura = @monto_total_solicitado * 0.01
+      @intereses_apertura = @intereses_apertura.round(2)
       @capital = @customer_credit.capital
       @intereses = @customer_credit.interests
       @iva = @customer_credit.iva
@@ -440,6 +446,7 @@ class ApplicationController < ActionController::Base
       @dia_fin = @fecha_fin.strftime("%d")
       @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
       @anio_fin = @fecha_fin.strftime("%Y")
+      @tasa = @customer_credit.rate
       # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
       # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
       # unless ary.include?(nil)
@@ -472,7 +479,8 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @file = CombinePDF.new
-        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        @documents_array = ["amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)

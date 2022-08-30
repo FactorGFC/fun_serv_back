@@ -36,7 +36,7 @@
           </tr>
           <tr class="row5">
             <td colspan="13">4. COMPROBANTE DE INGRESIS NO MAYOR A TRES MESES</td>
-            <td colspan="10" align="center"><%= @customer_id%></td>
+            <td colspan="10" align="center"><%= @folio %></td>
           </tr>
           <tr class="row6">
             <th colspan="24" bgcolor="#C0C0C0">DATOS GENERALES</th>
@@ -292,7 +292,7 @@
             <th align="left">SEMANAL</th>
             <td ><%= @frecuencia_de_pago == 'Semanal' ? 'X': '' %></td>
             <th align="left">QUINCENAL</th>
-            <td ><%= @frecuencia_de_pago == "'quincena'" ? 'X': '' %></td>
+            <td ><%= @frecuencia_de_pago == 'Quincenal' ? 'X': '' %></td>
           </tr>
           <tr class="row52">
             <th colspan="9" align="left">IMPORTE TOTAL DE PAGO DE DEUDAS</th>

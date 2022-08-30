@@ -13,26 +13,22 @@
         <tbody>
           <tr class="row0">
             <td colspan="7" rowspan="6">
-<div style="position: relative;"><img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;"></div></td>
-            <td colspan="5" rowspan="2"></td>
-          </tr>
-          <tr class="row1"> 
+              <div style="position: relative;"><img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;"></div></td>
+            <%# <td colspan="5" rowspan="2"></td> %>
           </tr>
           <tr class="row2">
-            <th colspan="5" align="center">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</th>
+            <th align="left">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</th>
+          </tr>
+          <tr class="row2">
           </tr>
           <tr class="row3">
-            <td colspan="5"></td>
+            <td align="right">Número: <%= @folio %></td>
+            <%# <td align="center" colspan="5"></td> %>
           </tr>
-          <tr class="row4">
-            <td align="right">Número:</td>
-            <td align="center" colspan="4"><%= @folio %></td>
+          <tr class="row2">
           </tr>
           <tr class="row5">
-            <td colspan="5"></td>
-          </tr>
-          <tr class="row7">
-            <th colspan="24" align="center"><span align="center">CÁRATULA DE TÉRMINOS</span></th>
+            <td colspan="5"><span align="center">CÁRATULA DE TÉRMINOS</span></td>
           </tr>
           <tr class="row8">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">GENERALES</font></th>
@@ -59,6 +55,10 @@
             <span style="color:#000000; font-family:'Arial'; font-size:6pt"> <br>Titular: Factor GFC Leasing, S.A.P.I. de C.V.</span></td>
           </tr>
           <tr class="row14">
+            <td colspan="3" align="center">NOMBRE</td>
+            <td colspan="9"> <%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %></td>
+          </tr>
+          <tr class="row14">
             <td colspan="3" align="center">DOMICILIO CLIENTE</td>
             <td colspan="9"> Calle <%= @calle %> , <%= @numero_exterior %>  <%= @colonia %> , C.P. <%= @codigo_postal %>  </td>
           </tr>
@@ -75,7 +75,7 @@
           </tr>
           <tr class="row18">
             <td colspan="3" align="center">IMPORTE</td>
-            <td colspan="9"><%= number_to_currency(@monto_total_solicitado)%>  (PESOS 00/100 M.N.)</td>
+            <td colspan="9"><%= number_to_currency(@monto_total_solicitado) %> (<%= @monto_total_solicitado.to_words.upcase << " PESOS " << (@monto_total_solicitado.to_s.split(".")[1] || 0).rjust(2,'0')<< "/100 M.N." %>)</td>
           </tr>
           <tr class="row19">
 
@@ -100,41 +100,33 @@
             <td colspan="9">DESCUENTO DOMICILIADO A CUENTA Y VIA NOMINA </td>
           </tr>
           <tr class="row24">
-            <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">DESTINO</font></th>
+            <th colspan="5" bgcolor="#C0C0C0"><font color="FAFAFA">DESTINO</font></th>
+            <th colspan="7" bgcolor="#C0C0C0"><font color="FAFAFA">PLAZO DEL CONTRATO</font></th>
           </tr>
           <tr class="row25">
-            <td colspan="12"><%= @destino %></td>
-          </tr>
-          <tr class="row26">
-            <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">PLAZO DEL CONTRATO</font></th>
-          </tr>
-          <tr class="row27">
-            <td colspan="12">Iniciará a partir del <%= @dia_inicio %>  del <%= @mes_inicio %> del <%= @anio_inicio %> , para concluir el <%= @dia_fin %>  del <%= @mes_fin %> del año <%= @anio_fin %> .</td>
+            <td colspan="5"><%= @destino %></td>
+            <td colspan="7">Iniciará a partir del <%= @dia_inicio %> del <%= @mes_inicio %> del <%= @anio_inicio %> , para concluir el <%= @dia_fin %>  del <%= @mes_fin %> del año <%= @anio_fin %> .</td>
           </tr>
           <tr class="row28">
             <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">COMISIONES</font></th>
           </tr>
           <tr class="row29">
             <td colspan="3" align="center">COMISIÓN POR APRETURA</td>
-            <td colspan="9">0% (<%= @intereses %> ) del importe total del credito</td>
+            <td colspan="9"><%= number_to_currency(@intereses_apertura) %> (<%= @intereses_apertura.to_words.upcase << " PESOS " << (@intereses_apertura.to_s.split(".")[1] || 0).rjust(2,'0')<< "/100 M.N." %>) 1% del importe total del credito</td>
           </tr>
           <tr class="row30">
-            <th colspan="12" bgcolor="#C0C0C0"><font color="FAFAFA">PAGO DE CAPITAL</font></th>
+            <th colspan="5" bgcolor="#C0C0C0"><font color="FAFAFA">PAGO DE CAPITAL</font></th>
+            <th colspan="7" bgcolor="#C0C0C0" ><font color="FAFAFA">INTERESES</font></th>
           </tr>
           <tr class="row31">
-            <td colspan="4" align="center">NÚMERO DE PAGOS</td>
-            <td colspan="8"><%= @total_pagos %></td>
+            <td colspan="3" align="center">NÚMERO DE PAGOS</td>
+            <td colspan="2"><%= @plazo %></td>
+            <td colspan="4" align="center">TASA DE INTERÉS ORDINARIO FIJA</td>
+            <td colspan="3">0.0% ( <%= number_to_currency( @intereses)%>)</td>
           </tr>
           <tr class="row32">
             <td colspan="4" align="center">CONDICIONES ESPECIALES</td>
             <td colspan="8">NA</td>
-          </tr>
-          <tr class="row33">
-            <th colspan="12" bgcolor="#C0C0C0" ><font color="FAFAFA">INTERESES</font></th>
-          </tr>
-          <tr class="row34">
-            <td colspan="5" align="center">TASA DE INTERÉS ORDINARIO FIJA</td>
-            <td colspan="7">0.0% ( <%= number_to_currency( @intereses)%>)</td>
           </tr>
         </tbody>
     </table>

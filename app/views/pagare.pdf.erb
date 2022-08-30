@@ -39,11 +39,18 @@
                 <span >
                         la cantidad de
                     <strong><u><span style="background:yellow;">
-                        <%= number_to_human(@monto_total_solicitado)%> (<%= number_to_currency(@monto_total_solicitado)%> PESOS 00/100 M.N.)
+                        <%= @monto_total_solicitado.to_words.upcase << " ( " <<number_to_currency(@monto_total_solicitado)<< " PESOS " << (@monto_total_solicitado.to_s.split(".")[1] || 0).rjust(2,'0')<< "/100 M.N.)" %>
                     </span></u></strong>
                         En el lugar establecido en el Contrato de préstamo sobre Nomina que adelante se identifica. En un plazo de 
                     <strong><u><span style="background:yellow;">
-                        <%= @plazo %> SEMANAS
+                        <%= @term %> <% case @plazo_type
+                            when "Semanal" %>
+                            SEMANAS
+                            <% when "Quincenal" %>
+                            QUINCENAS
+                            <% when "Mensual"%>
+                            MESES
+                            <% end %>
                     </span></u></strong> 
                     <strong><u>
                         ,

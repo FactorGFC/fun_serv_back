@@ -39,13 +39,14 @@
             <div >
                 <div>
                 <div class="row">
-                <div class="lcolumn">Comisión por apertura de 1%"</div>
+                <div class="lcolumn">Comisión por apertura de 1%:</div>
                 <% @percentage = @monto_total_solicitado.to_f*1.to_f / 100 %>
                 <div class="rcolumn"><%= number_to_currency(@percentage) %>
                 </div>
                 <div class="row">
                     <div class="lcolumn">IVA de la comisión: </div>
-                    <div class="rcolumn"><%= number_to_currency(@iva) %></div>
+                    <% @iva2 = @percentage.to_f*16.to_f / 100 %>
+                    <div class="rcolumn"><%= number_to_currency(@iva2) %></div>
                 </div>
                 <div class="row">
                     <div class="lcolumn">Seguro por concepto de saldo deudor en <br />caso de fallecimiento (0.45% por año)</div>

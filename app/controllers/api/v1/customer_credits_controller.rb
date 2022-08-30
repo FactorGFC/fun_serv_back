@@ -47,10 +47,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @end_date = @customer_credit.start_date
         @customer_credit.end_date = @end_date
         if @customer_credit.save  
+          puts @customer.salary_period
           @payment_periods = PaymentPeriod.where(key: @customer.salary_period)
+          puts @payment_periods.inspect
           @payment_period = @payment_periods[0]
           if @payment_period.blank?
-            @error_desc.push("No existe un periodo con el id: #{@customer_credit.payment_period_id}")
+            @error_desc.push("No existe un periodo con el id1: #{@customer_credit.payment_period_id}")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
           end 

@@ -72,7 +72,7 @@
           </tr>
           <tr class="row16">
             <td colspan="12"><%= @giro_empresa %></td>
-            <td colspan="12">?</td>
+            <td colspan="12"><%= @puesto %></td>
           </tr>
           <tr class="row17">
             <th colspan="4"><font style="font-size:10pt">Teléfono fijo</font></th>
@@ -101,7 +101,7 @@
             <th colspan="10" ><font style="font-size:10pt">Autoridad que la Emite </font></th>
           </tr>
           <tr class="row22">
-            <td colspan="4"><%= @identificacion_oficial %> ></td>
+            <td colspan="4"><%= @identificacion_oficial %></td>
             <td  colspan=10"><%= @ine %></td>
             <td colspan="10">INSTITUTO NACIONAL ELECTORAL</td>
           </tr>
@@ -165,14 +165,14 @@
           </tr>
           <tr class="row38">
             <td colspan="12">Credito de nomina</td>
-            <td colspan="12">Si<span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX      </span>
-              <span style=" font-family:'Arial'; font-size:9pt">No</span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">      XX      </span></td>
+            <td colspan="12">Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">XX</span>
+              <span style=" font-family:'Arial'; font-size:9pt">No</span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"></span></td>
           </tr>
           <tr class="row39">
             <th colspan="24"  align="left"><font style="font-size:10pt">¿Cuál es el importe total del(os) crédito(s) o servicio(s) nuevos solicitado(s) a Factor GFC?</font></th>
           </tr>
           <tr class="row40">
-            <td ><%= number_to_currency(@monto_total_solicitado) %></td> 
+            <td ><%= number_to_currency(@monto_total_solicitado) %> PESOS</td> 
             <td colspan="24"></td>
           </tr>
           <tr class="row41">
@@ -194,11 +194,13 @@
             <td colspan="12">5 MOVIMIENTOS</td>
             <td colspan="12">"Baja" de 1 a 2 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span>"Media" de 3 a 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span>"Alta" más de 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span></td>
           </tr>
+          <tr class="row44">
+          </tr>
           <tr class="row47">
             <th colspan="24" bgcolor="DADEE2"><font style="font-size:10pt">DATOS COMPLEMENTARIOS - Declaratoria</font></th>
           </tr>
           <tr class="row48">
-            <th colspan="24"  align="left"><font style="font-size:10pt">¿Desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?</font>  Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt"> No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt"> </span><span style="color:#E7E6E6; font-family:'Arial'; font-size:9pt">      </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
+            <th colspan="24"  align="left"><font style="font-size:10pt">¿Desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?</font>  Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">    X    </span><span style=" font-family:'Arial'; font-size:9pt"> No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"></span><span style=" font-family:'Arial'; font-size:9pt"> </span><span style="color:#E7E6E6; font-family:'Arial'; font-size:9pt">      </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
           </tr>
           <tr class="row49">
             <td colspan="24">-</td>
@@ -229,7 +231,7 @@
             <td colspan="24">-</td>
           </tr>
           <tr class="row58">
-            <td colspan="12" >Nombre completo y firma</td>
+            <td colspan="12" ><%= @nombre %> <%= @apellido_paterno%> <%= @apellido_materno %> </td>
             <td colspan="12">* El presente formato será evidencia de la entrevista personal con el cliente</td>
           </tr>
           <%# <tr class="row59"> %>
