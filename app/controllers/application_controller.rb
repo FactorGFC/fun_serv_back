@@ -369,6 +369,7 @@ class ApplicationController < ActionController::Base
     @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
     @anio = Time.now.strftime("%Y")
     @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
+    puts @customer_credit_data.inspect
     unless @customer_credit_data.blank?
       # @suburb_type = @customer_credit_data[0][""]
       @term = @customer_credit_data[0]["numero_pagos"]
