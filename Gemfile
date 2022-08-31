@@ -31,7 +31,7 @@ gem 'autoprefixer-rails', '~> 10.2', '>= 10.2.4.0'
 gem 'mifiel'
 gem 'combine_pdf'
 gem 'nio4r', '2.5.3'
-gem 'wicked_pdf', git: 'https://github.com/mileszs/wicked_pdf.git', branch: 'master'
+gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem "number_to_words"
 #gem 'prawn'
