@@ -94,7 +94,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
           elsif @customer_credit.status == 'PR'
-                #METODO QUE VA A MANDARLE UN CORREO AL PERSONAL DEL COMITE Y DE FACTOR PARA QUE APRUEBEN EL CREDITO PROPUESTO PARA EL CLIENTE
+            # TO TO : MANDAR CORREO AL CLIENTE PARA QUE LO APRUEBE
+                # send_committee_mail(@customer_credit)
+                render 'api/v1/customer_credits/show'
+          elsif @customer_credit.status == 'PA'
+                # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
+                # CREA SIGNATORIES
                 send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
                 if documents_mode

@@ -287,7 +287,7 @@ class ApplicationController < ActionController::Base
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
       WHERE u.role_id = r.id
-      AND r.name IN ('Comité','Empresa','Director','Clientes')"
+      AND r.name IN ('Comité','Empresa','Director')"
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
@@ -479,8 +479,8 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @file = CombinePDF.new
-        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        @documents_array = ["amortizacion"]
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        # @documents_array = ["amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
