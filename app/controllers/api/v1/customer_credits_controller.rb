@@ -98,13 +98,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 # send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
           elsif @customer_credit.status == 'PA'
+                if documents_mode
+                  generate_customer_credit_request_report_pdf
+                end
                 # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
                 # CREA SIGNATORIES
                 send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
-                if documents_mode
-                  generate_customer_credit_request_report_pdf
-                end
           else
               render 'api/v1/customer_credits/show' 
           end
