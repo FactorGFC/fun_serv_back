@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
       #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
       # post '/customer_credit_signatory/:signatory_token', to: 'customer_credits_signatories#signature'
+      get '/customer_credits_signatory/customer_credit_id', to: 'customer_credits_signatories#show_by_credit_id'
       #get '/user_registration', to: 'user_registration#create'
       post '/company_registration', to: 'company_registration#create'
       post '/user_registration', to: 'user_registration#create'

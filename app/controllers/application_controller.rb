@@ -303,7 +303,7 @@ class ApplicationController < ActionController::Base
                 @token_commitee_expiry = Time.now + 7.day
                 #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
                 @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
-              end while CustomerCredit.where(extra3: @token_commitee).any?
+              end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
               customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
               # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
@@ -343,6 +343,70 @@ class ApplicationController < ActionController::Base
     else
       # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
       @error_desc.push("No se encontró el credito")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
+  end
+
+  def send_signatory_mail(signatory)
+    @error_desc = []
+    @error_desc.push("send_signatory_mail")
+    @signatory = signatory
+    unless @signatory.blank?
+      @usuario = User.find(@signatory.user_id)
+      unless @usuario.blank?
+        @customer_credit = CustomerCredit.find(@signatory.customer_credit_id)
+        unless @customer_credit.blank?
+          @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+          unless @frontend_url.blank?
+            @cliente = Customer.find(@customer_credit.customer_id)
+            unless @cliente.blank?
+              @role = Role.find(@usuario.role_id)
+              unless @role.blank?
+                # signatory.each do |mailer_signatory|
+                # begin
+                  @signatory_token =  SecureRandom.hex
+                  # TOKEN CON VIDA UTIL DE 7 DIAS
+                  @signatory_token_expiry = Time.now + 7.day
+                  #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
+                  @signatory.update(signatory_token: @signatory_token,signatory_token_expiration: @signatory_token_expiry)
+                  @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@signatory_token}"
+                # end while CustomerCreditsSignatory.where(signatory_token: @signatory_token).any?
+                mail_to = mailer_mode_to(@usuario['email'])
+                      SendMailMailer.committee(mail_to,
+                        @usuario['name'],
+                        "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{@role['name']}",
+                        "Aprobar como #{@role['name']}",
+                        [@callback_url_committee,@customer_credit,@cliente.name]
+                      ).deliver_now
+                # end
+              else
+                @error_desc.push("No se encontró rol")
+                error_array!(@error_desc, :not_found)
+                raise ActiveRecord::Rollback
+              end
+            else
+              @error_desc.push("No se encontró cliente")
+              error_array!(@error_desc, :not_found)
+              raise ActiveRecord::Rollback
+            end
+          else
+          @error_desc.push("No se encontró parametro general FRONTEND_URL")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+          end  
+        else
+        @error_desc.push("No se encontró customer_credit")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+        end
+      else
+      @error_desc.push("No se encontró usuario")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+      end     
+    else
+      @error_desc.push("No se encontró la firma en signatories")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end

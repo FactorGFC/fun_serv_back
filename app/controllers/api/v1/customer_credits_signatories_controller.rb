@@ -1,7 +1,7 @@
 
 class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiController
     before_action :authenticate
-    before_action :set_customer_credit_signatories, only: %i[show update destroy]
+    before_action :set_customer_credit_signatory, only: %i[show update destroy]
 
     def index
         @customer_credit_signatory = CustomerCreditsSignatory.all
@@ -10,20 +10,51 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
     def show; end
 
     def create
+      @error_desc = []
+      ActiveRecord::Base.transaction do
         @customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_signatory_params)
-        # ActiveRecord::Base.transaction do
-        # end
+        @validate = CustomerCreditsSignatory.where(user_id: customer_credit_signatory_params['user_id'], customer_credit_id: customer_credit_signatory_params['customer_credit_id'] )
+        # VALIDA QUE NO EXISTA YA EL USUARIO EN SIGNATORIES PARA ESE CUSTOMER_CREDIT_ID
+        if @validate.blank?
+          if @customer_credit_signatory.save
+            send_signatory_mail(@customer_credit_signatory)
+            render template: 'api/v1/customer_credits_signatories/show'
+          else
+            @error_desc.push("Ocurrio un error y no pudo guardar el signatory")
+            @error_desc.push(@customer_credit_signatory.errors.full_messages)
+            error_array!(@error_desc, :unprocessable_entity)
+            raise ActiveRecord::Rollback
+          end
+        else
+          @error_desc.push("Ya existe un registro con este signatory")
+          @error_desc.push("Pruebe usando un update (PATCH)")
+          @error_desc.push(@customer_credit_signatory.errors.full_messages)
+          error_array!(@error_desc, :unprocessable_entity)
+          raise ActiveRecord::Rollback
+        end
+      end
     end
 
     def update
         @customer_credit_signatory.update(customer_credit_signatory_params)
-        render 'api/v1/customer_credits_signatory/show'
-      end
+        render template: 'api/v1/customer_credits_signatories/show'
+    end
     
-      def destroy
-        @customer_credit_signatory.destroy
-        render json: { message: 'Fuéron eliminadas las firmas del credito' }
+    def destroy
+      @customer_credit_signatory.destroy
+      render json: { message: 'Fuéron eliminadas las firmas del credito' }
+    end
+
+    def show_by_credit_id
+      @error_desc = []
+      @customer_credit_signatory = CustomerCreditsSignatory.where(customer_credit_id: params[:id])
+      unless @customer_credit_signatory.blank?
+        render json: { message: 'ok', signatories: @customer_credit_signatory }, status: 200
+      else
+        @error_desc.push("No se encontraron firmas para el credito #{params[:id]}")
+        error_array!(@error_desc, :unprocessable_entity)
       end
+    end
 
       # def signature
       #   @error_desc = []
@@ -67,15 +98,15 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
       #   end
       # end
 
-      private
+    private
 
-      def set_customer_credit_signatory
-        @customer_credit_signatory = CustomerCreditsSignatory.find(params[:id])
-      end
+    def set_customer_credit_signatory
+      @customer_credit_signatory = CustomerCreditsSignatory.find(params[:id])
+    end
 
-      def customer_credit_signatory_params
-        # params.require(:customer_credit_signatory).permit(:customer_id,customer_credit_id:,:status)
-        params.require(:customer_credit_signatory).permit(:customer_id,:status)
-      end
+    def customer_credit_signatory_params
+      params.require(:customer_credits_signatories).permit(:customer_credit_id,:user_id,:status)
+      # params.require(:customer_credit_signatory).permit(:customer_id,:status)
+    end
 
 end

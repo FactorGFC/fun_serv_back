@@ -32,8 +32,8 @@ class CustomerCreditsSignatory < ApplicationRecord
 
   has_many :users
 
-  validates :signatory_token, presence: true
-  validates :signatory_token_expiration, presence: true
+  validates :signatory_token, presence: false
+  validates :signatory_token_expiration, presence: false
   validates :status, presence: true
   # validates :customer_credit_id, presence: true
   # validates :user_id, presence: true
