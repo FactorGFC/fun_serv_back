@@ -36,8 +36,18 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
     end
 
     def update
+      @error_desc = []
+      @customer_credit_signatory = CustomerCreditsSignatory.find_by_id(params['id'])
+      unless @customer_credit_signatory.blank?
         @customer_credit_signatory.update(customer_credit_signatory_params)
-        render template: 'api/v1/customer_credits_signatories/show'
+          if (customer_credit_signatory_params['status'] == 'PA')
+            send_signatory_mail(@customer_credit_signatory)
+          end
+          render template: 'api/v1/customer_credits_signatories/show'
+      else
+        @error_desc.push("No se encontró un registro con este id: #{params['id']} ")
+        error_array!(@error_desc, :unprocessable_entity)
+      end
     end
     
     def destroy
@@ -101,7 +111,13 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
     private
 
     def set_customer_credit_signatory
-      @customer_credit_signatory = CustomerCreditsSignatory.find(params[:id])
+      @error_desc = []
+      @customer_credit_signatory = CustomerCreditsSignatory.find_by_id(params[:id])
+      if @customer_credit_signatory.blank?
+        @error_desc.push("No se encontraron firmas con el id: #{params[:id]}")
+        @error_desc.push("set_customer_credit_signatory")
+        error_array!(@error_desc, :unprocessable_entity)
+      end
     end
 
     def customer_credit_signatory_params
