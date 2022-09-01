@@ -101,7 +101,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 end
                 # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
                 # CREA SIGNATORIES
-                send_committee_mail(@customer_credit)
+                send_committee_mail(@customer_credit.id)
                 render 'api/v1/customer_credits/show'
           else
               render 'api/v1/customer_credits/show' 
