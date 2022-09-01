@@ -170,7 +170,7 @@ class ApplicationController < ActionController::Base
   end
 
   def send_control_desk_mailer(customer_credit)
-    @customer_credit =  CustomerCredit.find(customer_credit)
+    @customer_credit =  CustomerCredit.find_by_id(customer_credit)
     unless @customer_credit.blank?
       @query = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
@@ -207,7 +207,7 @@ class ApplicationController < ActionController::Base
   end
 
   def send_analyst_mailer(customer_credit)
-    @customer_credit =  CustomerCredit.find(customer_credit)
+    @customer_credit =  CustomerCredit.find_by_id(customer_credit)
     unless @customer_credit.blank?
       @query = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
@@ -244,7 +244,7 @@ class ApplicationController < ActionController::Base
   end
 
   def send_analyst_mailer1(customer_credit)
-    @customer_credit =  CustomerCredit.find(customer_credit)
+    @customer_credit =  CustomerCredit.find_by_id(customer_credit)
     unless @customer_credit.blank?
       @query = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
@@ -281,7 +281,7 @@ class ApplicationController < ActionController::Base
   end
   
   def send_committee_mail(customer_credit)
-    @customer_credit = customer_credit
+    @customer_credit = CustomerCredit.find_by_id(customer_credit.id)
     unless @customer_credit.blank?
       @query = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
@@ -291,7 +291,7 @@ class ApplicationController < ActionController::Base
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
-        @cliente = Customer.find(@customer_credit.customer_id)
+        @cliente = Customer.find_by_id(@customer_credit.customer_id)
         unless @cliente.blank?
           @mailer_signatories = response.to_a
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
@@ -353,15 +353,15 @@ class ApplicationController < ActionController::Base
     @error_desc.push("send_signatory_mail")
     @signatory = signatory
     unless @signatory.blank?
-      @usuario = User.find(@signatory.user_id)
+      @usuario = User.find_by_id(@signatory.user_id)
       unless @usuario.blank?
-        @customer_credit = CustomerCredit.find(@signatory.customer_credit_id)
+        @customer_credit = CustomerCredit.find_by_id(@signatory.customer_credit_id)
         unless @customer_credit.blank?
           @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
           unless @frontend_url.blank?
-            @cliente = Customer.find(@customer_credit.customer_id)
+            @cliente = Customer.find_by_id(@customer_credit.customer_id)
             unless @cliente.blank?
-              @role = Role.find(@usuario.role_id)
+              @role = Role.find_by_id(@usuario.role_id)
               unless @role.blank?
                 # signatory.each do |mailer_signatory|
                 # begin
@@ -433,7 +433,6 @@ class ApplicationController < ActionController::Base
     @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
     @anio = Time.now.strftime("%Y")
     @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
-    puts @customer_credit_data.inspect
     unless @customer_credit_data.blank?
       # @suburb_type = @customer_credit_data[0][""]
       @term = @customer_credit_data[0]["numero_pagos"]
