@@ -545,7 +545,7 @@ class ApplicationController < ActionController::Base
       unless @amortizacion.blank?
         @file = CombinePDF.new
         # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","amortizacion"]
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","pagare","amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
