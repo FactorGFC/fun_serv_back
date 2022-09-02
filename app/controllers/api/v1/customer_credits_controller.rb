@@ -99,9 +99,10 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 if documents_mode
                   generate_customer_credit_request_report_pdf
                 end
+                create_credit_signatories
                 # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
                 # CREA SIGNATORIES
-                send_committee_mail(@customer_credit)
+                # send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
           else
               render 'api/v1/customer_credits/show' 
@@ -366,6 +367,45 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
   def terms_params
     params.require(:term).permit(:key, :description, :value, :term_type, :credit_limit)
+  end
+
+  def create_credit_signatories
+    @query = 
+    "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+    FROM users u, roles r
+    WHERE u.role_id = r.id
+    AND r.name IN ('Comité','Empresa','Director')"
+    response = execute_statement(@query)
+    # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.where(key: 'FRONTEND_URL')
+      unless @frontend_url.blank?
+        @mailer_signatories.each do |mailer_signatory|
+          begin
+            @token_commitee =  SecureRandom.hex
+            # TOKEN CON VIDA UTIL DE 7 DIAS
+            @token_commitee_expiry = Time.now + 7.day
+            #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
+            @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
+          end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
+          #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+          customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
+          # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+          customer_credit_signatory.save
+        end
+      else
+        # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+        @error_desc.push("No se encontró parametro general FRONTEND_URL")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+    else
+      # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+      @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
   end
 
 end

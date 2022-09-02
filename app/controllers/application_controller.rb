@@ -280,74 +280,74 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def send_committee_mail(customer_credit)
-    @customer_credit = customer_credit
-    # unless @customer_credit.blank?
-      @query = 
-      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-      FROM users u, roles r
-      WHERE u.role_id = r.id
-      AND r.name IN ('Comité','Empresa','Director')"
-      response = execute_statement(@query)
-      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
-      unless response.blank?
-        @cliente = Customer.find_by_id(@customer_credit.customer_id)
-        unless @cliente.blank?
-          @mailer_signatories = response.to_a
-          @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
-          unless @frontend_url.blank?
-            @mailer_signatories.each do |mailer_signatory|
-              begin
-                @token_commitee =  SecureRandom.hex
-                # TOKEN CON VIDA UTIL DE 7 DIAS
-                @token_commitee_expiry = Time.now + 7.day
-                #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
-                @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
-              end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
-              #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-              customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
-              # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
-              customer_credit_signatory.save
-              unless customer_credit_signatory.blank?
-                mail_to = mailer_mode_to(mailer_signatory['email'])
-                SendMailMailer.committee(mail_to,
-                  mailer_signatory['name'],
-                  "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
-                  "Aprobar como #{mailer_signatory['tipo']}",
-                  [@callback_url_committee,@customer_credit,@cliente.name]
-                ).deliver_now
-              else 
-                @error_desc.push( customer_credit_signatory.errors.full_messages,"Falla al guardar customer_credit_signatory.save")
-                error_array!(@error_desc, :unprocessable_entity)
-                raise ActiveRecord::Rollback
-              end
-            end
-          else
-            # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-            @error_desc.push("No se encontró parametro general FRONTEND_URL")
-            error_array!(@error_desc, :not_found)
-            raise ActiveRecord::Rollback
-          end
-        else
-          # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-          @error_desc.push("No se encontró cliente")
-          error_array!(@error_desc, :not_found)
-          raise ActiveRecord::Rollback
-        end
-      else
-        # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-        @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      end
-    # else
-    #   # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-    #   @error_desc.push("No se encontró el credito")
-    #   @error_desc.push("send_committee_mail")
-    #   error_array!(@error_desc, :not_found)
-    #   raise ActiveRecord::Rollback
-    # end
-  end
+  # def send_committee_mail(customer_credit)
+  #   @customer_credit = customer_credit
+  #   # unless @customer_credit.blank?
+  #     @query = 
+  #     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+  #     FROM users u, roles r
+  #     WHERE u.role_id = r.id
+  #     AND r.name IN ('Comité','Empresa','Director')"
+  #     response = execute_statement(@query)
+  #     # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
+  #     unless response.blank?
+  #       @cliente = Customer.find_by_id(@customer_credit.customer_id)
+  #       unless @cliente.blank?
+  #         @mailer_signatories = response.to_a
+  #         @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+  #         unless @frontend_url.blank?
+  #           @mailer_signatories.each do |mailer_signatory|
+  #             begin
+  #               @token_commitee =  SecureRandom.hex
+  #               # TOKEN CON VIDA UTIL DE 7 DIAS
+  #               @token_commitee_expiry = Time.now + 7.day
+  #               #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
+  #               @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
+  #             end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
+  #             #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+  #             customer_credit_signatory = CustomerCreditsSignatory.new(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
+  #             # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
+  #             customer_credit_signatory.save
+  #             # unless customer_credit_signatory.blank?
+  #             #   mail_to = mailer_mode_to(mailer_signatory['email'])
+  #             #   SendMailMailer.committee(mail_to,
+  #             #     mailer_signatory['name'],
+  #             #     "Factor GFC Global - Credi Global - Solicitud de aprobación de Crédito - #{mailer_signatory['tipo']}",
+  #             #     "Aprobar como #{mailer_signatory['tipo']}",
+  #             #     [@callback_url_committee,@customer_credit,@cliente.name]
+  #             #   ).deliver_now
+  #             # else 
+  #             #   @error_desc.push( customer_credit_signatory.errors.full_messages,"Falla al guardar customer_credit_signatory.save")
+  #             #   error_array!(@error_desc, :unprocessable_entity)
+  #             #   raise ActiveRecord::Rollback
+  #             # end
+  #           end
+  #         else
+  #           # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+  #           @error_desc.push("No se encontró parametro general FRONTEND_URL")
+  #           error_array!(@error_desc, :not_found)
+  #           raise ActiveRecord::Rollback
+  #         end
+  #       else
+  #         # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+  #         @error_desc.push("No se encontró cliente")
+  #         error_array!(@error_desc, :not_found)
+  #         raise ActiveRecord::Rollback
+  #       end
+  #     else
+  #       # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+  #       @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
+  #       error_array!(@error_desc, :not_found)
+  #       raise ActiveRecord::Rollback
+  #     end
+  #   # else
+  #   #   # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+  #   #   @error_desc.push("No se encontró el credito")
+  #   #   @error_desc.push("send_committee_mail")
+  #   #   error_array!(@error_desc, :not_found)
+  #   #   raise ActiveRecord::Rollback
+  #   # end
+  # end
 
   def send_signatory_mail(signatory)
     @error_desc = []
@@ -545,7 +545,7 @@ class ApplicationController < ActionController::Base
       unless @amortizacion.blank?
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","pagare","amortizacion"]
+        # @documents_array = ["amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
