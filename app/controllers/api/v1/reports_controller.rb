@@ -2672,7 +2672,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def get_customer
-    @query = "SELECT cus.*, con.*, peo.*, lee.*, coa.*
+    @query = "SELECT cus.*, con.*, peo.*, coa.*
     FROM customer_credits cuc
     JOIN customers cus ON (cus.id = cuc.customer_id)
     JOIN contributors con ON (cus.contributor_id = con.id)
