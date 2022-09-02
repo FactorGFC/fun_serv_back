@@ -280,9 +280,9 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def send_committee_mail(customer_credit_id)
-    @customer_credit = CustomerCredit.find_by_id(customer_credit_id)
-    unless @customer_credit.blank?
+  def send_committee_mail(customer_credit)
+    @customer_credit = customer_credit
+    # unless @customer_credit.blank?
       @query = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
@@ -340,13 +340,13 @@ class ApplicationController < ActionController::Base
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
       end
-    else
-      # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-      @error_desc.push("No se encontró el credito")
-      @error_desc.push("send_committee_mail")
-      error_array!(@error_desc, :not_found)
-      raise ActiveRecord::Rollback
-    end
+    # else
+    #   # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+    #   @error_desc.push("No se encontró el credito")
+    #   @error_desc.push("send_committee_mail")
+    #   error_array!(@error_desc, :not_found)
+    #   raise ActiveRecord::Rollback
+    # end
   end
 
   def send_signatory_mail(signatory)
@@ -544,8 +544,8 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @file = CombinePDF.new
-        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","pagare","amortizacion"]
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","pagare","amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
