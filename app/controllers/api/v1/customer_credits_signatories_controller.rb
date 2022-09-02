@@ -116,7 +116,7 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
       if @customer_credit_signatory.blank?
         @error_desc.push("No se encontraron firmas con el id: #{params[:id]}")
         @error_desc.push("set_customer_credit_signatory")
-        error_array!(@error_desc, :unprocessable_entity)
+        error_array!(@error_desc, :not_found)
       end
     end
 
