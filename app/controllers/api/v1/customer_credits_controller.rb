@@ -28,8 +28,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       else
         @capital = 0
         @customer_credit.capital = @capital
-        @rate =0
-        @customer_credit.rate = @rate
+      #  @rate =0
+      #  @customer_credit.rate = @rate
         @interests = 0
         @customer_credit.interests = @interests
         @iva = 0
@@ -46,6 +46,10 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @anuality = params[:anuality]
         @end_date = @customer_credit.start_date
         @customer_credit.end_date = @end_date
+        if @customer_credit.rate.blank?
+          @rate = 0
+          @customer_credit.rate = @rate
+        end
         if @customer_credit.save  
           @payment_periods = PaymentPeriod.where(key: @customer.salary_period)
           @payment_period = @payment_periods[0]
@@ -66,8 +70,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             @error_desc.push("El total del credito no puede ser mayor a un año de sueldo del empleado")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
-          end
-                  
+          end      
             @terms = Term.where(id: @customer_credit.term_id)
             @term = @terms[0]
           if @term.blank?
@@ -144,36 +147,47 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     customer_credit_id = @customer_credit.id
     iva_percent = @customer_credit.iva_percent
     date = @customer_credit.start_date
-    @dias_dispersion = params[:dias_dispersion]
     payment_period = @payment_period.value
     total_requested = @customer_credit.total_requested
-    company_rate = @company.company_rate
-    seniority = @customer.seniority
-    unless seniority.blank?
-      if company_rate == 'FACTOR'
-      @rates = ExtRate.where(rate_type: 'FACTOR_R' )
-      @customer_credit.rate = @rates[0].value
-      @commissions = ExtRate.where(rate_type: 'FACTOR_C')
-      @commission_per = @commissions[0].value
-      else
-        @commissions = ExtRate.where(rate_type: 'GPA')
+    if @customer_credit.rate == 0
+      company_rate = @company.company_rate
+      seniority = @customer.seniority
+      unless seniority.blank?
+        if company_rate == 'FACTOR'
+        @rates = ExtRate.where(rate_type: 'FACTOR_R' )
+        @customer_credit.rate = @rates[0].value
+        @commissions = ExtRate.where(rate_type: 'FACTOR_C')
         @commission_per = @commissions[0].value
-        if seniority < 4
-          @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
-          @customer_credit.rate = @rates[0].value
-        elsif seniority >= 4 && seniority < 9
-          @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
-          @customer_credit.rate = @rates[0].value
-        else seniority >= 9
-          @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
-          @customer_credit.rate = @rates[0].value
+        else
+          @commissions = ExtRate.where(rate_type: 'GPA')
+          @commission_per = @commissions[0].value
+          if seniority < 4
+            @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
+            @customer_credit.rate = @rates[0].value
+          elsif seniority >= 4 && seniority < 9
+            @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
+            @customer_credit.rate = @rates[0].value
+          else seniority >= 9
+            @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
+            @customer_credit.rate = @rates[0].value
+          end
         end
+      else
+       @error_desc.push("Cliente no tiene capturada su antiguedad")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
       end
     else
-     @error_desc.push("Cliente no tiene capturada su antiguedad")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-    end
+       @new_rates = ExtRate.where(value: @customer_credit.rate)
+       @new_rate = @new_rates[0]
+       if @new_rate.blank?
+         @new_rate = ExtRate.new(key: 'CUSTOM' , description: 'Taza creada por usurio', start_date: DateTime.now, value: @customer_credit.rate, rate_type: 'TAZA')
+         unless @new_rate.save
+          render json: { error: @rate.errors }, status: :unprocessable_entity
+          raise ActiveRecord::Rollback
+        end
+       end         
+  end
     client_rate = @customer_credit.rate
     rate = (client_rate.to_f / payment_period.to_f) / 100
     diary_rate = ((client_rate.to_f/100) / 360)
@@ -186,7 +200,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     else
       if payment_amount.blank?
         payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-term.to_f)))
-
       elsif term == 0
         term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
         @new_terms = Term.where(value: term)
@@ -208,9 +221,11 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     remaining_debt = 0
     actual_date = DateTime.now
     @number_anuality = []
-    start_date = actual_date + @dias_dispersion.to_i.days
-    @date = start_date
-    start_date += 1 until start_date.strftime('%u').to_i == 4
+    @dias_dispersion = GeneralParameter.get_general_parameter_value('DIAS_DISPERSION')     
+    @date = actual_date + @dias_dispersion.to_i
+    @pay_date = GeneralParameter.get_general_parameter_value('DIA_PAGO')
+    @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
+    start_date = @date
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales
       case payment_period.to_s
@@ -274,11 +289,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             error_array!(@error_desc, :unprocessable_entity)
             raise ActiveRecord::Rollback
           else
-
             if @number_anuality.include?(i)
               payment = @anuality.to_f
               capital = payment.to_f - interests.to_f - iva.to_f
-             # term = ((Math.log (1/(1-((rate_with_iva.to_f * remaining_debt.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
             else
               capital = payment_amount.to_f - interests.to_f - iva.to_f
               payment = capital.to_f + interests.to_f + iva.to_f
