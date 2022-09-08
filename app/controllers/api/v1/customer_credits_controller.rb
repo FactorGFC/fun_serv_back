@@ -224,7 +224,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @dias_dispersion = GeneralParameter.get_general_parameter_value('DIAS_DISPERSION')     
     @date = actual_date + @dias_dispersion.to_i
     @pay_date = GeneralParameter.get_general_parameter_value('DIA_PAGO')
-    @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
+    if @pay_date == 0
+      @error_desc.push("No existe el parametro general DIA PAGO")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    else
+        @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
+      end
     start_date = @date
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales

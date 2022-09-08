@@ -53,6 +53,8 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @payment_period = FactoryBot.create(:payment_period)
          FactoryBot.create(:er_externo)
          FactoryBot.create(:er_factor)
+         FactoryBot.create(:gp_dias_dispersion)
+         FactoryBot.create(:gp_dia_pago)
 #        @ext_rate_co = FactoryBot.create(:ext_rate_co)
        # @credit_rating = FactoryBot.create(:credit_rating)
 
@@ -114,6 +116,8 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @customer = FactoryBot.create(:customer)
+        FactoryBot.create(:gp_dias_dispersion)
+        FactoryBot.create(:gp_dia_pago)
 
         post '/api/v1/customer_credits', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                    customer_credit: { capital: '100000.00', interests: '150000.00', iva: '16000.00', total_debt: '266000.00',
@@ -140,6 +144,8 @@ RSpec.describe Api::V1::CustomerCreditsController, customer_credit_type: :reques
         @my_app = FactoryBot.create(:my_app, user: @user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
         @customer_credit = FactoryBot.create(:customer_credit)
+        FactoryBot.create(:gp_dias_dispersion)
+        FactoryBot.create(:gp_dia_pago)
         patch api_v1_customer_credit_path(@customer_credit), params: { token: @token.token, secret_key: @my_app.secret_key,
                                                                        customer_credit: { status: 'PA' } }
       end

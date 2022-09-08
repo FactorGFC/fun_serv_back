@@ -75,5 +75,19 @@ FactoryBot.define do
       value { "eloyr@gmail.com" }
       documentation { "Se utiliza para configurar el correo al que se mandaran todos los correos del mailer" }
     end
+    factory :gp_dias_dispersion do
+      key { "DIAS_DISPERSION" }
+      description { "Dias para dispersion del pago del credito" }
+      used_values { "valor único" }
+      value { "5" }
+      documentation { "Son los dias que tiene el empleado para realizar la dispersion del credito" }
+    end
+    factory :gp_dia_pago do
+      key { "DIA_PAGO" }
+      description { "Dia de la semana que " }
+      used_values { "Jueves" }
+      value { "4" }
+      documentation { "Es el dia de la semana en el que se realizan los pagos de creditos" }
+    end
   end
 end
