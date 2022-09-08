@@ -159,15 +159,22 @@ class SessionsController < ApplicationController
   def signature
     # puts params.inspect
     @customer_credit_signatory = CustomerCreditsSignatory.where(signatory_token: params['signatory_token'])
+    # @notes = []
+    # if @customer_credit_signatory[0].notes.is_a? Enumerable 
+      # @notes = @notes + (@customer_credit_signatory[0].notes)    
+    # else
+      # @notes = [@customer_credit_signatory[0].notes]
+    # end
+
     if @customer_credit_signatory.blank?
         render json: { message: "No se encontró una solicitud de crédito con el token: #{params['signatory_token']}"  }, status: 206
     else
       if @customer_credit_signatory[0].signatory_token_expiration > Time.now
-        if @customer_credit_signatory[0].status == 'PR'
+        # if @customer_credit_signatory[0].status == 'PA'
           @customer_credit_signatory.update(status: params['status'])
           @customer_credit_signatory.update(notes: params['comment'])
           # CAMBIA FECHA DE EXPIRACION DEL SIGNATORY_TOKEN
-          # @customer_credit_signatory.update(signatory_token_expiration: "1990-04-02 02:28:59.692599")
+          @customer_credit_signatory.update(signatory_token_expiration: "1990-04-02 02:28:59.692599")
 
           #METODO QUE ACTUALIZA Y REVISA ESTATUS DEL CREDITO, CUANDO TODOS ESTEN FIRMADOS Y ACEPTADOS DEBE MANDAR CORREO A MESA DE CONTROL
           @signatories = CustomerCreditsSignatory.where(customer_credit_id: @customer_credit_signatory[0].customer_credit_id)
@@ -186,11 +193,11 @@ class SessionsController < ApplicationController
             end
             render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
           else
-            render json: { message: "No se encuentran signatories: #{@customer_credit_signatory.status}"  }, status: 206
+            render json: { message: "No se encuentran signatories: #{@customer_credit_signatory[0].status}"  }, status: 206
           end
-        else
-          render json: { message: "El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory.status}"  }, status: 206
-        end
+        # else
+          # render json: { message: "El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory[0].status}"  }, status: 206
+        # end
       else
         render json: { message: 'Token vencido' }, status: 206
       end
@@ -282,6 +289,23 @@ class SessionsController < ApplicationController
     else
       render json: { message: "No se encuentra el contributor_documents  #{params[:id]}"}, status: 206
     end
+  end
+
+  def get_customer
+    @query = "SELECT cus.*, con.*, peo.*, coa.*
+    FROM customer_credits cuc
+    JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN contributors con ON (cus.contributor_id = con.id)
+    LEFT JOIN people peo ON (peo.id = con.person_id)
+    JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+    JOIN states sta ON (sta.id = coa.state_id)
+    JOIN municipalities mun ON (mun.id = coa.municipality_id)
+    JOIN countries cou ON (cou.id = sta.country_id)
+    WHERE cuc.id = ':customer_credit_id';"
+
+    @query = @query.gsub ':customer_credit_id', params[:customer_credit_id].to_s
+    @get_credit_customer_report = execute_statement(@query)
+    render json: @get_credit_customer_report
   end
 
 end

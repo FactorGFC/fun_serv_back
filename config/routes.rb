@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   get '/ext_rates', to: 'sessions#ext_rates'
   get '/sim_customer_payments', to: 'sessions#sim_customer_payments'
   get '/contributor_documents', to: 'sessions#contributor_documents'
+  get '/reports/customer_credit_id/:customer_credit_id/get_customer', to: 'sessions#get_customer' 
   #borrar al finalizar pruebas
   # root :to => 'welcome#index', as: :home
 
