@@ -27,15 +27,15 @@ class SessionsController < ApplicationController
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
     unless @customer_credit.blank?
       if @customer_credit[0].extra2 > Time.now
-          if @customer_credit[0].status == 'PR'
+          # if @customer_credit[0].status == 'PR'
             @customer_credit.update(status: 'AC')
             @customer_credit.update(extra3: "#{params[:call_back_token]}-AC")
-            #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y DE LUZ VERDE
+            #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
             send_control_desk_mailer(@customer_credit[0].id)
             render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)' }, status: 200
-          else
-            render json: { message: "El credito ya ha sido actualizado por el cliente #{@customer_credit.status}", status: false }, status: 206
-          end
+          # else
+            # render json: { message: "El credito ya ha sido actualizado por el cliente #{@customer_credit.status}", status: false }, status: 206
+          # end
       else
         render json: { message: "Token expiró el #{@customer_credit[0].extra2}", status: false }, status: 206
       end
@@ -72,13 +72,13 @@ class SessionsController < ApplicationController
         if @customer_credit.blank?
           render json: { message: "No se encontró una solicitud de crédito con el token: #{params[:call_back_token]}", status: false }, status: 206
         else
-          if @customer_credit[0].status == 'PR'
+          # if @customer_credit[0].status == 'PA'
           @customer_credit.update(status: 'RE')
           @customer_credit.update(extra3: "#{params[:call_back_token]}-RE")
           render json: { message: 'Ok, Credito actualizado con exito (RECHAZADO)' }, status: 200
-          else
-            render json: { message: "El credito ya ha sido actualizado por el cliente (#{@customer_credit[0].status})", status: false }, status: 206
-          end
+          # else
+            # render json: { message: "El credito ya ha sido actualizado por el cliente (#{@customer_credit[0].status})", status: false }, status: 206
+          # end
 
         end
       else
@@ -101,8 +101,7 @@ class SessionsController < ApplicationController
       end
     else
       # NO SE ENCONTRÓ EL TOKEN
-      render json: { message: 'Token de un solo uso ya fué utilizado', status: false
-        }, status: 206
+      render json: { message: 'Token de un solo uso ya fué utilizado', status: false }, status: 206
     end
   end
 
@@ -185,11 +184,11 @@ class SessionsController < ApplicationController
             end
             @AC = @arr.minmax.reduce(&:eql?) ? true : false        
             if @AC
-              #TO DO: MANDAR UN MAIL AL ANALISTA PARA QUE SOLICITE APROBACION DEL CLIENTE
+              # MANDA UN MAIL AL ANALISTA PARA QUE SOLICITE APROBACION DEL CLIENTE
               # send_analyst_mailer(@customer_credit_signatory[0].customer_credit_id)
               #TO DO: MOVER ESTE MAILER AL PUNTO DONDE EL CLIENTE ACEPTA EL CREDITO
-              #METODO QUE MANDA NOTIFICACION A MESA DE CONTROL PARA QUE ANALICE A DETALLE EL CREDITO POR APROVAR CUANDO TODOS HAYAN FIRMADO
-              send_control_desk_mailer( @customer_credit_signatory[0].customer_credit_id)
+              #METODO QUE MANDA NOTIFICACION A MESA DE CONTROL PARA QUE ANALICE A DETALLE EL CREDITO POR APROVAR CUANDO TODOS HAYAN FIRMADO INCLUYENDO AL CLIENTE
+              # send_control_desk_mailer( @customer_credit_signatory[0].customer_credit_id)
             end
             render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
           else

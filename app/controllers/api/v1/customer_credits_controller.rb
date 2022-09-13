@@ -102,9 +102,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 if documents_mode
                   generate_customer_credit_request_report_pdf
                 end
+                # CREA SIGNATORIES
                 create_credit_signatories
                 # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
-                # CREA SIGNATORIES
                 # send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
           else
@@ -119,7 +119,12 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def update
+    # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
     @customer_credit.update(customer_credits_params)
+    #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO.
+    if customer_credits_params['status'] = 'PR'
+      customer_credit_mailer
+    end
     render 'api/v1/customer_credits/show'
   end
 
@@ -333,7 +338,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @total_debt = @total_debt + @capital + @interests + @iva
   end
 
-  # TO DO: MOVER ESTE METODO AL PUNTO DONDE COMITÉ Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
+  # COMITÉ Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
   def customer_credit_mailer
     unless @customer_credit.blank?
       @query = 
