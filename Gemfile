@@ -37,7 +37,7 @@ gem "number_to_words"
 # To make http request with ruby
 gem 'httparty', '~> 0.16.4'
 # Use Ransack search data
-gem 'ransack', '~> 2.6.0'
+# gem 'ransack', '~> 2.6.0'
 #gem 'prawn'
 #gem 'ilovepdf'
 
