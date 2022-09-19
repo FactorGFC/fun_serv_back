@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       resources :lists
       resources :general_parameters
       resources :people
+      resources :credit_bureaus
       resources :legal_entities
       resources :contributors do
         resources :contributor_addresses, except: %i[new edit]
@@ -84,6 +85,15 @@ Rails.application.routes.draw do
       #get '/reports/get_request_used_date', to: 'reports#get_request_used_date'
       #get '/customer_credits/:customer_credit_id/total_payment/:total_payment/restructure_credit_term', to: 'restructure_credits#term'
       # post '/customer_credit_signatory/:signatory_token', to: 'customer_credits_signatories#signature'
+
+      put 'create_sat_user' => 'home#create_sat_user', as: :create_sat_user
+      # put 'credit_bureau_info/:id' => 'customers#credit_bureau_info', as: :credit_bureau_info
+      # put 'credit_bureau_report/:customer_id' => 'customers#credit_bureau_report', as: :credit_bureau_report
+
+      get 'credit_bureau_report/:customer_id' => 'customers#credit_bureau_report', as: :credit_bureau_report
+
+      post '/credit_bureau_pdf/:customer_credit_id'  => 'customers#credit_bureau_pdf', as: :credit_bureau_pdf
+
       get '/customer_credits_signatory/customer_credit_id', to: 'customer_credits_signatories#show_by_credit_id'
       #get '/user_registration', to: 'user_registration#create'
       post '/company_registration', to: 'company_registration#create'

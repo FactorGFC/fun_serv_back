@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_10_150336) do
+ActiveRecord::Schema.define(version: 2022_09_07_191906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -123,6 +123,16 @@ ActiveRecord::Schema.define(version: 2022_08_10_150336) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["customer_credit_id"], name: "index_credit_analyses_on_customer_credit_id"
+  end
+
+  create_table "credit_bureaus", force: :cascade do |t|
+    t.uuid "customer_id", null: false
+    t.integer "bureau_id"
+    t.jsonb "bureau_info"
+    t.jsonb "bureau_report"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["customer_id"], name: "index_credit_bureaus_on_customer_id"
   end
 
   create_table "credit_ratings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -596,6 +606,7 @@ ActiveRecord::Schema.define(version: 2022_08_10_150336) do
   add_foreign_key "contributors", "legal_entities"
   add_foreign_key "contributors", "people"
   add_foreign_key "credit_analyses", "customer_credits"
+  add_foreign_key "credit_bureaus", "customers"
   add_foreign_key "customer_credits", "credit_ratings"
   add_foreign_key "customer_credits", "customers"
   add_foreign_key "customer_credits", "payment_periods"

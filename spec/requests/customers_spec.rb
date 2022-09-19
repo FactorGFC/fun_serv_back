@@ -11,6 +11,7 @@ RSpec.describe Api::V1::CustomersController, type: :request do
     @document = FactoryBot.create(:document)
     @file_type_document = FactoryBot.create(:file_type_document, file_type: @file_type, document: @document)
     @company = FactoryBot.create(:company)
+    # @credit_bureau = FactoryBot.create(:credit_bureau)
     
   end
 

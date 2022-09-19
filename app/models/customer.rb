@@ -69,6 +69,7 @@ class Customer < ApplicationRecord
   has_many :customer_personal_references
   has_many :people, through: :contributors
   has_many :legal_entities, through: :contributors
+  has_many :credit_bureaus
 
   validates :customer_type, presence: true
   validates :name, presence: true

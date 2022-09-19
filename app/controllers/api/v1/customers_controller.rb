@@ -3,10 +3,12 @@
 class Api::V1::CustomersController < Api::V1::MasterApiController
   include Swagger::Blocks
   include Swagger::CustomersApi
+
+  require 'json'
   
   before_action :authenticate
   before_action :set_customer, only: %i[show update destroy]
-  before_action :set_contributor
+  before_action :set_contributor , only: %i[index show update destroy create] 
 
   # GET /contributors/:contributor_id/customers
   def index
@@ -54,6 +56,27 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
     render json: { message: 'El cliente fue eliminado' }
   end
 
+  # GET CREDIT BUREAU REPORT QUE DEVUELVE EL JSON GUARDADO EN LA TABLA
+
+  def credit_bureau_report
+    @bureau_report = CreditBureau.where(customer_id: params[:customer_id]).last
+      unless @bureau_report.blank?
+        render template: 'api/v1/credit_bureaus/bureau'
+      else
+        render json: { message: "No se encuentra reporte de buro para el id:  #{params[:customer_id]}"}, status: 206
+      end
+  end
+
+  def credit_bureau_pdf
+    @customer_credit = CustomerCredit.find_by_id(params[:customer_credit_id])
+    response = create_sat_user(@customer_credit)
+    unless response.blank?
+      render json: { message: 'Ok', pdf:response}, status: 200
+    else
+      render json: { message: "No se encuentra reporte de buro para el id:  #{params[:customer_id]}"}, status: 206
+    end
+  end
+
   private
 
   def customer_params
@@ -92,4 +115,52 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
       end
     end
   end
+
+  # def credit_bureau_pdf
+  #   #TO DO: REVISAR COMO RENDERIZAR/DEVOLVER EL REPORTE PDF DE BURO AL ENPOINT
+  #   respond_to do |format|
+  #     # format.html
+  #     # format.pdf { render  template: "companies/credit_bureau", pdf: "Reporte Buró de Crédito", type: "application/pdf" }   # Excluding ".pdf" extension.
+  #     format.pdf do
+  #       render_to_string pdf: "Reporte Buró de Crédito",
+  #                           #  template: "customers/credit_bureau.html.slim",
+  #                           template: "customers/credit_bureau.pdf.erb",
+  #                           type: "application/pdf",
+  #                           disposition: "inline",
+  #                           encoding: "UTF-8"
+  #     end
+  #   end
+  # end
+
+  # def credit_bureau_report_2
+  #   @company = Company.find(params[:id])
+
+  #   @bureau_report = BuroCredito.get_buro_report 4450
+
+  #   respond_to do |format|
+  #     if @company.try(:credit_bureaus).last.update(bureau_report: @bureau_report)
+  #       format.html { redirect_to company_details_path, notice: 'La compañia se ha actualizado correctamente' }
+  #     else
+  #       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+  #     end
+  #   end
+  # end
+  
+  # def credit_bureau_info
+  #   @company = Company.find(params[:id])
+
+  #   @bureau_info = BuroCredito.get_buro_info @company.try(:credit_bureaus).last.try(:bureau_id)
+
+  #   respond_to do |format|
+  #     if @company.try(:credit_bureaus).last.update(bureau_info: @bureau_info)
+  #       format.html { redirect_to company_details_path, notice: 'La compañia se ha actualizado correctamente' }
+  #     else
+  #       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+  #     end
+  #   end
+  # end
+
+
+  
+
 end
