@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
     redirect_to '/'
   end
 
-#  CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO
+# CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO
   def get_callback
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
     unless @customer_credit.blank?
