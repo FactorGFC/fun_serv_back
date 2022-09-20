@@ -95,5 +95,6 @@ FactoryBot.define do
     association :user, factory: :user
     association :file_type, factory: :file_type
     association :company, factory: :company
+    # association :credit_bureau, factory: :credit_bureau
   end
 end

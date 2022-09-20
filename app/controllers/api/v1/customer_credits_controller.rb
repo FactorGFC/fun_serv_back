@@ -92,6 +92,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                                   end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
                                   debt_time: @debt_time, insurance1: @insurance, term_id: @new_term_id)
           if @customer_credit.status == 'SI'
+            # PRUEBA BURO DE CREDITO
+            # create_sat_user (@customer_credit)
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
           elsif @customer_credit.status == 'PR'
