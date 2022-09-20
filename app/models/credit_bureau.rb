@@ -20,4 +20,5 @@
 #
 class CreditBureau < ApplicationRecord
     belongs_to :customer
+    
 end
