@@ -34,7 +34,7 @@ RSpec.describe Api::V1::CustomersController, type: :request do
                                                               'ontime_bonus', 'assist_bonus', 'food_vouchers', 'total_income', 'total_savings_found',
                                                               'christmas_bonus', 'taxes', 'imms', 'savings_found', 'savings_found_loand', 'savings_bank',
                                                               'insurance_discount', 'child_support', 'extra_expenses', 'infonavit', 
-                                                              'contributor_id', 'user_id', 'file_type_id', 'company_id')
+                                                              'contributor_id', 'user_id', 'file_type_id', 'job','company_id')
     end
   end
 

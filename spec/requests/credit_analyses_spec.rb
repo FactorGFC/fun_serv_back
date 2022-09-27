@@ -38,7 +38,7 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
         expect(json['data']['attributes'].keys).to contain_exactly('id', 'debt_rate', 'cash_flow', 'credit_status', 'previus_credit', 'discounts', 'debt_horizon',
                                                                    'report_date', 'mop_key', 'last_key', 'balance_due', 'payment_capacity', 'lowest_key', 'departamental_credit',
                                                                     'car_credit', 'mortagage_loan', 'other_credits', 'accured_liabilities', 'debt', 'net_flow', 'customer_credit_id',
-                                                                    'created_at', 'updated_at' 
+                                                                    'created_at', 'updated_at', 'anual_rate', 'credit_type', 'customer_number', 'overall_rate', 'total_amount', 'total_cost', 'total_debt' 
                                                                   )
       end
     end

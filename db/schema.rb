@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_07_191906) do
+ActiveRecord::Schema.define(version: 2022_09_27_144559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -122,6 +122,13 @@ ActiveRecord::Schema.define(version: 2022_09_07_191906) do
     t.uuid "customer_credit_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.decimal "total_amount", precision: 15, scale: 4
+    t.string "credit_type"
+    t.string "customer_number"
+    t.decimal "anual_rate", precision: 15, scale: 4
+    t.decimal "total_cost", precision: 15, scale: 4
+    t.decimal "overall_rate", precision: 15, scale: 4
+    t.decimal "total_debt", precision: 15, scale: 4
     t.index ["customer_credit_id"], name: "index_credit_analyses_on_customer_credit_id"
   end
 
@@ -179,8 +186,11 @@ ActiveRecord::Schema.define(version: 2022_09_07_191906) do
     t.string "credit_folio"
     t.string "currency"
     t.uuid "user_id"
+    t.decimal "insurance", precision: 15, scale: 4
+    t.decimal "commission", precision: 15, scale: 4
     t.decimal "insurance1", precision: 15, scale: 4
     t.decimal "commission1", precision: 15, scale: 4
+    t.string "credit_number"
     t.index ["credit_rating_id"], name: "index_customer_credits_on_credit_rating_id"
     t.index ["customer_id"], name: "index_customer_credits_on_customer_id"
     t.index ["payment_period_id"], name: "index_customer_credits_on_payment_period_id"
@@ -189,6 +199,7 @@ ActiveRecord::Schema.define(version: 2022_09_07_191906) do
   end
 
   create_table "customer_credits_signatories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "customer_credit_id", null: false
     t.string "signatory_token"
     t.datetime "signatory_token_expiration"
     t.string "status"
@@ -196,7 +207,6 @@ ActiveRecord::Schema.define(version: 2022_09_07_191906) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "notes"
     t.uuid "user_id", null: false
-    t.uuid "customer_credit_id", null: false
     t.index ["customer_credit_id"], name: "index_customer_credits_signatories_on_customer_credit_id"
     t.index ["user_id"], name: "index_customer_credits_signatories_on_user_id"
   end
@@ -253,6 +263,7 @@ ActiveRecord::Schema.define(version: 2022_09_07_191906) do
     t.decimal "extra_expenses", precision: 15, scale: 4
     t.decimal "infonavit", precision: 15, scale: 4
     t.uuid "company_id"
+    t.string "job"
     t.index ["company_id"], name: "index_customers_on_company_id"
     t.index ["contributor_id"], name: "index_customers_on_contributor_id"
     t.index ["file_type_id"], name: "index_customers_on_file_type_id"

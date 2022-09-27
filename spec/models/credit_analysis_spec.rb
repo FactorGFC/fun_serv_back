@@ -4,10 +4,13 @@
 #
 #  id                   :uuid             not null, primary key
 #  accured_liabilities  :decimal(15, 4)
+#  anual_rate           :decimal(15, 4)
 #  balance_due          :string
 #  car_credit           :decimal(15, 4)
 #  cash_flow            :decimal(15, 4)
 #  credit_status        :string           not null
+#  credit_type          :string
+#  customer_number      :string
 #  debt                 :decimal(15, 4)
 #  debt_horizon         :decimal(15, 4)
 #  debt_rate            :decimal(15, 4)
@@ -19,9 +22,13 @@
 #  mortagage_loan       :decimal(15, 4)
 #  net_flow             :decimal(15, 4)
 #  other_credits        :decimal(15, 4)
+#  overall_rate         :decimal(15, 4)
 #  payment_capacity     :decimal(15, 4)
 #  previus_credit       :string
 #  report_date          :date             not null
+#  total_amount         :decimal(15, 4)
+#  total_cost           :decimal(15, 4)
+#  total_debt           :decimal(15, 4)
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  customer_credit_id   :uuid             not null

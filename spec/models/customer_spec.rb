@@ -22,6 +22,7 @@
 #  imms                :decimal(15, 4)
 #  infonavit           :decimal(15, 4)
 #  insurance_discount  :decimal(15, 4)
+#  job                 :string
 #  name                :string           not null
 #  net_expenses        :decimal(15, 4)
 #  ontime_bonus        :decimal(15, 4)
