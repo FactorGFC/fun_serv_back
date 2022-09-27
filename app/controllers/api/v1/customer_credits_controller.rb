@@ -97,7 +97,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
           elsif @customer_credit.status == 'PR'
-            # TO TO : MANDAR CORREO AL CLIENTE PARA QUE LO APRUEBE
+            # TO DO : MANDAR CORREO AL CLIENTE PARA QUE LO APRUEBE AL HACER UN UPDATE
                 # send_committee_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
           elsif @customer_credit.status == 'PA'

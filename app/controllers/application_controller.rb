@@ -689,8 +689,8 @@ class ApplicationController < ActionController::Base
 
   def create_sat_user (customer_credit)
     @customer = Customer.find_by_id(customer_credit.customer_id)
-    puts "@customer"
-    puts @customer.inspect
+    # puts "@customer"
+    # puts @customer.inspect
     # DEBE SER UNLESS
     unless @customer.blank?
       @contributor = Contributor.find_by_id(@customer.contributor_id)
@@ -699,11 +699,11 @@ class ApplicationController < ActionController::Base
         unless @person.blank?
           # @user = current_user
           # @company = @user.company
-          puts "@person"
-          puts @person.inspect
+          # puts "@person"
+          # puts @person.inspect
           # puts @person.rfc
 
-          puts "PASA ANTES DEL INFO"
+          # puts "PASA ANTES DEL INFO"
           @info = SatW.get_tax_status @person.try(:rfc)
           # puts "@info"
           # puts @info.inspect
@@ -717,6 +717,7 @@ class ApplicationController < ActionController::Base
         
           else
             # format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            # p "ELSEEEEEEEEEEEEEEEEEEEEEEEEEE"
           end
 
           @bureau_report = BuroCredito.get_buro_report @buro.first['id']
@@ -728,7 +729,7 @@ class ApplicationController < ActionController::Base
           @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
            if @credit_bureau.save
             # puts @credit_bureau.inspect
-            puts @credit_bureau.inspect
+            # puts @credit_bureau.inspect
             # if @bureau_report['results'].present?
               # if @bureau_report['results'][0]['response'].present?
                 # @report_result = @bureau_report['results'][0]
@@ -738,26 +739,23 @@ class ApplicationController < ActionController::Base
             # else
               @report_result = @bureau_report
             # end
-            puts "@report_result.inspect"
-            puts @report_result.inspect
-            # puts @report_result['results']['response']['return'].inspect
-            puts "@report_result['results'].inspect"
-            puts @report_result['results'].inspect
-            puts "@report_result['results'][0].inspect"
-            puts @report_result['results'][0].inspect
-            puts "@report_result['results'][0]['response'].inspect"
-            puts @report_result['results'][0]['response'].inspect
-              if @person.try(:fiscal_regime) == 'PF'
-              p "ENTRA AL IF"
-              if @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito'].present?
-                @score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i
-              else
-                p "ELSE NO TIENE SCORE"
-                @score = 0
-              end
-            end
 
-            bybug
+            # puts "@report_result['results'][0]['response'].inspect"
+            # puts @report_result['results'][0]['response']['respuesta']['msjError'].inspect
+            # {"respuesta"=>{"msjError"=>"No existe informacion crediticia para esta consulta"}}
+            unless @report_result['results'][0]['response']['respuesta']['msjError'] = 'No existe informacion crediticia para esta consulta'
+              if @person.try(:fiscal_regime) == 'PF'
+
+                if @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito'].present?
+                  @score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i
+                else
+
+                  @score = 0
+                end
+              end
+            else
+              @score = @report_result['results'][0]['response']['respuesta']['msjError']
+            end
 
             @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
             pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
@@ -992,9 +990,6 @@ class ApplicationController < ActionController::Base
   end
 
   def create_buro info_sat
-    puts "ENTRA AL CREATE BURO"
-    puts "info_sat.inspect"
-    puts info_sat.inspect
     rfc = info_sat['hydra:member'][0]['rfc']
     # rfc = 'ROGA940403PT'
     email = info_sat['hydra:member'][0]['email']

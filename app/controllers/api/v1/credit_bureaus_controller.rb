@@ -3,8 +3,7 @@ class Api::V1::CreditBureausController < ApplicationController
   
     # GET /credit_bureaus or /credit_bureaus.json
     def index
-      @search_credit_bureaus = policy_scope(CreditBureau).ransack(params[:q])
-      @credit_bureau = @search_credit_bureaus.result.last
+      @credit_bureau = CreditBureau.all
     end
   
     # GET /credit_bureaus/1 or /credit_bureaus/1.json

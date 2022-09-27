@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: credit_bureaus
@@ -18,13 +19,9 @@
 #
 #  fk_rails_...  (customer_id => customers.id)
 #
-FactoryBot.define do
-  factory :credit_bureau do
-    bureau_info { "Clientes de gran confianza, muy estables y de bajo riesgo" }
-    bureau_report { "Clientes de gran confianza, muy estables y de bajo riesgo" }
-    bureau_id { "1234215" }
-    
-    association :customer, factory: :customer
+RSpec.describe CreditBureau, type: :model do
+      it { should validate_presence_of :bureau_id }
+      it { should validate_presence_of :customer_id }
+      it { should belong_to(:customer) }
 
   end
-end
