@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="es" class="wf-roboto-n3-active wf-roboto-n4-active wf-roboto-n5-active wf-roboto-n6-active wf-roboto-n7-active wf-poppins-n3-active wf-poppins-n4-active wf-poppins-n5-active wf-poppins-n6-active wf-poppins-n7-active wf-active">
+<head>
+    <title>Bureau Report</title>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport"/>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= wicked_pdf_stylesheet_link_tag "application" %>
+</head>
+<body>
+    <div class="m-content">
+        <div class="row">
+            <%# <%= wicked_pdf_image_tag asset_url('logo.png'), width: "auto" %> 
+            <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
+        </div>
+        <div class="row">
+            <div class="portlet-profile d-flex justify-content-end">
+                <div class="info-profile-container">
+                    <div class="icon-circle d-flex justify-content-end align-items-center px-5">
+                        <i class="fa fa-id-card fa-4x" style="position: relative;">
+                        </i></div>
+                    <div class="d-flex flex-column col-md-12 mb-2">
+                        <div class="col-md-12">
+                    <span class="port-title"><%= @person.first_name %> <%= @person.last_name %> <%= @person.second_last_name %>
+                    </span><span><%=  @person.rfc %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="m-portlet">
+                    <div class="m-section mb-0">
+                      <% if !@credit_bureau.present? %>
+                        <div class="m-section__content">
+                            <div class="no-results">
+                            </div>
+                        </div>
+                      <% else end %>
+                        <div class="m-section__sub">
+                            <div class="row m-section__sub" style="display: flex">
+                                <div class="col-6 pl-0">
+                                </div>
+                                <div class="col-6 per-page-container">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-section__content">
+                          <%# <% if @credit_bureau.present? and @company.try(:client_type).eql?('PF') %> %>
+                          <% if @credit_bureau.present? %>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                            </div>
+                            <div class="m-demo__preview">
+                                <h3 class="m-portlet__head-text">
+                                    SCORE
+                                </h3>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <div class="gauge-wrapper">
+# <!--                                       <div class="gauge four rischio" style="&#45;&#45;degres: <%= calculate_degrees(@score) %> deg;">-->
+                                            <div class="gauge four rischio" >
+                                                <div class="slice-colors">
+                                                    <div class="st slice-item">
+                                                    </div>
+                                                    <div class="st slice-item">
+                                                    </div>
+                                                    <div class="st slice-item">
+                                                    </div>
+                                                    <div class="st slice-item">
+                                                    </div>
+                                                </div>
+                                                <div class="needle">
+                                                </div>
+                                                <div class="gauge-center">
+                                                    <div class="number">
+                                                        <%= @score %>
+                                                    </div>
+                                                    <div class="status-face">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-inline-flex justify-content-center">
+                                            <div class="d-flex flex-column justify-content-between align-items-center status-container">
+                                                <span class="text-center"><strong><%= 'BAJA, MENOR A 550 PUNTOS' %></strong></span>
+                                                <%# <%= image_tag 'face-bad.png' %> %>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-between align-items-center status-container">
+                                                <span class="text-center"><strong><%= 'REGULAR, 551-650 PUNTOS' %></strong></span>
+                                                <%# <%= image_tag 'face-med.png' %> %>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-between align-items-center status-container">
+                                                <span class="text-center"><strong><%= 'BUENA 651- 750 PUNTOS' %></strong></span>
+                                                <%# <%= image_tag 'face-nice.png' %> %>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-between align-items-center status-container">
+                                                <span class="text-center"><strong><%= 'EXCELENTE MÁS DE 751 PUNTOS' %></strong></span>
+                                                <%# <%= image_tag 'face-good.png' %> %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Datos Generales
+                                    </h3>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <% if @credit_bureau.present?
+                                        if @report_result['response'].present? %>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Nombre
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%# <%= @report_result['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre'] + ' ' + @report_result['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno'] + ' ' + @report_result['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoMaterno'] %> %>
+                                            <%= @report_result['response']['return'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                R.F.C
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%# <%= @report_result['response']['return']['Personas']['Persona'][0]['Nombre']['RFC'] %> %>
+                                            <%= @report_result['response']['return']%>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Fecha de nacimiento
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%# <%= get_pm_birthdate @report_result['response']['return']['Personas']['Persona'][0]['Nombre']['FechaNacimiento'] %> %>
+                                        </div>
+                                      <% else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i>
+                                                <span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran datos generales.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <% end; else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>Aún no se encuentran datos generales.</strong>
+                                            </div>
+                                        </div>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">Resumen de Créditos (M.N.)</h3>
+                                  <%# <% if @credit_bureau.bureau_report.present? %>
+                                  <% if @bureau_report.present?
+                                    if @report_result['response'].present? %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-section">
+                                            <div class="m-section__content">
+                                                <table class="table" style="display: block;overflow-x: auto;">
+                                                    <thead class="thead-default">
+                                                    <tr>
+                                                        <th>
+                                                            MOP
+                                                        </th>
+                                                        <th>
+                                                            Cuentas Abiertas
+                                                        </th>
+                                                        <th>
+                                                            Limite Abiertas
+                                                        </th>
+                                                        <th>
+                                                            Maximo Abiertas
+                                                        </th>
+                                                        <th>
+                                                            Saldo Actual Abiertas
+                                                        </th>
+                                                        <th>
+                                                            Saldo Vencido Abiertas
+                                                        </th>
+                                                        <th>
+                                                            Pago a Realizar
+                                                        </th>
+                                                        <th>
+                                                            Cuentas Cerradas
+                                                        </th>
+                                                        <th>
+                                                            Limite Cerradas
+                                                        </th>
+                                                        <th>
+                                                            Maximo Cerradas
+                                                        </th>
+                                                        <th>
+                                                            Saldo Actual Cerradas
+                                                        </th>
+                                                        <th>
+                                                            Monto Cerradas
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <% get_ur_credits(@report_result['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta']).each do |credit| %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= credit[:mop] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= credit[:cuentas_abiertas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:limite_abiertas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:maximo_abiertas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:saldo_actual] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:saldo_vencido] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:pago_realizar] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= credit[:cuentas_cerradas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:limite_cerradas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:maximo_cerradas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:saldo_cerradas] %>
+                                                        </td>
+                                                        <td>
+                                                            <%= number_to_currency credit[:monto_cerradas] %>
+                                                        </td>
+                                                    </tr>
+                                                    <% end %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  <% end; end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Domicilios registrados
+                                    </h3>
+                                  <% if @credit_bureau.present?
+                                    if @report_result['response'].present?
+                                    @report_result['response']['return']['Personas']['Persona'][0]['Domicilios']['Domicilio'].each do |address| %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Calle y número
+                                            </strong></div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['Direccion1'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Colonia
+                                            </strong></div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['ColoniaPoblacion'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Del / Mpio
+                                            </strong></div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['DelegacionMunicipio'] %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Estado
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['Estado'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                C.P
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['CP'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Teléfono
+                                            </strong></div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= address['NumeroTelefono'] %>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                  <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran domicilios registrados.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran domicilios registrados.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Domicilio(s) de empleo(s) registrado(s)
+                                    </h3><% if @credit_bureau.present?
+                                    if @report_result['response'].present?
+                                    @report_result['response']['return']['Personas']['Persona'][0]['Empleos']['Empleo'].each do |job| %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Compañía
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= job['NombreEmpresa'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Puesto
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= job['Cargo'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                País
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= job['CodPais'] %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>Calle y número</strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= job['Direccion1'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>Telefono</strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= job['NumeroTelefono'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>Fecha de contratación</strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= get_pm_birthdate job['FechaContratacion'] %>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1"></i>
+                                                <span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran Domicilio(s) de empleo(s) registrado(s).
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran Domicilio(s) de empleo(s) registrado(s).
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Cuentas
+                                    </h3>
+                                    <% if @credit_bureau.present?
+                                    if @report_result['response'].present?
+                                    @report_result['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta'].each do |account| %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Nombre del Otorgante
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= account['NombreOtorgante'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Monto a pagar
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= number_to_currency account['MontoPagar'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Tipo de cuenta
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= I18n.t("account_type.#{account['TipoCuenta']}") %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Saldo actual
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= account['SaldoActual'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Saldo vencido
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= account['SaldoVencido'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Tipo de contrato
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= I18n.t("contract_type.#{account['TipoContrato']}") %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Crédito máximo
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= number_to_currency account['CreditoMaximo'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Forma de Pago
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= method_payment account['FormaPagoActual'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Frecuencia de pagos
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= I18n.t("payments_frecuency.#{account['FrecuenciaPagos']}") %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo mt-2">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle d-flex justify-content-between align-items-center history-header">
+                                            <h4 class="strong">
+                                                Historial de pagos
+                                            </h4>
+                                            <div class="history-icon">
+                                                <i class="fa fa-calendar-check fa-2x lightgray-text">
+                                                </i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo history-table">
+                                        <div class="m-stack__item body-info-company m-stack__item--middle">
+                                            <strong>
+                                                Mes
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                E
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                F
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                M
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                A
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                M
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                J
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                J
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                A
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                S
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                O
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                N
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle text-center">
+                                            <strong>
+                                                D
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <% get_history_payments(account).each do |key, value| %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo history-table">
+                                        <div class="m-stack__item body-info-company m-stack__item--middle">
+                                            <%= key %>
+                                        </div>
+                                        <% value.each do |v|
+                                        if v[:value] == 0 %>
+                                        <div class="m-stack__item body-info-company m-stack__item--middle">
+                                        </div>
+                                        <% elsif v[:value] == '1'
+                                        %>
+                                        <div class="m-stack__item body-info-one m-stack__item--middle">
+                                            <strong>
+                                                <%= v[:value] %>
+                                            </strong>
+                                        </div>
+                                        <% elsif v[:value] == '2' %>
+                                        <div class="m-stack__item body-info-two m-stack__item--middle">
+                                            <strong>
+                                                <%= v[:value] %>
+                                            </strong>
+                                        </div>
+                                        <% else %>
+                                        <div class="m-stack__item body-info-x m-stack__item--middle">
+                                            <strong>
+                                                <%= v[:value] %>
+                                            </strong>
+                                        </div>
+                                        <% end; end %>
+                                    </div>
+                                    <% end %>
+                                    <hr class="dotted"/>
+                                    <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span> </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran cuentas.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span> </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran cuentas.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Consultas
+                                    </h3>
+                                    <% if @bureau_report.present?
+                                    @bureau_report['results'].each do |bureau_report|
+                                    if @bureau_report['status'] %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <%= I18n.t("report_type.#{bureau_report['metadata']['reportType']}") %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <%= @bureau_report['status'] %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <%= @bureau_report['createdAt'].to_datetime.strftime('%d-%m-%Y') %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+<!--                                            <a href="/credit_bureaus/<%= bureau_report['id'] %>">-->
+<!--                                                Ver reporte-->
+<!--                                            </a>-->
+                                        </div>
+                                    </div>
+                                    <% end; end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span></span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran consultas.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                          <% elsif (@credit_bureau.present? and @company.try(:client_type).eql?('PM') || (@credit_bureau.present? and @company.try(:client_type).eql?('PFAE'))) %>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                    </h3>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <% if @credit_bureau.present?
+                                        if @report_result['query'].present? %>
+                                        <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                            <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                                <strong>
+                                                    Calificación cartera
+                                                </strong>
+                                            </div>
+                                            <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                                <% if @report_result['response']['respuesta']['datosGenerales'].present?
+                                                %><strong>
+                                                <%= @report_result['response']['respuesta']['datosGenerales']['calificacionCartera'].present? ? @report_result['response']['respuesta']['datosGenerales']['calificacionCartera'].tr('0','') : 'N/D' %>
+                                            </strong>
+                                                <% else %>
+                                                <strong>
+                                                N/D
+                                            </strong>
+                                                <% end %>
+                                            </div>
+                                        </div>
+                                        <% else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>          </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentra calificación.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <% end; else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>        </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentra calificación.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Datos Generales
+                                    </h3>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <% if @credit_bureau.present?
+                                        # if @report_result['query'].present? %>
+                                        if @report_result.query.present? %>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Nombre
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <strong>
+                                                <%= @report_result['query']['consulta']['persona']['nombre'] %>
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                R.F.C
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <strong>
+                                                <%= @report_result['query']['consulta']['persona']['rfc'] %>
+                                            </strong>
+                                        </div>
+                                        <% else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>        </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran datos generales.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <% end; else %>
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran datos generales.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Domicilio registrado
+                                    </h3>
+                                    <% if @credit_bureau.present?
+                                    if @report_result['query'].present? %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Calle y número
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['direccion1'] : 'N/D'
+                                            %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Colonia
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['coloniaPoblacion'] :
+                                            'N/D' %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Del / Mpio
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['delegacionMunicipio']
+                                            : 'N/D' %>
+                                        </div>
+                                    </div>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Estado
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['estado'] : 'N/D' %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                C.P
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['codigoPostal'] :
+                                            'N/D' %>
+                                        </div>
+                                        <div class="m-stack__item header-info-company m-stack__item--left m-stack__item--middle">
+                                            <strong>
+                                                Teléfono
+                                            </strong>
+                                        </div>
+                                        <div class="m-stack__item m-stack__item--left body-info-company m-stack__item--middle">
+                                            <%= @report_result['response']['respuesta']['datosGenerales'].present? ?
+                                            @report_result['response']['respuesta']['datosGenerales']['telefono'] : 'N/D' %>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <% else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>        </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran domicilios registrados.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end; else
+                                    %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran domicilios registrados.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Créditos activos
+                                    </h3>
+                                    <% if @credit_bureau.bureau_report.present?
+                                    if @report_result['response'].present? %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-section">
+                                            <div class="m-section__content">
+                                                <table class="table" style="display: block;overflow-x: auto;">
+                                                    <thead class="thead-default">
+                                                    <tr>
+                                                        <th>
+                                                            Tipo de Otorgante
+                                                        </th>
+                                                        <th>
+                                                            Tipo de Crédito
+                                                        </th>
+                                                        <th>
+                                                            Cuentas Abiertas
+                                                        </th>
+                                                        <th>
+<!--                                                            <Cuentas>en MXP</Cuentas>-->
+                                                            <a>en MXP</a>
+                                                        </th>
+                                                        <th>
+                                                            Cuentas en USD
+                                                        </th>
+                                                        <th>
+                                                            Otras Monedas
+                                                        </th>
+                                                        <th>
+                                                            Original
+                                                        </th>
+                                                        <th>
+                                                            Saldo Actual
+                                                        </th>
+                                                        <th>
+                                                            Vigente
+                                                        </th>
+                                                        <th>
+                                                            1-29 días
+                                                        </th>
+                                                        <th>
+                                                            30-59 días
+                                                        </th>
+                                                        <th>
+                                                            60-89 días
+                                                        </th>
+                                                        <th>
+                                                            90-119 días
+                                                        </th>
+                                                        <th>
+                                                            120 - 179 días
+                                                        </th>
+                                                        <th>
+                                                            180+ días
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <% get_active_credits(@report_result['response']['respuesta']['creditoFinanciero']).each do |active_credit| %>
+                                                    <tr>
+                                                        <th>
+                                                            <%= active_credit[:otorgante] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:tipo_credito] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_abiertas] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_mxp] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_usd] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:otras_monedas] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:original] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:saldo_actual] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:vigente] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:thirty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:sixty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:ninety] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one_twenty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one_eighty] %>
+                                                        </th>
+                                                    </tr>
+                                                    <% end; get_total_active_credits(@report_result['response']['respuesta']['creditoFinanciero']).each do |active_credit| %>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            Total
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_abiertas] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_mxp] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:cuentas_usd] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:otras_monedas] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:original] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:saldo_actual] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= number_to_currency active_credit[:vigente] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:thirty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:sixty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:ninety] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one_twenty] %>
+                                                        </th>
+                                                        <th>
+                                                            <%= active_credit[:one_eighty] %>
+                                                        </th>
+                                                    </tr>
+                                                    <% end %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran creditos activos.
+                                                </strong></div>
+                                        </div>
+                                    </div>
+                                    <% end; else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran creditos activos.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Historia
+                                    </h3>
+                                    <% if @credit_bureau.present?
+                                    if @report_result['response'].present?
+                                    split_months = @report_result['response']['respuesta']['historia'].length / 5.0
+                                    if split_months % 1 != 0
+                                    split_months += 1
+                                    end; starting = 0
+                                    ending = 4 %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-section">
+                                            <div class="m-section__content">
+                                                <table class="table" style="display: block;overflow-x: auto;">
+                                                  <% for a in 1..split_months do %>
+                                                    <thead class="thead-default">
+                                                    <tr>
+                                                        <th>
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= get_date historia['periodo'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <th>
+                                                            Vigente
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= number_to_currency historia['saldoVigente'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            Vencido de 1 a 29 días
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= number_to_currency historia['saldoVencidoA90Dias'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            Vencido de 30 a 59 días
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= number_to_currency historia['saldoVencido1A29Dias'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            Vencido de 60 a 89 días
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= number_to_currency historia['saldoVencido30A59Dias'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            Vencido de a mas de 89 días
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia|%>
+                                                        <th>
+                                                            <%= number_to_currency historia['saldoVencido60A89Dias'] %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            Calificación de cartera
+                                                        </th>
+                                                        <% @report_result['response']['respuesta']['historia'][starting..ending].each do |historia| %>
+                                                        <th>
+                                                            <%= historia['calificacioncartera'].present? ?
+                                                            historia['calificacioncartera'] : 'N/D' %>
+                                                        </th>
+                                                        <% end %>
+                                                    </tr>
+                                                  </tbody>
+                                                  <%# <-- <% starting += 5 ending += 5 end %> 
+                                                  <% end %>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% else %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran creditos activos.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end; else
+                                    %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>      </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran creditos activos.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="m-demo" data-code-html="true" data-code-js="false" data-code-preview="true">
+                                <div class="m-demo__preview">
+                                    <h3 class="m-portlet__head-text">
+                                        Consultas
+                                    </h3>
+                                    <% if false
+
+
+                                     else
+                                    end %>
+                                    <div class="m-stack m-stack--ver m-stack--general m-stack--demo">
+                                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                             role="alert">
+                                            <div class="m-alert__icon">
+                                                <i class="flaticon-exclamation-1">
+                                                </i><span>          </span>
+                                            </div>
+                                            <div class="m-alert__text">
+                                                <strong>
+                                                    Aún no se encuentran consultas.
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          <%# <% else %>
+                            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show"
+                                 role="alert">
+                                <div class="m-alert__icon">
+                                    <i class="flaticon-exclamation-1">
+                                    </i><span>    </span>
+                                </div>
+                                <div class="m-alert__text">
+                                    <strong>
+                                        Aún no se le ha asignado el buró de crédito.
+                                    </strong>
+                                </div>
+                            </div>
+                          <%# <% end %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

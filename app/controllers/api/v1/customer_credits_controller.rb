@@ -93,9 +93,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                                   debt_time: @debt_time, insurance1: @insurance, term_id: @new_term_id)
           if @customer_credit.status == 'SI'
             # PRUEBA BURO DE CREDITO
-            # create_sat_user (@customer_credit)
-                render 'api/v1/customer_credits/show'
-                raise ActiveRecord::Rollback
+            create_sat_user (@customer_credit)
+                # render 'api/v1/customer_credits/show'
+                # raise ActiveRecord::Rollback
           elsif @customer_credit.status == 'PR'
             # MANDA CORREO AL CLIENTE PARA QUE LO APRUEBE
                 customer_credit_mailer
@@ -124,7 +124,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
     @customer_credit.update(customer_credits_params)
     #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO.
-    if customer_credits_params['status'] = 'PR'
+    
+    if customer_credits_params['status'] == 'PR'
       customer_credit_mailer
     end
     render 'api/v1/customer_credits/show'
