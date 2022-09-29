@@ -40,7 +40,7 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
       @customer_credit_signatory = CustomerCreditsSignatory.find_by_id(params['id'])
       unless @customer_credit_signatory.blank?
         @customer_credit_signatory.update(customer_credit_signatory_params)
-          if (customer_credit_signatory_params['status'] == 'PA')
+          if (customer_credit_signatory_params['status'] == 'EA')
             send_signatory_mail(@customer_credit_signatory)
           end
           render template: 'api/v1/customer_credits_signatories/show'
