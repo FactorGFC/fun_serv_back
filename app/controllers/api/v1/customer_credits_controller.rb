@@ -417,7 +417,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
           end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
           #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-          customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: @customer_credit.status,user_id: mailer_signatory['id'])
+          customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
           # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
           # customer_credit_signatory.save
         end
