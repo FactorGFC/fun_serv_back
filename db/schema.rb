@@ -40,6 +40,22 @@ ActiveRecord::Schema.define(version: 2022_09_27_144559) do
     t.index ["contributor_id"], name: "index_companies_on_contributor_id"
   end
 
+  create_table "company_segments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "key", null: false
+    t.decimal "company_rate", precision: 15, scale: 4, null: false
+    t.decimal "credit_limit", precision: 15, scale: 4, null: false
+    t.decimal "max_period", precision: 15, scale: 4, null: false
+    t.decimal "commission", precision: 15, scale: 4
+    t.string "currency"
+    t.string "extra1"
+    t.string "extra2"
+    t.string "extra3"
+    t.uuid "company_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_company_segments_on_company_id"
+  end
+
   create_table "contributor_addresses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "address_type", null: false
     t.string "suburb", null: false

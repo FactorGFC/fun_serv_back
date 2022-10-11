@@ -36,5 +36,18 @@ FactoryBot.define do
     subsector { "Banca" }
     company_rate {"EXTERNO"}
     association :contributor, factory: :contributor
+    factory :company_with_segments do
+      business_name { "Bancomer" }
+      start_date { "2020-05-04" }
+      credit_limit { "1000000.8888" }
+      credit_available { "1000000.8888" }
+      balance { "0" }
+      document { "Documentación" }
+      sector { "Financiero" }
+      subsector { "Banca" }
+      company_rate {"EXTERNO"}
+      association :contributor
+      company_segments { build_list :company_segment, 1 }
     end
+  end
 end

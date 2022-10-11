@@ -59,6 +59,9 @@ Rails.application.routes.draw do
         resources :cities
         resources :municipalities
       end
+      resources :companies do
+        resources :company_segments, except: %i[new edit]
+      end
       resources :ext_services                  
       resources :file_types
       resources :documents

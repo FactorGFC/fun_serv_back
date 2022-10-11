@@ -33,6 +33,7 @@ class Company < ApplicationRecord
     has_many :customers
     has_many :people, through: :contributors
     has_many :legal_entities, through: :contributors
+    has_many :company_segments
     before_save :calculate_balance_company
   
     validates :business_name, presence: true
