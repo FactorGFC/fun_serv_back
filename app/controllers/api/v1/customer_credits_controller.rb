@@ -67,19 +67,19 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               @company_segments = CompanySegment.where(company_id: @company.id)
               elements = @company_segments.length
               if elements == 1
-                @company_segment[0]
+                @company_segment = @company_segments[0]
               else
                 seniority = @customer.seniority
                 unless seniority.blank?
                  if seniority < 4
                   @company_segments = CompanySegment.where(company_id: @company.id, key: 4)
-                  @company_segment[0]
+                  @company_segment = @company_segments[0]
                  elsif seniority >= 4 && seniority < 9
                   @company_segments = CompanySegment.where(company_id: @company.id, key: 9)
-                  @company_segment[0]
+                  @company_segment = @company_segments[0]
                  else seniority >= 9
                   @company_segments = CompanySegment.where(company_id: @company.id, key: 99)
-                  @company_segment[0]
+                  @company_segment = @company_segments[0]
                  end
                 else
                  @error_desc.push("Cliente no tiene capturada su antiguedad")
