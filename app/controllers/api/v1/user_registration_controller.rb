@@ -96,7 +96,8 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                  seniority: customer_params[:seniority], ontime_bonus: customer_params[:ontime_bonus], assist_bonus: customer_params[:assist_bonus], food_vouchers: customer_params[:food_vouchers], 
                                  total_income: customer_params[:total_income], total_savings_found: customer_params[:total_savings_found], christmas_bonus: customer_params[:christmas_bonus], taxes: customer_params[:taxes], 
                                  imms: customer_params[:imms], savings_found:customer_params[:savings_found], savings_found_loand: customer_params[:savings_found_loand], savings_bank:customer_params[:savings_bank], 
-                                 insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit], company_id: customer_params[:company_id])
+                                 insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit], company_id: customer_params[:company_id],
+                                 extra3: customer_paramas[:extra3], job: customer_paramas[:job] )
         unless @customer.customer_type.blank?
           @file_types = FileType.where(customer_type: @customer.customer_type)
           if @file_types.blank?
@@ -171,7 +172,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                      :food_vouchers, :total_income, :total_savings_found,
                                      :christmas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
-                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id)
+                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id, :extra3, :job)
                                     end
   
   def create_contributor_documents
