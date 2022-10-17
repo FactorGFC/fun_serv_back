@@ -174,8 +174,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def customer_credits_params
     params.require(:customer_credit).permit(:total_requested, :capital, :interests, :iva, :total_debt,
                                             :total_payments, :status, :start_date, :attached,
-                                            :rate, :debt_time,:destination, :amount_allowed, :time_allowed, :iva_percent,
-                                            :customer_id, :term_id, :currency , :user_id )
+                                            :rate, :debt_time, :destination, :amount_allowed, :time_allowed, :iva_percent,
+                                            :customer_id, :term_id, :currency, :user_id, :extra3, :job )
   end
 
 
