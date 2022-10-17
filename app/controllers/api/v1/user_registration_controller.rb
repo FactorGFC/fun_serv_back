@@ -97,7 +97,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                  total_income: customer_params[:total_income], total_savings_found: customer_params[:total_savings_found], christmas_bonus: customer_params[:christmas_bonus], taxes: customer_params[:taxes], 
                                  imms: customer_params[:imms], savings_found:customer_params[:savings_found], savings_found_loand: customer_params[:savings_found_loand], savings_bank:customer_params[:savings_bank], 
                                  insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit], company_id: customer_params[:company_id],
-                                 extra3: customer_paramas[:extra3], job: customer_paramas[:job] )
+                                 extra3: customer_params[:extra3], job: customer_params[:job] )
         unless @customer.customer_type.blank?
           @file_types = FileType.where(customer_type: @customer.customer_type)
           if @file_types.blank?
