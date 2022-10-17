@@ -28,8 +28,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       else
         @capital = 0
         @customer_credit.capital = @capital
-      #  @rate =0
-      #  @customer_credit.rate = @rate
         @interests = 0
         @customer_credit.interests = @interests
         @iva = 0
@@ -40,6 +38,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @customer_credit.total_payments = @total_payments
         @fixed_payment = 0
         @payment_amount = params[:payment_amount]
+        #@company_segment.credit_limit = 0
         @customer_credit.fixed_payment = @fixed_payment
         @customer_credit.balance = 1
         @anuality_date = params[:anuality_date]
@@ -64,10 +63,40 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
           end 
+          if @customer.extra3.nil?
+              @company_segments = CompanySegment.where(company_id: @company.id)
+              elements = @company_segments.length
+              if elements == 1
+                @company_segment[0]
+              else
+                seniority = @customer.seniority
+                unless seniority.blank?
+                 if seniority < 4
+                  @company_segments = CompanySegment.where(company_id: @company.id, key: 4)
+                  @company_segment[0]
+                 elsif seniority >= 4 && seniority < 9
+                  @company_segments = CompanySegment.where(company_id: @company.id, key: 9)
+                  @company_segment[0]
+                 else seniority >= 9
+                  @company_segments = CompanySegment.where(company_id: @company.id, key: 99)
+                  @company_segment[0]
+                 end
+                else
+                 @error_desc.push("Cliente no tiene capturada su antiguedad")
+                    error_array!(@error_desc, :not_found)
+                    raise ActiveRecord::Rollback
+                end
+              end
+              
+          else
+            @company_segments = CompanySegment.where(company_id: @company.id, key: @customer.extra3)
+            @company_segment = @company_segments[0]  
+          end
           @salary = @customer.salary.to_f
           @total_requested = @customer_credit.total_requested.to_f
-          if(@total_requested > (@salary.to_f * @payment_period.value.to_f))
-            @error_desc.push("El total del credito no puede ser mayor a un año de sueldo del empleado")
+          @anual_salary = @salary.to_f * @payment_period.value.to_f
+          if(@total_requested > ((@company_segment.credit_limit.to_f * @anual_salary.to_f)/12))
+            @error_desc.push("El total del credito no puede ser mayor #{@company_segment.credit_limit.to_f} meses de sueldo del empleado")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
           end      
@@ -158,33 +187,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     payment_period = @payment_period.value
     total_requested = @customer_credit.total_requested
     if @customer_credit.rate == 0
-      company_rate = @company.company_rate
-      seniority = @customer.seniority
-      unless seniority.blank?
-        if company_rate == 'FACTOR'
-        @rates = ExtRate.where(rate_type: 'FACTOR_R' )
-        @customer_credit.rate = @rates[0].value
-        @commissions = ExtRate.where(rate_type: 'FACTOR_C')
-        @commission_per = @commissions[0].value
-        else
-          @commissions = ExtRate.where(rate_type: 'GPA')
-          @commission_per = @commissions[0].value
-          if seniority < 4
-            @rates = ExtRate.where(rate_type: 'EXT_ONE_YEARS')
-            @customer_credit.rate = @rates[0].value
-          elsif seniority >= 4 && seniority < 9
-            @rates = ExtRate.where(rate_type: 'EXT_FOUR_YEARS')
-            @customer_credit.rate = @rates[0].value
-          else seniority >= 9
-            @rates = ExtRate.where(rate_type: 'EXT_NINE_YEARS')
-            @customer_credit.rate = @rates[0].value
-          end
-        end
-      else
-       @error_desc.push("Cliente no tiene capturada su antiguedad")
-          error_array!(@error_desc, :not_found)
-          raise ActiveRecord::Rollback
-      end
+    @customer_credit.rate = @company_segment.company_rate
+    @commission_per = @company_segment.commission
     else
        @new_rates = ExtRate.where(value: @customer_credit.rate)
        @new_rate = @new_rates[0]
@@ -207,21 +211,35 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           raise ActiveRecord::Rollback
     else
       if payment_amount.blank?
+
         payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-term.to_f)))
       elsif term == 0
-        term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
-        @new_terms = Term.where(value: term)
-        @new_term = @new_terms[0]
-        if @new_term.blank?
-          @new_term = Term.new(key:term.to_s + ' pagos', description: 'Crédito', value: term, term_type: @customer.salary_period, credit_limit: '100000', extra1: 'CUSTOM'  )
-          unless @new_term.save
-            render json: { error: @term.errors }, status: :unprocessable_entity
-            raise ActiveRecord::Rollback
+        pay_min = (rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f
+        if pay_min > 1 
+          @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, ingresar un pago mas alto")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        else
+          term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
+        end
+        if term < (@payment_period.pp_type.to_f * @company_segment.max_period)
+          @new_terms = Term.where(value: term)
+          @new_term = @new_terms[0]
+          if @new_term.blank?
+            @new_term = Term.new(key:term.to_s + ' pagos', description: 'Crédito', value: term, term_type: @customer.salary_period, credit_limit: '100000', extra1: 'CUSTOM'  )
+            unless @new_term.save
+              render json: { error: @term.errors }, status: :unprocessable_entity
+              raise ActiveRecord::Rollback
           end
           @new_term_id = @new_term.id
         else
           @new_term_id = @new_term.id
         end
+      else
+        @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, ingresar un pago mas alto")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+      end
       end 
     end 
     @fixed_payment = payment_amount.to_f
