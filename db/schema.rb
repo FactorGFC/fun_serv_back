@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_27_144559) do
+ActiveRecord::Schema.define(version: 2022_10_18_224722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -155,6 +155,9 @@ ActiveRecord::Schema.define(version: 2022_09_27_144559) do
     t.jsonb "bureau_report"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "extra1"
+    t.string "extra2"
+    t.string "extra3"
     t.index ["customer_id"], name: "index_credit_bureaus_on_customer_id"
   end
 
@@ -623,6 +626,7 @@ ActiveRecord::Schema.define(version: 2022_09_27_144559) do
 
   add_foreign_key "cities", "states"
   add_foreign_key "companies", "contributors"
+  add_foreign_key "company_segments", "companies"
   add_foreign_key "contributor_addresses", "contributors"
   add_foreign_key "contributor_addresses", "municipalities"
   add_foreign_key "contributor_addresses", "states"

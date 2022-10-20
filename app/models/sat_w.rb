@@ -65,18 +65,15 @@ class SatW < ApplicationRecord
     end
   
     def self.get_tax_status rfc
-      puts "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-      puts "ENTRA AL GET TAX STATUS"
-      puts rfc
       primer_api_key = '6f59423beb92df5571cc5da0e5d44202'
   
       #Desarollo
-      segunda_api_key = '690cac03af62759362bd1fed20710ab4'
-      uri = URI.parse("https://api.sandbox.satws.com/taxpayers/#{rfc}/tax-status")
+      # segunda_api_key = '690cac03af62759362bd1fed20710ab4'
+      # uri = URI.parse("https://api.sandbox.satws.com/taxpayers/#{rfc}/tax-status")
   
       #Produccion
-      # segunda_api_key = 'dc087a1fc8bb716cb2c2ff199c6d69c0'
-      # uri = URI.parse("https://api.satws.com/taxpayers/#{rfc}/tax-status")
+      segunda_api_key = 'dc087a1fc8bb716cb2c2ff199c6d69c0'
+      uri = URI.parse("https://api.satws.com/taxpayers/#{rfc}/tax-status")
   
       request = Net::HTTP::Get.new(uri.request_uri)
   
@@ -96,7 +93,7 @@ class SatW < ApplicationRecord
       end
   
   
-      puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+      # puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
       return JSON.parse(response.body)
     end
   
@@ -196,8 +193,8 @@ class SatW < ApplicationRecord
     def self.get_customer_concentration id
       primer_api_key = '6f59423beb92df5571cc5da0e5d44202'
   
-      p "id --------------------------------------------------------------------------------"
-      p id
+      # p "id --------------------------------------------------------------------------------"
+      # p id
       #https://api.sandbox.satws.com/insights/{id}/balance-sheet
   
       # Desarrollo

@@ -279,6 +279,52 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def send_customer_nip_mailer(customer)
+    # puts "customer.id"
+    # puts customer.id
+    @customer =  Customer.find_by_id(customer.id)
+    # puts "@customer.inspect"
+    # puts @customer.inspect
+    unless @customer.blank?
+      @query = 
+      "SELECT u.email as email,u.name as name, u.id
+      FROM users u
+      WHERE u.id = ':user_id';"
+      @query = @query.gsub ':user_id', @customer.user_id.to_s
+    else
+      error_array!(@customer.errors.full_messages, :unprocessable_entity)
+    end
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        begin
+          @token_nip =  SecureRandom.hex(5)
+          # TOKEN CON VIDA UTIL DE 1 DIA
+          @token_nip_expiry = Time.now + 1.day
+          # @callback_url_nip = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
+        end while Customer.where(extra1: @token_nip).any?
+
+             #CREA UN REGISTRO EN CUSTOMER
+             @customer.update(extra1: @token_nip, extra2: @token_nip_expiry)
+
+        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        # @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.customer_nip(mail_to,
+          mailer_signatory['name'],
+          "Factor Global GFC - Nómina Personal - Validación de Código NIP - Cliente",
+          "CÓDIGO DE VERIFICACIÓN",
+          @token_nip
+          # [@callback_url_analyst,@customer_credit]
+        ).deliver_now
+      end
+    end
+  end
   
   # def send_committee_mail(customer_credit)
   #   @customer_credit = customer_credit
@@ -422,7 +468,7 @@ class ApplicationController < ActionController::Base
     @mailer_mail_to
   end
 
-  #CREA REPORTE CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDA EN S3
+  # CREA REPORTE PDF CON TODOS LAS VARIABLES DE SOLICITUD DE CREDITO Y GUARDA EN S3
   def generate_customer_credit_request_report_pdf
     # @mail_factor = 'sistemasfgfc@gmail.com'
     # @mail_factor = 'mescobedo@factorgfc.com'
@@ -466,6 +512,7 @@ class ApplicationController < ActionController::Base
       @rfc = @customer_credit_data[0]["pf_rfc"]
       @curp =@customer_credit_data[0]["pf_curp"]
       @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
+      @seguro = @customer_credit_data[0]["seguro"]
       @nombre = @customer_credit_data[0]["nombre"]
       @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
       @apellido_materno = @customer_credit_data[0]["apellido_materno"]
@@ -688,290 +735,345 @@ class ApplicationController < ActionController::Base
   end
 
   def create_sat_user (customer_credit)
-    @customer = Customer.find_by_id(customer_credit.customer_id)
-    # puts "@customer"
-    # puts @customer.inspect
+  @customer = Customer.find_by_id(customer_credit.customer_id)
     # DEBE SER UNLESS
     unless @customer.blank?
       @contributor = Contributor.find_by_id(@customer.contributor_id)
       unless @contributor.blank?
         @person = Person.find_by_id(@contributor.person_id)
         unless @person.blank?
-          # @user = current_user
-          # @company = @user.company
-          # puts "@person"
-          # puts @person.inspect
-          # puts @person.rfc
+          @customer_data = Customer.get_customer_data(@customer.id)
+          # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          # puts "@customer_data"
+          # puts @customer_data.inspect
+          # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          unless CreditBureau.exists?(customer_id: customer_credit.customer_id)
 
-          # puts "PASA ANTES DEL INFO"
-          @info = SatW.get_tax_status @person.try(:rfc)
-          # puts "@info"
-          # puts @info.inspect
-          # puts "PASA DEPSUES DEL INFO"
-          # @info = SatW.get_tax_status @user.try(:company).try(:rfc)
+            # @info = SatW.get_tax_status @person.try(:rfc)
+            # puts "@info"
+            # puts @info.inspect
 
-          if @info['@type'] != 'hydra:Error'
-            @buro = create_buro @info
-            # puts "@buro"
-            # puts @buro.inspect
-        
-          else
-            # format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-            # p "ELSEEEEEEEEEEEEEEEEEEEEEEEEEE"
-          end
+            # if @info['@type'] != 'hydra:Error'
+              @buro = create_buro 
+              # puts "@buro"
+              # puts @buro.inspect
 
-          @bureau_report = BuroCredito.get_buro_report @buro.first['id']
-          # p "@bureau_report"
-          # p @bureau_report
-          @bureau_info = BuroCredito.get_buro_info @buro.first['id']
-          # p "@bureau_info"
-          # p @bureau_info
-          @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
-           if @credit_bureau.save
-            # puts @credit_bureau.inspect
-            # puts @credit_bureau.inspect
-            # if @bureau_report['results'].present?
-              # if @bureau_report['results'][0]['response'].present?
-                # @report_result = @bureau_report['results'][0]
-              # else
-                # @report_result = @bureau_report['results'][1]
-              # end
+          
             # else
-              @report_result = @bureau_report
+              # format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+              # p "ELSEEEEEEEEEEEEEEEEEEEEEEEEEE"
             # end
 
-            # puts "@report_result['results'][0]['response'].inspect"
-            # puts @report_result['results'][0]['response']['respuesta']['msjError'].inspect
-            # {"respuesta"=>{"msjError"=>"No existe informacion crediticia para esta consulta"}}
-            unless @report_result['results'][0]['response']['respuesta']['msjError'] = 'No existe informacion crediticia para esta consulta'
-              if @person.try(:fiscal_regime) == 'PF'
+            @bureau_report = BuroCredito.get_buro_report @buro.first['id']
+            # p "@bureau_report"
+            # p @bureau_report
+            @bureau_info = BuroCredito.get_buro_info @buro.first['id']
+            # p "@bureau_info"
+            # p @bureau_info
+            @report_result = @bureau_report
+            # unless @report_result['results'][0]['response']['respuesta']['msjError'] == 'No existe informacion crediticia para esta consulta'
+            @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
+            if @credit_bureau.save
 
-                if @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito'].present?
-                  @score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i
-                else
-
-                  @score = 0
-                end
-              end
+              # if @bureau_report['results'].present?
+                # if @bureau_report['results'][0]['response'].present?
+                  # @report_result = @bureau_report['results'][0]
+                # else
+                  # @report_result = @bureau_report['results'][1]
+                # end
+              # else
+              # end
+              # puts @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre'] + ' ' + @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno']
             else
-              @score = @report_result['results'][0]['response']['respuesta']['msjError']
+              # format.html { redirect_to companies_url, alert: 'Hubo un error al guardar el CreditBureau favor volver a intentar' }
+              @error_desc.push("Hubo un error al guardar el CreditBureau favor volver a intentar")
+              error_array!(@error_desc, :not_found)
             end
+            # p "@report_result.inspect"
+            # @report_result = @report_result.to_s.gsub!('\"', '')
+              # unless @report_result['results'][0]['response']['respuesta']['msjError'] = 'No existe informacion crediticia para esta consulta'
+                # if @person.try(:fiscal_regime) == 'PF'
 
-            @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
-            pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
-            @path = "nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
-            s3_save(pdf,@path)
-            @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
-            puts "@url"
-            puts @url
-            @customer.update(extra1: @url)
-            return @url
+                  # if @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito'].present?
+                    # @score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i
+                  # else
+                    # @score = 'N/D'
+                  # end
+                # end
+              # else
+                # @score = @report_result['results'][0]['response']['respuesta']['msjError']
+              # end
+
+
+
+            #MOVER A PUNTO DONDE SOLICITEN GENERAR PDF
+              # @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
+              # pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
+              # @path = "nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+              # s3_save(pdf,@path)
+              # @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+              # puts "@url"
+              # puts @url
+              # @customer.update(extra1: @url)
+              # return @url
+
+
+
+
+              # respond_to do |format|
+              #   p "ENTRA AL RESPOND_TO"
+              #   # format.html
+              #   # format.pdf { render  template: "companies/credit_bureau", pdf: "Reporte Buró de Crédito", type: "application/pdf" }   # Excluding ".pdf" extension.
+              #   format.pdf do
+              #     render_to_string pdf: "Reporte Buró de Crédito",
+              #                         #  template: "customers/credit_bureau.html.slim",
+              #                         template: "customers/credit_bureau.pdf.erb",
+              #                         type: "application/pdf",
+              #                         # disposition: "inline",
+              #                         encoding: "UTF-8"
+              #   end
+              # end
+
+
+          # else
+              # format.html { redirect_to companies_url, alert: 'Hubo un error al guardar el CreditBureau favor volver a intentar' }
+              # @error_desc.push(@report_result['results'][0]['response']['respuesta']['msjError'])
+              # error_array!(@error_desc, :not_found)
+          # end
+
+
+          
+            #------ HASTA AQUI VOY
+
+            ## REQUIERE QUE SE MANDE YA SEA EL PASSWORD DEL CIEC O EL CERTIFICADO, KEY Y PASSWORD_FIRMA 
+            # if @person.rfc.present? && params[:cer].nil? && params[:key].nil?
+            #   params_ciec = true
+            #   rfc_valid = params[:rfc] == @person.rfc
+            #   data = {
+            #       "type": "ciec",
+            #       "rfc": params[:rfc],
+            #       "password": params[:passsword_ciec]
+            #   }
+            # elsif params[:cer].present? && params[:key].present?
+            #   params_ciec = false
+            #   cer_base_64 = Base64.encode64(File::read(params[:cer]))
+            #   key_base_64 = Base64.encode64(File::read(params[:key]))
+
+            #   data = {
+            #       "type": "efirma",
+            #       "certificate": cer_base_64,
+            #       "privateKey": key_base_64,
+            #       "password": params[:passsword_firma]
+            #   }
+            # end
+
+            # @sat = SatW.create_sat_ws data
+
             # respond_to do |format|
-            #   p "ENTRA AL RESPOND_TO"
-            #   # format.html
-            #   # format.pdf { render  template: "companies/credit_bureau", pdf: "Reporte Buró de Crédito", type: "application/pdf" }   # Excluding ".pdf" extension.
-            #   format.pdf do
-            #     render_to_string pdf: "Reporte Buró de Crédito",
-            #                         #  template: "customers/credit_bureau.html.slim",
-            #                         template: "customers/credit_bureau.pdf.erb",
-            #                         type: "application/pdf",
-            #                         # disposition: "inline",
-            #                         encoding: "UTF-8"
+            #   if params_ciec
+            #     if rfc_valid
+            #       if @sat['hydra:title'] != 'An error occurred'
+            #         @info = SatW.get_tax_status @user.try(:company).try(:rfc)
+
+            #         if @info['@type'] != 'hydra:Error'
+            #           @buro = create_buro @info
+
+
+            #           if @buro
+            #             @credential = SatW.get_credential @sat['id']
+
+            #             if @credential['@type'] != 'hydra:Error'
+            #               @income_statment = SatW.get_income_statment @user.try(:company).try(:rfc)
+
+            #               if !@income_statment.first[0].present?
+            #                 @balance_sheet = SatW.get_balance_sheet @user.try(:company).try(:rfc)
+
+            #                 if !@balance_sheet.first[0].present?
+            #                   if @company.update(info_company: @info, credential_company: @credential, sat_id: @sat['id'],
+            #                                     income_statment: @income_statment,  buro_id: @buro.first['id'],
+            #                                     sat_password: params[:passsword_ciec], balance_sheet: @balance_sheet,
+            #                                     main_activity: @info['hydra:member'][0]["economicActivities"][0]['name'])
+            #                     @bureau_report = BuroCredito.get_buro_report 4450
+            #                     # @bureau_report = BuroCredito.get_report_by_id 12468
+            #                     @bureau_info = BuroCredito.get_buro_info @buro.first['id']
+
+            #                     if CreditBureau.create(company_id: @company.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
+            #                       if @user.update(sat_id: @sat['id'])
+
+            #                         #UPDATE DE COMPANY CON BALANCE-SHEET
+            #                         @clients = get_clients_sat @user.try(:company)
+            #                         Company.save_balance_sheet @company.balance_sheet, @company.id
+            #                         Company.save_income_statement @company.income_statment, @company.id
+            #                         if @clients
+            #                           @providers = get_providers_sat @user.try(:company)
+            #                           if @providers
+            #                             @financial_institutions = create_financial_institutions @bureau_report, @company.id
+            #                             if @financial_institutions
+            #                               if @company.update(step_one: true)
+            #                                 format.html { redirect_to companies_url, notice: t('notifications_masc.success.resource.updated',
+            #                                                                                 resource: t('users.registrations.form.resource')) }
+            #                               else
+            #                                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                               end
+            #                             else
+            #                               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                             end
+            #                           else
+            #                             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                           end
+            #                         else
+            #                           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                         end
+
+            #                       else
+            #                         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                       end
+            #                     else
+            #                       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                     end
+            #                   else
+            #                     format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                   end
+            #                 else
+            #                   format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                 end
+            #               else
+            #                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #               end
+            #             else
+            #               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #             end
+            #           else
+            #             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #           end
+            #         else
+            #           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #         end
+            #       else
+            #         format.html { redirect_to companies_url, alert: 'El RFC no es valido.' }
+            #       end
+            #     else
+            #       format.html { redirect_to companies_url, alert: 'El RFC debe ser el mismo que el de la compañia.' }
+            #     end
+            #   else
+            #     if @sat['hydra:title'] != 'An error occurred'
+            #       @info = SatW.get_tax_status @user.try(:company).try(:rfc)
+            #       if @info['@type'] != 'hydra:Error'
+            #         @buro = create_buro @info
+            #         if @buro
+            #           @credential = SatW.get_credential @sat['id']
+
+            #           if @credential['@type'] != 'hydra:Error'
+            #             @income_statment = SatW.get_income_statment @user.try(:company).try(:rfc)
+
+            #             if !@income_statment.first[0].present?
+            #               @balance_sheet = SatW.get_balance_sheet @user.try(:company).try(:rfc)
+            #               if !@balance_sheet.first[0].present?
+            #                 if @company.update(info_company: @info, credential_company: @credential, sat_id: @sat['id'],
+            #                                   sat_password: params[:passsword_firma], key_encoded: key_base_64, cer_encoded: cer_base_64,
+            #                                   buro_id: @buro.first['id'], balance_sheet: @balance_sheet,
+            #                                   main_activity: @info['hydra:member'][0]["economicActivities"][0]['name'])
+            #                   @bureau_report = BuroCredito.get_buro_report @buro.first['id']
+            #                   @bureau_info = BuroCredito.get_buro_info @buro.first['id']
+
+            #                   if CreditBureau.create(company_id: @company.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
+
+            #                     if @user.update(sat_id: @sat['id'])
+            #                       #UPDATE DE COMPANY CON BALANCE-SHEET
+            #                       @clients = get_clients_sat @user.try(:company)
+            #                       if @clients
+            #                         @providers = get_providers_sat @user.try(:company)
+            #                         if @providers
+            #                           @financial_institutions = create_financial_institutions @bureau_report, @company.id
+            #                           if @financial_institutions
+            #                             if @company.update(step_one: true)
+            #                               format.html { redirect_to companies_url, notice: t('notifications_masc.success.resource.updated',
+            #                                                                               resource: t('users.registrations.form.resource')) }
+            #                             else
+            #                               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                             end
+            #                           else
+            #                             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                           end
+            #                         else
+            #                           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                         end
+            #                       else
+            #                         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                       end
+            #                     else
+            #                       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                     end
+            #                   else
+            #                     format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                   end
+            #                 else
+            #                   format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #                 end
+            #               else
+            #                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #               end
+            #             else
+            #               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #             end
+            #           else
+            #             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #           end
+            #         else
+            #           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #         end
+            #       else
+            #         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #       end
+            #     else
+            #       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
+            #     end
             #   end
             # end
-
+        else
+          @credit_bureau = CreditBureau.where(customer_id: customer_credit.customer_id)
+          @bureau_report = @credit_bureau[0].bureau_report
+          # p "@bureau_report"
+          # p @bureau_report['results'][0]['createdAt']
+          # p "@bureau_report"
+          @bureau_info = @credit_bureau[0].bureau_info
+          @report_result = @bureau_report
+          # puts "REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT "
+          # puts @report_result.inspect
+          if @report_result['results'][0]['metadata']['clientType'] == 'PM' || @report_result['results'][0]['metadata']['clientType'] == 'PFAE'
+            # puts "SI ES PERSONA MORAL"
+            @esPM = true
+            @buro_score = @report_result['results'][0]['query']['consulta']['encabezado']['scoreCode']
+            # puts @buro_score
           else
-            # format.html { redirect_to companies_url, alert: 'Hubo un error al guardar el CreditBureau favor volver a intentar' }
-            @error_desc.push("Hubo un error al guardar el CreditBureau favor volver a intentar")
-            error_array!(@error_desc, :not_found)
+            @esPM = false
+            if @report_result.has_key?("msjError".to_sym)
+              if @report_result['results'][0]['response']['respuesta']['msjError'] == 'No existe informacion crediticia para esta consulta'
+                @buro_score = @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']
+                @score = @buro_score['ScoreBC'][0]['ValorScore'].to_i              
+              else
+                @buro_score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']
+                @score = @buro_score['ScoreBC'][0]['ValorScore'].to_i
+              
+              end
+            else
+              @buro_score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']
+              @score = @buro_score['ScoreBC'][0]['ValorScore'].to_i
+            end
           end
-          #------ HASTA AQUI VOY
+          @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
+                  pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
+                  @path = "nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+                  s3_save(pdf,@path)
+                  @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+                  # puts "@url"
+                  # puts @url
 
-          ## REQUIERE QUE SE MANDE YA SEA EL PASSWORD DEL CIEC O EL CERTIFICADO, KEY Y PASSWORD_FIRMA 
-          # if @person.rfc.present? && params[:cer].nil? && params[:key].nil?
-          #   params_ciec = true
-          #   rfc_valid = params[:rfc] == @person.rfc
-          #   data = {
-          #       "type": "ciec",
-          #       "rfc": params[:rfc],
-          #       "password": params[:passsword_ciec]
-          #   }
-          # elsif params[:cer].present? && params[:key].present?
-          #   params_ciec = false
-          #   cer_base_64 = Base64.encode64(File::read(params[:cer]))
-          #   key_base_64 = Base64.encode64(File::read(params[:key]))
-
-          #   data = {
-          #       "type": "efirma",
-          #       "certificate": cer_base_64,
-          #       "privateKey": key_base_64,
-          #       "password": params[:passsword_firma]
-          #   }
-          # end
-
-          # @sat = SatW.create_sat_ws data
-
-          # respond_to do |format|
-          #   if params_ciec
-          #     if rfc_valid
-          #       if @sat['hydra:title'] != 'An error occurred'
-          #         @info = SatW.get_tax_status @user.try(:company).try(:rfc)
-
-          #         if @info['@type'] != 'hydra:Error'
-          #           @buro = create_buro @info
-
-
-          #           if @buro
-          #             @credential = SatW.get_credential @sat['id']
-
-          #             if @credential['@type'] != 'hydra:Error'
-          #               @income_statment = SatW.get_income_statment @user.try(:company).try(:rfc)
-
-          #               if !@income_statment.first[0].present?
-          #                 @balance_sheet = SatW.get_balance_sheet @user.try(:company).try(:rfc)
-
-          #                 if !@balance_sheet.first[0].present?
-          #                   if @company.update(info_company: @info, credential_company: @credential, sat_id: @sat['id'],
-          #                                     income_statment: @income_statment,  buro_id: @buro.first['id'],
-          #                                     sat_password: params[:passsword_ciec], balance_sheet: @balance_sheet,
-          #                                     main_activity: @info['hydra:member'][0]["economicActivities"][0]['name'])
-          #                     @bureau_report = BuroCredito.get_buro_report 4450
-          #                     # @bureau_report = BuroCredito.get_report_by_id 12468
-          #                     @bureau_info = BuroCredito.get_buro_info @buro.first['id']
-
-          #                     if CreditBureau.create(company_id: @company.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
-          #                       if @user.update(sat_id: @sat['id'])
-
-          #                         #UPDATE DE COMPANY CON BALANCE-SHEET
-          #                         @clients = get_clients_sat @user.try(:company)
-          #                         Company.save_balance_sheet @company.balance_sheet, @company.id
-          #                         Company.save_income_statement @company.income_statment, @company.id
-          #                         if @clients
-          #                           @providers = get_providers_sat @user.try(:company)
-          #                           if @providers
-          #                             @financial_institutions = create_financial_institutions @bureau_report, @company.id
-          #                             if @financial_institutions
-          #                               if @company.update(step_one: true)
-          #                                 format.html { redirect_to companies_url, notice: t('notifications_masc.success.resource.updated',
-          #                                                                                 resource: t('users.registrations.form.resource')) }
-          #                               else
-          #                                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                               end
-          #                             else
-          #                               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                             end
-          #                           else
-          #                             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                           end
-          #                         else
-          #                           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                         end
-
-          #                       else
-          #                         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                       end
-          #                     else
-          #                       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                     end
-          #                   else
-          #                     format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                   end
-          #                 else
-          #                   format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                 end
-          #               else
-          #                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #               end
-          #             else
-          #               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #             end
-          #           else
-          #             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #           end
-          #         else
-          #           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #         end
-          #       else
-          #         format.html { redirect_to companies_url, alert: 'El RFC no es valido.' }
-          #       end
-          #     else
-          #       format.html { redirect_to companies_url, alert: 'El RFC debe ser el mismo que el de la compañia.' }
-          #     end
-          #   else
-          #     if @sat['hydra:title'] != 'An error occurred'
-          #       @info = SatW.get_tax_status @user.try(:company).try(:rfc)
-          #       if @info['@type'] != 'hydra:Error'
-          #         @buro = create_buro @info
-          #         if @buro
-          #           @credential = SatW.get_credential @sat['id']
-
-          #           if @credential['@type'] != 'hydra:Error'
-          #             @income_statment = SatW.get_income_statment @user.try(:company).try(:rfc)
-
-          #             if !@income_statment.first[0].present?
-          #               @balance_sheet = SatW.get_balance_sheet @user.try(:company).try(:rfc)
-          #               if !@balance_sheet.first[0].present?
-          #                 if @company.update(info_company: @info, credential_company: @credential, sat_id: @sat['id'],
-          #                                   sat_password: params[:passsword_firma], key_encoded: key_base_64, cer_encoded: cer_base_64,
-          #                                   buro_id: @buro.first['id'], balance_sheet: @balance_sheet,
-          #                                   main_activity: @info['hydra:member'][0]["economicActivities"][0]['name'])
-          #                   @bureau_report = BuroCredito.get_buro_report @buro.first['id']
-          #                   @bureau_info = BuroCredito.get_buro_info @buro.first['id']
-
-          #                   if CreditBureau.create(company_id: @company.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
-
-          #                     if @user.update(sat_id: @sat['id'])
-          #                       #UPDATE DE COMPANY CON BALANCE-SHEET
-          #                       @clients = get_clients_sat @user.try(:company)
-          #                       if @clients
-          #                         @providers = get_providers_sat @user.try(:company)
-          #                         if @providers
-          #                           @financial_institutions = create_financial_institutions @bureau_report, @company.id
-          #                           if @financial_institutions
-          #                             if @company.update(step_one: true)
-          #                               format.html { redirect_to companies_url, notice: t('notifications_masc.success.resource.updated',
-          #                                                                               resource: t('users.registrations.form.resource')) }
-          #                             else
-          #                               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                             end
-          #                           else
-          #                             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                           end
-          #                         else
-          #                           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                         end
-          #                       else
-          #                         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                       end
-          #                     else
-          #                       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                     end
-          #                   else
-          #                     format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                   end
-          #                 else
-          #                   format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #                 end
-          #               else
-          #                 format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #               end
-          #             else
-          #               format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #             end
-          #           else
-          #             format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #           end
-          #         else
-          #           format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #         end
-          #       else
-          #         format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #       end
-          #     else
-          #       format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-          #     end
-          #   end
-          # end
+                  @credit_bureau.update(extra1: @url)
+                  return @url
+            @error_desc.push("Ya existe registro para el customer", data: @credit_bureau)
+            error_array!(@error_desc, :not_found)
+        end
         else
           @error_desc.push("No se encontró person")
           error_array!(@error_desc, :not_found)
@@ -989,31 +1091,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def create_buro info_sat
-    rfc = info_sat['hydra:member'][0]['rfc']
-    # rfc = 'ROGA940403PT'
-    email = info_sat['hydra:member'][0]['email']
-    address = info_sat['hydra:member'][0]['address']['streetName']
-    city = info_sat['hydra:member'][0]['address']['locality']
+  def create_buro
+    rfc = @customer_data[0]["pf_rfc"]
+    email = @customer_data[0]["pf_correo"]
+    address = @customer_data[0]["calle"]
+    city = @customer_data[0]["municipio"]
+    state = get_state @customer_data[0]["estado"]
+    zip_code = @customer_data[0]["codigo_postal"]
+    interior_number = @customer_data[0]["numero_apartamento"]
+    exterior_number = @customer_data[0]["numero_exterior"]
+    municipality = @customer_data[0]["municipio"]
 
-    # p "info_sat['hydra:member'][0]['address']['state'] -----------------------------------------------------------------"
-    # p info_sat['hydra:member'][0]['address']['state']
-
-    state = get_state info_sat['hydra:member'][0]['address']['state']
-
-    p "state ----------------------------------------------------------------------------------------------------------------"
-    p state
-    zip_code = info_sat['hydra:member'][0]['address']['postalCode']
-    interior_number = info_sat['hydra:member'][0]['address']['buildingNumber']
-    exterior_number = info_sat['hydra:member'][0]['address']['streetNumber']
-    municipality = info_sat['hydra:member'][0]['address']['municipality']
-
-    if info_sat['hydra:member'][0]['company'].present?
+    if @customer_data[0]["tipo_contribuyente"] != 'PF'
       account_type = "PM"
     else
-      first_name = info_sat['hydra:member'][0]['person']['firstName']
-      first_last_name = info_sat['hydra:member'][0]['person']['middleName']
-      second_last_name = info_sat['hydra:member'][0]['person']['lastName']
+      first_name = @customer_data[0]["nombre"]
+      first_last_name =  @customer_data[0]["apellido_paterno"]
+      second_last_name = @customer_data[0]["apellido_materno"]
       account_type = "PF"
     end
 

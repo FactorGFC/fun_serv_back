@@ -13,7 +13,9 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
 
     def create
         @credit_analysis = CreditAnalysis.new(credit_analysis_params)
+
         if @credit_analysis.save
+          #TO DO: LLAMAR A TRAERSE LA CONSULTA DE BURO DE CREDITO?
           render template: 'api/v1/credit_analyses/show'
         else
           render json: { error: @credit_analysis.errors }, status: :unprocessable_entity

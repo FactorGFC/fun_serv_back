@@ -81,7 +81,9 @@ Rails.application.routes.draw do
       resources :customer_credits do
         resources :sim_customer_payments, except: %i[new edit]
       end
-   
+
+      post 'credit_bureaus/get_credit_bureau_nip_validation', to: 'credit_bureaus#get_credit_bureau_nip_validation'
+      post 'credit_bureaus/reset_credit_bureau_nip', to: 'credit_bureaus#reset_credit_bureau_nip'
       #get '/funding_requests/layout_base/:funding_request_id', to: 'funding_requests#funding_request_layout'
       #get '/funding_requests/company_id/:company_id/currency/:currency/funding_invoices', to: 'funding_requests#funding_invoices'                  
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'

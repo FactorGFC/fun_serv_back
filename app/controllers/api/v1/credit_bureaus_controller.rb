@@ -58,6 +58,37 @@ class Api::V1::CreditBureausController < ApplicationController
         format.json { head :no_content }
       end
     end
+
+    # DEVUELVE TRUE SI EL NIP ES VIGENTE
+    def get_credit_bureau_nip_validation
+      @customer = Customer.where(extra1: params[:nip])
+      unless @customer.blank?
+        @token_nip_expiry = @customer[0].extra2
+        if @token_nip_expiry > Time.now
+            render json: { message: 'NIP Ok', status: true , customer_id: @customer[0]["id"]}, status: 200
+        else
+          #EL TOKEN HA EXPIRADO
+          render json: { message: 'Token expiró', status: false }, status: 206
+        end
+      else
+        # NO SE ENCONTRÓ EL TOKEN
+        render json: { message: "No se encontró registro", customer: "#{@customer[0].inspect}", status: false
+          }, status: 206
+      end
+    end
+
+    # GENERA UN NUEVO NIP DE BURO PARA ENVIARSELO AL CLIENTE (solo requiere el customer.id)
+    def reset_credit_bureau_nip
+      @customer = Customer.where(id: params[:id])
+      unless @customer.blank?
+        send_customer_nip_mailer(@customer[0])
+        render json: { message: 'Mailer sent', status: true }, status: 200
+      else
+        # NO SE ENCONTRÓ EL NIP
+        render json: { message: "No se encontró registro", customer: "#{@customer[0].inspect}", status: false
+          }, status: 206
+      end
+    end
   
     private
       # Use callbacks to share common setup or constraints between actions.

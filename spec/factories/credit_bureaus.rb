@@ -5,6 +5,9 @@
 #  id            :bigint           not null, primary key
 #  bureau_info   :jsonb
 #  bureau_report :jsonb
+#  extra1        :string
+#  extra2        :string
+#  extra3        :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  bureau_id     :integer

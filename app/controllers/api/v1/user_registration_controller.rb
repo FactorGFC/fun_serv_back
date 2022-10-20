@@ -122,6 +122,8 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                   render json: { error: @customer_personal_refrence.errors }, status: :unprocessable_entity
                   raise ActiveRecord::Rollback
                   end
+                  #MANDA UN MAILER CON UN CODIGO NIP AL CLIENTE
+                  send_customer_nip_mailer @customer
                 render 'api/v1/user_registers/pf_customer'
             else
               render json: { error: @customer.errors }, status: :unprocessable_entity
