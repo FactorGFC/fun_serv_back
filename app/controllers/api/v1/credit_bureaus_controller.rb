@@ -135,6 +135,17 @@ class Api::V1::CreditBureausController < ApplicationController
       end
     end
 
+    #VALIDA SI EL CLIENTE TIENE GUARDADO EN DB SU CONSULTA DE BURO DE CREDITO/ DEVUELVE FALSO/VERDADERO CON EL REGISTRO
+    def has_credit_bureau
+        @credit_bureau = CreditBureau.where(customer_id: params[:id])
+        unless @credit_bureau.blank?
+          # response = generate_customer_buro_report_pdf(@customer_credit.id)
+            render json: { message: 'Ok', credit_bureau:@credit_bureau}, status: 200
+        else
+          render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}"}, status: 206
+        end
+    end
+
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_credit_bureau

@@ -88,6 +88,8 @@ Rails.application.routes.draw do
       post 'credit_bureaus/traer_buro' => 'credit_bureaus#traer_buro', as: :traer_buro
       # Crea un archivo pdf con el resultado de moffin
       post '/credit_bureau_pdf'  => 'credit_bureaus#credit_bureau_pdf', as: :credit_bureau_pdf
+      # DEVUELVE FALSO O VERDADERO SI EL CLIENTE TIENE CONSULTA DE BURO EN LA DB
+      post 'credit_bureaus/has_credit_bureau', to: 'credit_bureaus#has_credit_bureau'
       #get '/funding_requests/layout_base/:funding_request_id', to: 'funding_requests#funding_request_layout'
       #get '/funding_requests/company_id/:company_id/currency/:currency/funding_invoices', to: 'funding_requests#funding_invoices'                  
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'
