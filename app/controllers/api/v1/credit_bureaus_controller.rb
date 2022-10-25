@@ -61,31 +61,37 @@ class Api::V1::CreditBureausController < ApplicationController
 
     # DEVUELVE TRUE SI EL NIP ES VIGENTE
     def get_credit_bureau_nip_validation
-      @customer = Customer.where(extra1: params[:nip])
+      @customer = Customer.find_by_id(params[:id])
       unless @customer.blank?
-        @token_nip_expiry = @customer[0].extra2
-        if @token_nip_expiry > Time.now
-            render json: { message: 'NIP Ok', status: true , customer_id: @customer[0]["id"]}, status: 200
+        @token_nip_expiry = @customer.extra2
+        @nip = @customer.extra1
+        if @nip == params[:nip]
+          if @token_nip_expiry > Time.now
+              render json: { message: 'NIP Ok', status: true , customer_id: @customer.id}, status: 200
+          else
+            #EL TOKEN HA EXPIRADO
+            render json: { message: 'NIP expiró', status: false }, status: 206
+          end
         else
-          #EL TOKEN HA EXPIRADO
-          render json: { message: 'Token expiró', status: false }, status: 206
+          #EL NIP NO COINCIDE
+          render json: { message: 'El NIP es incorrecto', status: false }, status: 206
         end
       else
         # NO SE ENCONTRÓ EL TOKEN
-        render json: { message: "No se encontró registro", customer: "#{@customer[0].inspect}", status: false
+        render json: { message: "No se encontró customer", customer: params[:id], status: false
           }, status: 206
       end
     end
 
     # GENERA UN NUEVO NIP DE BURO PARA ENVIARSELO AL CLIENTE (solo requiere el customer.id)
     def reset_credit_bureau_nip
-      @customer = Customer.where(id: params[:id])
+      @customer = Customer.find_by_id(params[:id])
       unless @customer.blank?
-        send_customer_nip_mailer(@customer[0])
+        send_customer_nip_mailer(@customer)
         render json: { message: 'Mailer sent', status: true }, status: 200
       else
         # NO SE ENCONTRÓ EL NIP
-        render json: { message: "No se encontró registro", customer: "#{@customer[0].inspect}", status: false
+        render json: { message: "No se encontró registro", customer: params[:id], status: false
           }, status: 206
       end
     end

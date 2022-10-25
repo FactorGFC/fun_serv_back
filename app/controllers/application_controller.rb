@@ -281,8 +281,6 @@ class ApplicationController < ActionController::Base
   end
 
   def send_customer_nip_mailer(customer)
-    # puts "customer.id"
-    # puts customer.id
     @customer =  Customer.find_by_id(customer.id)
     # puts "@customer.inspect"
     # puts @customer.inspect
