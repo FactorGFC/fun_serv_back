@@ -7,7 +7,6 @@ class BuroCredito < ApplicationRecord
   
     def self.create_client data
   
-  
       # uri = URI.parse("https://sandbox.moffin.mx/api/v1/profiles/info")
       # token = 'Token: 8d3f4980e76f1cf12da3005bac068636c1f36aa4cda8176de91bc64c00346f5b'
       # Production
@@ -39,7 +38,7 @@ class BuroCredito < ApplicationRecord
       token = 'Token: 8d3f4980e76f1cf12da3005bac068636c1f36aa4cda8176de91bc64c00346f5b'
       # prod
       # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/profiles/#{id}")
-      # token = ENV['TOKEN_BURO_PRODUCTION']
+      # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
 
       request = Net::HTTP::Get.new(uri.request_uri)
   
@@ -147,7 +146,7 @@ class BuroCredito < ApplicationRecord
       token = 'Token: 8d3f4980e76f1cf12da3005bac068636c1f36aa4cda8176de91bc64c00346f5b'
       #prod
       # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/report")
-      # token = ENV['TOKEN_BURO_PRODUCTION']
+      # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
 
       # data = {
       #     bureauPM: true,
@@ -180,7 +179,7 @@ class BuroCredito < ApplicationRecord
       token = 'Token: 8d3f4980e76f1cf12da3005bac068636c1f36aa4cda8176de91bc64c00346f5b'
       #prod
       # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/report/#{id}")
-      # token = ENV['TOKEN_BURO_PRODUCTION']
+      # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
 
       # data = {
       #     bureauPM: true,
@@ -214,7 +213,7 @@ class BuroCredito < ApplicationRecord
         token = 'Token: 8d3f4980e76f1cf12da3005bac068636c1f36aa4cda8176de91bc64c00346f5b'
         #prod
         # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/report/#{id}")
-        # token = ENV['TOKEN_BURO_PRODUCTION']
+        # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
         # data = {
         #     bureauPM: true,
         #     bureauPF: true,
@@ -247,7 +246,7 @@ class BuroCredito < ApplicationRecord
       token = ENV['TOKEN_BURO_DEVELOP']
       #prod
       # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/profiles/#{id}")
-      # token = ENV['TOKEN_BURO_PRODUCTION']
+      # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
   
       data = {
           rfc: 'AIN080117NQA'

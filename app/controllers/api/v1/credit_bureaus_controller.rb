@@ -89,7 +89,46 @@ class Api::V1::CreditBureausController < ApplicationController
           }, status: 206
       end
     end
+
+    def traer_buro
+      # CUSTOMER_CREDIT ID EN LOS PARAMS
+      @customer_credit = CustomerCredit.where(id: params[:id])
+      unless @customer_credit.blank?
+        # MANDAR A TRAER EL REPORTE DE BURO MEDIANTE EL RFC
+        # PRUEBA BURO DE CREDITO
+        @buro = get_buro (@customer_credit[0].id)
+        unless @buro.nil?
+          render json: { message: 'ok', status: true, buro: @buro }, status: 200
+        else
+         # NO SE ENCONTRÓ 
+        render json: { message: "Error", status: false
+        }, status: 206
+        end
+      else
+        # NO SE ENCONTRÓ 
+        render json: { message: "No se encontró registro", customer: "#{@customer_credit[0].inspect}", status: false
+          }, status: 206
+      end
+    end
   
+
+    def credit_bureau_pdf
+      ActiveRecord::Base.transaction do
+        @customer_credit = CustomerCredit.find_by_id(params[:id])
+        unless @customer_credit.blank?
+          response = generate_customer_buro_report_pdf(@customer_credit.id)
+
+          unless response.blank?
+            render json: { message: 'Ok', pdf:response}, status: 200
+          else
+            render json: { message: "No se encuentra reporte de buro para el id:  #{params[:id]}"}, status: 206
+          end
+        else
+          render json: { message: "No se encuentra customer_credit para el id:  #{params[:id]}"}, status: 206
+        end
+      end
+    end
+
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_credit_bureau

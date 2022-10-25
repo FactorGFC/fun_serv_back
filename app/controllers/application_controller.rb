@@ -734,10 +734,12 @@ class ApplicationController < ActionController::Base
     borra_de_local("final_#{folio}")
   end
 
-  def create_sat_user (customer_credit)
-  @customer = Customer.find_by_id(customer_credit.customer_id)
+  def get_buro (customer_credit_id)
+  @customer_credit = CustomerCredit.find_by_id(customer_credit_id)
     # DEBE SER UNLESS
-    unless @customer.blank?
+    unless @customer_credit.blank?
+      @customer = Customer.find_by_id(@customer_credit.customer_id)
+      unless @customer.blank?
       @contributor = Contributor.find_by_id(@customer.contributor_id)
       unless @contributor.blank?
         @person = Person.find_by_id(@contributor.person_id)
@@ -753,28 +755,14 @@ class ApplicationController < ActionController::Base
             # puts "@info"
             # puts @info.inspect
 
-            # if @info['@type'] != 'hydra:Error'
               @buro = create_buro 
-              # puts "@buro"
-              # puts @buro.inspect
-
-          
-            # else
-              # format.html { redirect_to companies_url, alert: 'Hubo un error favor volver a intentar' }
-              # p "ELSEEEEEEEEEEEEEEEEEEEEEEEEEE"
-            # end
 
             @bureau_report = BuroCredito.get_buro_report @buro.first['id']
-            # p "@bureau_report"
-            # p @bureau_report
             @bureau_info = BuroCredito.get_buro_info @buro.first['id']
-            # p "@bureau_info"
-            # p @bureau_info
-            @report_result = @bureau_report
-            # unless @report_result['results'][0]['response']['respuesta']['msjError'] == 'No existe informacion crediticia para esta consulta'
             @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
             if @credit_bureau.save
 
+              return @credit_bureau
               # if @bureau_report['results'].present?
                 # if @bureau_report['results'][0]['response'].present?
                   # @report_result = @bureau_report['results'][0]
@@ -1031,15 +1019,52 @@ class ApplicationController < ActionController::Base
             #   end
             # end
         else
-          @credit_bureau = CreditBureau.where(customer_id: customer_credit.customer_id)
+          p "NO REALIZA LA CONSULTA PUES YA ESTA GUARDADA EN DB"
+          @credit_bureau = CreditBureau.where(customer_id: @customer_credit.customer_id)
           @bureau_report = @credit_bureau[0].bureau_report
-          # p "@bureau_report"
-          # p @bureau_report['results'][0]['createdAt']
-          # p "@bureau_report"
+          @bureau_info = @credit_bureau[0].bureau_info
+          # @report_result = @bureau_report
+          # RETURNS BURO REPORTS AS JSON
+            return @credit_bureau
+
+        end
+        else
+          @error_desc.push("No se encontró person")
+          error_array!(@error_desc, :not_found)
+          # raise ActiveRecord::Rollback
+        end
+      else
+        @error_desc.push("No se encontró contributor")
+        error_array!(@error_desc, :not_found)
+        # raise ActiveRecord::Rollback
+      end
+      else
+        @error_desc.push("No se encontró customer")
+        error_array!(@error_desc, :not_found)
+        # raise ActiveRecord::Rollback
+      end
+    else
+      # @error_desc.push("No se encontró cliente")
+      # error_array!(@error_desc, :not_found)
+      # NO SE ENCONTRÓ 
+      render json: { message: "No se encontró registro", customer: "#{@customer_credit[0].inspect}", status: false
+      }, status: 206
+      # raise ActiveRecord::Rollback
+    end
+  end
+
+  # RECIBE customer_credit Y DEVUELVE URL DEL PDF GENERADO
+  def generate_customer_buro_report_pdf(customer_credit_id)
+    @error_desc = []
+    @customer_credit = CustomerCredit.find_by_id(customer_credit_id)
+    unless @customer_credit.blank?
+      @customer = Customer.find_by_id(@customer_credit.customer_id)
+      unless @customer.blank?
+        @credit_bureau = CreditBureau.where(customer_id: @customer_credit.customer_id)
+        unless @credit_bureau.blank?
+          @bureau_report = @credit_bureau[0].bureau_report
           @bureau_info = @credit_bureau[0].bureau_info
           @report_result = @bureau_report
-          # puts "REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT REPORT RESULT "
-          # puts @report_result.inspect
           if @report_result['results'][0]['metadata']['clientType'] == 'PM' || @report_result['results'][0]['metadata']['clientType'] == 'PFAE'
             # puts "SI ES PERSONA MORAL"
             @esPM = true
@@ -1061,33 +1086,30 @@ class ApplicationController < ActionController::Base
               @score = @buro_score['ScoreBC'][0]['ValorScore'].to_i
             end
           end
-          @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
-                  pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
-                  @path = "nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
-                  s3_save(pdf,@path)
-                  @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
-                  # puts "@url"
-                  # puts @url
+            @filename = "Reporte Buró de Crédito #{@customer.id}.pdf"
+            pdf = render_to_string pdf: @filename, template: "credit_bureau.pdf.erb", encoding: "UTF-8"
+            @path = "nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+            s3_save(pdf,@path)
+            @url = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/bureau/#{@filename}"
+            # puts "@url"
+            # puts @url
 
-                  @credit_bureau.update(extra1: @url)
-                  return @url
-            @error_desc.push("Ya existe registro para el customer", data: @credit_bureau)
-            error_array!(@error_desc, :not_found)
-        end
+            @credit_bureau.update(extra1: @url)
+            return @url
         else
-          @error_desc.push("No se encontró person")
+          @error_desc.push("No tiene guardada consulta de buro")
           error_array!(@error_desc, :not_found)
-          # raise ActiveRecord::Rollback
+          raise ActiveRecord::Rollback
         end
       else
-        @error_desc.push("No se encontró contributor")
+        @error_desc.push("No se encuentra el customer")
         error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+        raise ActiveRecord::Rollback
       end
     else
-      @error_desc.push("No se encontró cliente")
+      @error_desc.push("No se encuentra el customer credit")
       error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
+      raise ActiveRecord::Rollback
     end
   end
 
@@ -1116,7 +1138,6 @@ class ApplicationController < ActionController::Base
             state: state, zipCode: zip_code, exteriorNumber: exterior_number, interiorNumber: interior_number,
             neighborhood: "", municipality: municipality,
             nationality: "MX"]
-
     @buro = BuroCredito.create_client data
 
     # p "@buro 2 --------------------------------------------------------------------------------"

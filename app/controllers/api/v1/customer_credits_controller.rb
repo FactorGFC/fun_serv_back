@@ -120,16 +120,14 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
                                   end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
                                   debt_time: @debt_time, insurance1: @insurance, term_id: @new_term_id)
-          if @customer_credit.status == 'SI'
-            # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            # send_customer_nip_mailer @customer
+          if @customer_credit.status == 'SI' # SI = SIMULAR
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
-          elsif @customer_credit.status == 'PR'
+          elsif @customer_credit.status == 'PR' #PR = PROPUESTO
             # MANDA CORREO AL CLIENTE PARA QUE LO APRUEBE
                 customer_credit_mailer
                 render 'api/v1/customer_credits/show'
-          elsif @customer_credit.status == 'PA'
+          elsif @customer_credit.status == 'PA' #PA = POR APROBAR
                 if documents_mode
                   generate_customer_credit_request_report_pdf
                 end
