@@ -140,7 +140,7 @@ class Api::V1::CreditBureausController < ApplicationController
         @credit_bureau = CreditBureau.where(customer_id: params[:id])
         unless @credit_bureau.blank?
           # response = generate_customer_buro_report_pdf(@customer_credit.id)
-            render json: { message: 'Ok', credit_bureau:@credit_bureau, status: 'ok'}, status: 200
+            render json: { message: 'Ok', credit_bureau:@credit_bureau, status: true}, status: 200
         else
           render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}", status: false }, status: 206
         end
