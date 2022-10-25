@@ -142,7 +142,7 @@ class Api::V1::CreditBureausController < ApplicationController
           # response = generate_customer_buro_report_pdf(@customer_credit.id)
             render json: { message: 'Ok', credit_bureau:@credit_bureau}, status: 200
         else
-          render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}"}, status: 206
+          render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}", status: false }, status: 206
         end
     end
 
