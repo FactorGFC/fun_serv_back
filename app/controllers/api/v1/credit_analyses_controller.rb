@@ -45,4 +45,15 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
         @credit_analysis = CreditAnalysis.find(params[:id])
       end
     
+          #VALIDA SI EL CLIENTE TIENE GUARDADO EN DB SU ANALISIS DE CREDITO/ DEVUELVE FALSO/VERDADERO CON EL REGISTRO
+    def has_credit_analysis
+      @credit_analysis = CreditAnalysis.where(customer_credit_id: params[:id])
+      unless @credit_analysis.blank?
+        # response = generate_customer_buro_report_pdf(@customer_credit.id)
+          render json: { message: 'Ok', credit_analysis:@credit_analysis, status: true}, status: 200
+      else
+        render json: { message: "No se ha realizado analisis de credito:  #{params[:id]}", status: false }, status: 206
+      end
+    end
+
 end

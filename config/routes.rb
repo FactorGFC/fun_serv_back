@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       post '/credit_bureau_pdf'  => 'credit_bureaus#credit_bureau_pdf', as: :credit_bureau_pdf
       # DEVUELVE FALSO O VERDADERO SI EL CLIENTE TIENE CONSULTA DE BURO EN LA DB
       post 'credit_bureaus/has_credit_bureau', to: 'credit_bureaus#has_credit_bureau'
+      post 'credit_analysis/has_credit_analysis', to: 'credit_analyses#has_credit_analysis'
       #get '/funding_requests/layout_base/:funding_request_id', to: 'funding_requests#funding_request_layout'
       #get '/funding_requests/company_id/:company_id/currency/:currency/funding_invoices', to: 'funding_requests#funding_invoices'                  
       #get '/funding_request_mailer/:id', to: 'funding_requests#funding_request_mailer'

@@ -242,14 +242,14 @@ class BuroCredito < ApplicationRecord
 
     def self.update_profile id
 
-      uri = URI.parse("#{ENV['URL_BUREAU_DEVELOP']}api/v1/profiles/#{id}")
-      token = ENV['TOKEN_BURO_DEVELOP']
+      # uri = URI.parse("#{ENV['URL_BUREAU_DEVELOP']}api/v1/profiles/#{id}")
+      # token = ENV['TOKEN_BURO_DEVELOP']
       #prod
-      # uri = URI.parse("#{ENV['URL_BUREAU_PRODUCTION']}api/v1/profiles/#{id}")
-      # token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
+      uri = URI.parse("https://app.moffin.mx/api/v1/profiles/#{id}")
+      token = 'Token: 59f899b9f9de3db1191b36d06cff5d63c563feba86a1678031637c9827156c7e'
   
       data = {
-          rfc: 'AIN080117NQA'
+          rfc: 'DECL900402UW6'
           # accountType: "PM"
           #
       }

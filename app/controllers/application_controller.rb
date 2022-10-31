@@ -1111,6 +1111,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def update_profile(id)
+    @buro = BuroCredito.update_profile id
+  end
+
   def create_buro
     rfc = @customer_data[0]["pf_rfc"]
     email = @customer_data[0]["pf_correo"]
