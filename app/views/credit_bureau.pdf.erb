@@ -59,15 +59,15 @@
                     <div class="row" style="text-align:left;">
                         <div class="col" style="display:inline-block;float:none;">   
                             Nombre: 
-                            <%= @report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre']+ ' ' + @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno'] + ' ' + @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoMaterno'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre']+ ' ' + @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno'] + ' ' + @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoMaterno']  %> 
+                            <%= @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre']+ ' ' + @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno'] + ' ' + @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoMaterno'] %> 
                         </div>
                         <div class="col" style="display:inline-block;float:none;">
                         R.F.C: 
-                        <%= @report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['RFC'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['RFC'] %> 
+                        <%= @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['RFC'] %> 
                         </div>
                         <div class="col" style="display:inline-block;float:none;">
                             Fecha de nacimiento: 
-                        <%= @report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['FechaNacimiento'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['FechaNacimiento'] %> 
+                        <%= @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Nombre']['FechaNacimiento'] %> 
                         </div>
                     </div>
             <% else %>
@@ -198,7 +198,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <% get_ur_credits(@report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta']).each do |credit| %>
+                                                    <% get_ur_credits( @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta']).each do |credit| %>
                                                     <tr>
                                                         <td>
                                                             <%= credit[:mop] %>
@@ -276,7 +276,7 @@
                                     </thead>
                                     <tbody>
                                     
-                                    <% (@report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Domicilios']['Domicilio'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Domicilios']['Domicilio']).each do |address| %>
+                                    <% ( @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Domicilios']['Domicilio']).each do |address| %>
                                         <tr>
                                             <td>
                                                 <%= address['Direccion1'] %>
@@ -340,7 +340,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <% (@report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Empleos']['Empleo'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Empleos']['Empleo']).each do |job| %>
+                                                <% ( @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Empleos']['Empleo']).each do |job| %>
                                                 <tr>
                                                     <td><%= job['NombreEmpresa'] %></td>
                                                     <td><%= job['Cargo'] %></td>
@@ -429,7 +429,7 @@
                                     </div>
                                     <% if @credit_bureau.present? && !@esPM
                                     if @report_result['results'][0]['response'].present? && !@report_result.has_key?("msjError".to_sym)
-                                    (@report_result['results'][0]['response'].has_key?("msjError".to_sym) ? @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta'] : @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta']).each do |account| %>
+                                    ( @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['Cuentas']['Cuenta']).each do |account| %>
                                         <div class="card-body" style="display:inline-block;">
                                             <table>
                                                 <thead>

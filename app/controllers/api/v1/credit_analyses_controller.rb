@@ -15,7 +15,6 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
         @credit_analysis = CreditAnalysis.new(credit_analysis_params)
 
         if @credit_analysis.save
-          #TO DO: LLAMAR A TRAERSE LA CONSULTA DE BURO DE CREDITO?
           render template: 'api/v1/credit_analyses/show'
         else
           render json: { error: @credit_analysis.errors }, status: :unprocessable_entity
@@ -38,7 +37,8 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
       def credit_analysis_params
         params.require(:credit_analysis).permit(:debt_rate, :cash_flow, :credit_status, :previus_credit, :discounts, :debt_horizon,
                                                 :report_date, :mop_key, :last_key, :balance_due, :payment_capacity, :lowest_key, :departamental_credit,
-                                                :car_credit, :mortagage_loan, :other_credits, :accured_liabilities, :debt, :net_flow, :customer_credit_id)
+                                                :car_credit, :mortagage_loan, :other_credits, :accured_liabilities, :debt, :net_flow, :customer_credit_id,
+                                                :total_amount, :credit_type, :anual_rate, :total_cost, :overal_rate, :total_debt)
       end
 
       def set_credit_analysis

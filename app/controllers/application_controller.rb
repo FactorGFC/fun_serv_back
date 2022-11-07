@@ -282,8 +282,6 @@ class ApplicationController < ActionController::Base
 
   def send_customer_nip_mailer(customer)
     @customer =  Customer.find_by_id(customer.id)
-    # puts "@customer.inspect"
-    # puts @customer.inspect
     unless @customer.blank?
       @query = 
       "SELECT u.email as email,u.name as name, u.id
@@ -302,23 +300,15 @@ class ApplicationController < ActionController::Base
           @token_nip =  SecureRandom.hex(5)
           # TOKEN CON VIDA UTIL DE 1 DIA
           @token_nip_expiry = Time.now + 1.day
-          # @callback_url_nip = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
         end while Customer.where(extra1: @token_nip).any?
-
-             #CREA UN REGISTRO EN CUSTOMER
-             @customer.update(extra1: @token_nip, extra2: @token_nip_expiry)
-
-        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
-        # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
-        # @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
+        @customer.update(extra1: @token_nip, extra2: @token_nip_expiry)
         mail_to = mailer_mode_to(mailer_signatory['email'])
-        #email, name, subject, title, content
+        # email, name, subject, title, content
         SendMailMailer.customer_nip(mail_to,
           mailer_signatory['name'],
           "Factor Global GFC - Nómina Personal - Validación de Código NIP - Cliente",
           "CÓDIGO DE VERIFICACIÓN",
           @token_nip
-          # [@callback_url_analyst,@customer_credit]
         ).deliver_now
       end
     end
@@ -747,7 +737,7 @@ class ApplicationController < ActionController::Base
           # puts "@customer_data"
           # puts @customer_data.inspect
           # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          unless CreditBureau.exists?(customer_id: customer_credit.customer_id)
+          unless CreditBureau.exists?(customer_id: @customer_credit.customer_id)
 
             # @info = SatW.get_tax_status @person.try(:rfc)
             # puts "@info"
@@ -1080,7 +1070,7 @@ class ApplicationController < ActionController::Base
               
               end
             else
-              @buro_score = @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']
+              @buro_score = @report_result['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']
               @score = @buro_score['ScoreBC'][0]['ValorScore'].to_i
             end
           end
