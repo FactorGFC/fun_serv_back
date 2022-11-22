@@ -248,6 +248,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @dias_dispersion = GeneralParameter.get_general_parameter_value('DIAS_DISPERSION')     
     @date = actual_date + @dias_dispersion.to_i
     @pay_date = GeneralParameter.get_general_parameter_value('DIA_PAGO')
+    @pay_number = @company_segment.extra1
+  
     if @pay_date == 0
       @error_desc.push("No existe el parametro general DIA PAGO")
       error_array!(@error_desc, :not_found)
@@ -256,35 +258,48 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
       end
     start_date = @date
+    #Se suman 7 dias a la fecha de dispersion para que se cumpla un periodo despues de que se le paga al
+    @weekly_pday = start_date + 7.day
+    @weekly_pday =
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales
       case payment_period.to_s
       when '12'
-        payment_date = start_date + i.months
+        @payment_date = start_date + i.months
       when '52'
-        payment_date = start_date + (i/4).months
+         if i == 1
+          #Si es el primer pago a partir de la fecha de inicio (start_date) se deja pasar un periodo y luego se paga
+          #al siguiente dia configurado en el campo extra 3 de company_segments
+          start_date = start_date + 7.day
+           start_date += 1 until start_date.strftime('%u').to_i == @pay_number.to_i
+           @payment_date = start_date 
+         else
+          #si no es el primer pago se paga cada miercoles una vez por semana
+          start_date = @payment_date + 7.day
+          @payment_date = start_date
+        end
       when '24' #pagos por quincenas
         #Se valida si es el primer pago del credito
         #La fecha del primer pago va a sera al inicio del periodo siguiente a partir de la fecha actual mas los dias configurados en el parametro
         if i == 1
          #Si la fecha es menor o igual a 15 el primer pago sera el dia ultimo del mes, si no el pago sera el dia 15 del siguiente mes
           if (start_date.day <= 15)
-            payment_date = start_date.end_of_month 
+            @payment_date = start_date.end_of_month 
           else
-            payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15)
+            @payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15)
           end
           #Si no es el primer pago se revisa en que fecha estamos
         else
           #Si el dia es 15 el pago es el fin de mes
           if (start_date.day == 15)
-            payment_date  = start_date.end_of_month 
+            @payment_date  = start_date.end_of_month 
             #Si no el dia de pago es el 15 del siguiente mes
           else
             #Se revisa si es diciembre (12) para cambiar de año
             if (start_date.month == 12)
-              payment_date = DateTime.new(start_date.year + 1, start_date.next_month.month, 15) 
+              @payment_date = DateTime.new(start_date.year + 1, start_date.next_month.month, 15) 
             else
-              payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15) 
+              @payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15) 
             end
           end
         end
@@ -310,7 +325,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           capital = payment.to_f - interests.to_f - iva.to_f
         elsif @anuality.present? && anuality_date.present?
           #Se guardan numeros de pagos cuando debe de ser la anualidad
-          if (payment_date.month == anuality_date.to_i && payment_date.day == 15) 
+          if (@payment_date.month == anuality_date.to_i && @payment_date.day == 15) 
             @number_anuality.push i 
           end
           max_anuality = total_requested * 0.10
@@ -343,15 +358,15 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       @iva += iva
       sim_customer_payments = SimCustomerPayment.create(customer_credit_id: customer_credit_id, pay_number: i, current_debt: current_debt.round(2), remaining_debt:  remaining_debt.round(2),
                                                         payment: payment.round(2),
-                                                        capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: payment_date, status: 'PE')
+                                                        capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: @payment_date, status: 'PE')
       
       if sim_customer_payments.blank?
         @error_desc.push('Ocurrio un error al crear la simulación de los pagos del crédito')
         error_array!(@error_desc, :unprocessable_entity)
         raise ActiveRecord::Rollback
       end
-      start_date = payment_date
-      @end_date = payment_date
+      start_date = @payment_date
+      @end_date = @payment_date
       break if (remaining_debt.to_f < 0)
     end
     @total_debt = @total_debt + @capital + @interests + @iva
