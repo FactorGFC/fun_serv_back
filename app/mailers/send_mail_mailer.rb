@@ -9,10 +9,11 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
-  def send_mail_credit(email, name, subject, title, content)
+  def send_mail_credit(email, name,subject, title,file, content)
     @email_name = name
     @content = content
     @title = title
+    attachments["document.pdf"] = File.read("#{file}", mode: "rb") {|io| a = a + io.read}
     mail(to: email, subject: subject)
   end
 

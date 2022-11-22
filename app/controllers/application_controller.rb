@@ -173,7 +173,7 @@ class ApplicationController < ActionController::Base
     @customer_credit =  CustomerCredit.find_by_id(customer_credit)
     unless @customer_credit.blank?
       @query = 
-      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id as user_id
       FROM users u, roles r
       WHERE u.role_id = r.id
       AND r.name IN ('Mesa de control')"
@@ -185,6 +185,8 @@ class ApplicationController < ActionController::Base
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
       @mailer_signatories.each do |mailer_signatory|
+      # ASIGNA EL CREDITO A MESA DE CONTROL CON UN UPDATE
+      @customer_credit.update(user_id: mailer_signatory['user_id'])
         # begin
           # @token_control_desk =  SecureRandom.hex
           # TOKEN CON VIDA UTIL DE 7 DIAS
@@ -547,6 +549,7 @@ class ApplicationController < ActionController::Base
       @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
       @anio_fin = @fecha_fin.strftime("%Y")
       @tasa = @customer_credit.rate
+      @person_id = @customer_credit_data[0]["person_id"]
       # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
       # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
       # unless ary.include?(nil)
@@ -594,8 +597,9 @@ class ApplicationController < ActionController::Base
         # file.close
         
         @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
-
-        @customer_credit.update(attached: @url_final)
+        #     LEFT JOIN people peo ON (peo.id = con.person_id)
+        @person = Person.find_by_id(@person_id)
+        @person.update(extra1: @url_final)
         # BORRA ARCHIVOS DE S3 CUANDO YA NO SE NECESITAN
         borra_documentos(@documents_array,@folio)
       else

@@ -186,7 +186,6 @@ class SessionsController < ApplicationController
             if @AC
               # MANDA UN MAIL AL ANALISTA PARA QUE SOLICITE APROBACION DEL CLIENTE
               # send_analyst_mailer(@customer_credit_signatory[0].customer_credit_id)
-              #TO DO: MOVER ESTE MAILER AL PUNTO DONDE EL CLIENTE ACEPTA EL CREDITO
               #METODO QUE MANDA NOTIFICACION A MESA DE CONTROL PARA QUE ANALICE A DETALLE EL CREDITO POR APROVAR CUANDO TODOS HAYAN FIRMADO INCLUYENDO AL CLIENTE
               # send_control_desk_mailer( @customer_credit_signatory[0].customer_credit_id)
             end

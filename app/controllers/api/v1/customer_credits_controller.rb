@@ -361,7 +361,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def customer_credit_mailer
     unless @customer_credit.blank?
       @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
         FROM contributors con, people peo, customers cus
         WHERE con.person_id = peo.id
         AND cus.contributor_id = con.id
@@ -369,7 +369,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
     else
       @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email, peo.extra1
         FROM contributors con, people peo, customers cus
         WHERE con.person_id = peo.id
         AND cus.contributor_id = con.id
@@ -388,18 +388,28 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       end while CustomerCredit.where(extra3: @token).any?
       @customer_credit.update(extra3: @token)
       @customer_credit.update(extra2: @token_expiry)
-       # correo para el cliente
+       # Correo para el cliente
        #email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate
-      @mailer_signatories.each do |mailer_signatory|
+        # MANDA EL PDF COMPLETO AL CORREO
+       @mailer_signatories.each do |mailer_signatory|
         mail_to = mailer_mode_to(mailer_signatory['email'])
+        @customer_credit.update(attached: mailer_signatory['extra1'])
+        URI.open('document.pdf', "wb") do |cd_file|      
+          cd_file.write open(mailer_signatory['extra1'], "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
+        end
+        # @file = CombinePDF.new
+        @file = Rails.root.join('document.pdf')
         #email, name, subject, title, content
         SendMailMailer.send_mail_credit(mail_to,
           mailer_signatory['name'],
           "Nomina GFC - Confirmar propuesta de credito",
           # @current_user.name,
           "Hola",
+          @file,
           [@callback_url_aceptado,@callback_url_rechazado,@customer_credit]
         ).deliver_now
+        # ELIMINA PDF DE LOCAL
+          File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
       end
     end
   end
