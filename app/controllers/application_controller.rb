@@ -747,26 +747,31 @@ class ApplicationController < ActionController::Base
             # puts "@info"
             # puts @info.inspect
 
-              @buro = create_buro 
+            @buro = create_buro 
+            unless @buro == false
+              @bureau_report = BuroCredito.get_buro_report @buro.first['id']
+              @bureau_info = BuroCredito.get_buro_info @buro.first['id']
+              @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
+              if @credit_bureau.save
 
-            @bureau_report = BuroCredito.get_buro_report @buro.first['id']
-            @bureau_info = BuroCredito.get_buro_info @buro.first['id']
-            @credit_bureau = CreditBureau.new(customer_id: @customer.id, bureau_report: @bureau_report, bureau_id: @buro.first['id'], bureau_info: @bureau_info)
-            if @credit_bureau.save
-
-              return @credit_bureau
-              # if @bureau_report['results'].present?
-                # if @bureau_report['results'][0]['response'].present?
-                  # @report_result = @bureau_report['results'][0]
+                return @credit_bureau
+                # if @bureau_report['results'].present?
+                  # if @bureau_report['results'][0]['response'].present?
+                    # @report_result = @bureau_report['results'][0]
+                  # else
+                    # @report_result = @bureau_report['results'][1]
+                  # end
                 # else
-                  # @report_result = @bureau_report['results'][1]
                 # end
-              # else
-              # end
-              # puts @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre'] + ' ' + @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno']
+                # puts @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['PrimerNombre'] + ' ' + @report_result['results'][0]['response']['return']['Personas']['Persona'][0]['Nombre']['ApellidoPaterno']
+              else
+                # format.html { redirect_to companies_url, alert: 'Hubo un error al guardar el CreditBureau favor volver a intentar' }
+                @error_desc.push("Hubo un error al guardar el CreditBureau favor volver a intentar")
+                error_array!(@error_desc, :not_found)
+              end
             else
               # format.html { redirect_to companies_url, alert: 'Hubo un error al guardar el CreditBureau favor volver a intentar' }
-              @error_desc.push("Hubo un error al guardar el CreditBureau favor volver a intentar")
+              @error_desc.push("Hubo un error crear registro de buro/No se pudo registrar al cliente BuroCredito.create_client")
               error_array!(@error_desc, :not_found)
             end
             # p "@report_result.inspect"
@@ -1136,8 +1141,8 @@ class ApplicationController < ActionController::Base
             nationality: "MX"]
     @buro = BuroCredito.create_client data
 
-    # p "@buro 2 --------------------------------------------------------------------------------"
-    # p @buro
+    p "@buro 2 --------------------------------------------------------------------------------"
+    p @buro
 
     if @buro['result'].present?
       response = @buro['result']
