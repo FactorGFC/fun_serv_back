@@ -727,6 +727,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_buro (customer_credit_id)
+    @error_desc = []
   @customer_credit = CustomerCredit.find_by_id(customer_credit_id)
     # DEBE SER UNLESS
     unless @customer_credit.blank?
