@@ -19,7 +19,7 @@ FactoryBot.define do
     key { "Quincenal" }
     description { "Numero de pagos al año" }
     value { 24 }
-    pp_type { "Numero de pagos en el año" }
+    pp_type { "2" }
     extra1 { "MyString" }
     extra2 { "MyString" }
     extra3 { "MyString" }

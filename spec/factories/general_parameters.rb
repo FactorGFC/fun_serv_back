@@ -89,5 +89,26 @@ FactoryBot.define do
       value { "4" }
       documentation { "Es el dia de la semana en el que se realizan los pagos de creditos" }
     end
+    factory :house_rent do
+      key { "HOUSE_RENT" }
+      description { "Parámetro para valor de la renta de casa " }
+      used_values { "Valor unico" }
+      value { "2500" }
+      documentation { "Valor promedio de la renta de casa" }
+    end
+    factory :child_expense do
+      key { "CHILD_EXPENSE" }
+      description { "Parámetro para valor de la renta de casa " }
+      used_values { "Valor unico" }
+      value { "2500" }
+      documentation { "Valor promedio de la renta de casa" }
+    end
+    factory :adult_expense do
+      key { "ADULT_EXPENSE" }
+      description { "Parámetro para valor de la renta de casa " }
+      used_values { "Valor unico" }
+      value { "2500" }
+      documentation { "Valor promedio de la renta de casa" }
+    end
   end
 end

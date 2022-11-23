@@ -7,28 +7,40 @@
 #  anual_rate           :decimal(15, 4)
 #  balance_due          :string
 #  car_credit           :decimal(15, 4)
+#  car_debt             :decimal(15, 4)
 #  cash_flow            :decimal(15, 4)
 #  credit_status        :string           not null
 #  credit_type          :string
 #  customer_number      :string
 #  debt                 :decimal(15, 4)
+#  debt_cp              :decimal(15, 4)
 #  debt_horizon         :decimal(15, 4)
 #  debt_rate            :decimal(15, 4)
 #  departamental_credit :decimal(15, 4)
+#  departamentalc_debt  :decimal(15, 4)
 #  discounts            :decimal(15, 4)
 #  last_key             :decimal(15, 4)   not null
 #  lowest_key           :decimal(15, 4)   not null
+#  monthly_expenses     :decimal(15, 4)
+#  monthly_income       :decimal(15, 4)
 #  mop_key              :string           not null
+#  mortagage_debt       :decimal(15, 4)
 #  mortagage_loan       :decimal(15, 4)
 #  net_flow             :decimal(15, 4)
 #  other_credits        :decimal(15, 4)
+#  otherc_debt          :decimal(15, 4)
 #  overall_rate         :decimal(15, 4)
 #  payment_capacity     :decimal(15, 4)
+#  payment_credit_cp    :decimal(15, 4)
+#  payment_credit_lp    :decimal(15, 4)
+#  personalc_debt       :decimal(15, 4)
 #  previus_credit       :string
 #  report_date          :date             not null
 #  total_amount         :decimal(15, 4)
 #  total_cost           :decimal(15, 4)
 #  total_debt           :decimal(15, 4)
+#  total_expenses       :decimal(15, 4)
+#  total_income         :decimal(15, 4)
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  customer_credit_id   :uuid             not null

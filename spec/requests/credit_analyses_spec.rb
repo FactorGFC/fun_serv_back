@@ -38,7 +38,9 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
         expect(json['data']['attributes'].keys).to contain_exactly('id', 'debt_rate', 'cash_flow', 'credit_status', 'previus_credit', 'discounts', 'debt_horizon',
                                                                    'report_date', 'mop_key', 'last_key', 'balance_due', 'payment_capacity', 'lowest_key', 'departamental_credit',
                                                                     'car_credit', 'mortagage_loan', 'other_credits', 'accured_liabilities', 'debt', 'net_flow', 'customer_credit_id',
-                                                                    'created_at', 'updated_at', 'anual_rate', 'credit_type', 'customer_number', 'overall_rate', 'total_amount', 'total_cost', 'total_debt' 
+                                                                    'created_at', 'updated_at', 'anual_rate', 'credit_type', 'customer_number', 'overall_rate', 'total_amount', 'total_cost', 'total_debt',
+                                                                    'car_debt', 'debt_cp', 'departamentalc_debt', 'monthly_expenses', 'monthly_income', 'mortagage_debt', 
+                                                                    'payment_credit_cp', 'personalc_debt', 'total_expenses', 'total_income', 'otherc_debt', 'payment_credit_lp'
                                                                   )
       end
     end
@@ -49,28 +51,40 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
           @user = FactoryBot.create(:sequence_user)
           @my_app = FactoryBot.create(:my_app, user: @user)
           @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
-          @credit_analysis = FactoryBot.create(:credit_analysis)
+          
           @customer_credit =FactoryBot.create(:customer_credit)
+          @sim_customer_payment = FactoryBot.create(:sim_customer_payment, customer_credit: @customer_credit )
+          FactoryBot.create(:child_expense)
+          FactoryBot.create(:house_rent)
+          FactoryBot.create(:adult_expense)
 
           post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                     credit_analysis: {  debt_rate: '8.45', cash_flow:'100.53', credit_status: 'Bueno', 
                                                     previus_credit: 'NO', discount: '20', debt_horizon: ' 3.0', report_date: '2022-05-01', 
                                                     mop_key: 'NO', last_key: '1', balance_due: 'NO', payment_capacity: '65.29', lowest_key: '1',
-                                                    accured_liabilities: '11145.00', net_flow: '2867.25', customer_credit_id: @customer_credit.id} }
+                                                    accured_liabilities: '11145.00', net_flow: '2867.25', customer_credit_id: @customer_credit.id,
+                                                    car_debt: '0.0', debt_cp: '0.0', departamentalc_debt: '0.0', monthly_expenses: '100.0', monthly_income: '100.0', 
+                                                    mortagage_debt: '0.0', payment_credit_cp: '0.0', personalc_debt: '0.0', total_expenses: '100.0', 
+                                                    total_income: '100.0', otherc_debt: '0.0', payment_credit_lp: '0.0', debt: @sim_customer_payment.payment},
+                                                   }
         end
         it { expect(response).to have_http_status(200) }
-  
+        
         it 'crea un nuevo analisis de credito' do
           expect do
             post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key,
                                                        credit_analysis: { debt_rate: '8.45', cash_flow:'100.53', credit_status: 'Bueno', 
                                                        previus_credit: 'NO', discount: '20', debt_horizon: ' 3.0', report_date: '2022-05-01', 
                                                        mop_key: 'NO', last_key: '1', balance_due: 'NO', payment_capacity: '65.29', lowest_key: '1',
-                                                       accured_liabilities: '11145.00', net_flow: '2867.25', customer_credit_id: @customer_credit.id } }
+                                                       accured_liabilities: '11145.00', net_flow: '2867.25', customer_credit_id: @customer_credit.id , 
+                                                       car_debt: '0.0', debt_cp: '0.0', departamentalc_debt: '0.0', monthly_expenses: '100.0', monthly_income: '100.0', 
+                                                       mortagage_debt: '0.0', payment_credit_cp: '0.0', personalc_debt: '0.0', total_expenses: '100.0', 
+                                                       total_income: '100.0', otherc_debt: '0.0', payment_credit_lp: '0.0', debt: @sim_customer_payment.payment} }
           end.to change(CreditAnalysis, :count).by(1)
         end
         it 'responde con la cadena creada' do
           json = JSON.parse(response.body)
+          #puts "11111111111111111>>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
           expect(json['data']['attributes']['credit_status']).to eq('Bueno')
         end
       end
@@ -104,30 +118,6 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
         end
       end
   
-      context 'parametros invalidos' do
-        before :each do
-          @user = FactoryBot.create(:sequence_user)
-          @my_app = FactoryBot.create(:my_app, user: @user)
-          @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: @my_app)
-          @credit_analysis = FactoryBot.create(:credit_analysis)
-          @customer_credit =FactoryBot.create(:customer_credit)
-  
-          post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key,
-                                                     credit_analysis: { cash_flow:'100.53', credit_status: 'Bueno', 
-                                                     previus_credit: 'NO', discount: '20', debt_horizon: ' 3.0', report_date: '2022-05-01', 
-                                                     last_key: '1', balance_due: 'NO', payment_capacity: '65.29', lowest_key: '1',
-                                                     accured_liabilities: '11145.00', net_flow: '2867.25'} }
-        end
-  
-        it { expect(response).to have_http_status(422) }
-
-        it 'responde con los errores al guardar el credito al cliente' do
-          json = JSON.parse(response.body)
-          #puts ">>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
-          expect(json['error']).to_not be_empty
-        end
-  
-      end
     end   
 
     describe 'PATCH /credit_analyses/:id' do
