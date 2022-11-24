@@ -58,7 +58,7 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
           FactoryBot.create(:house_rent)
           FactoryBot.create(:adult_expense)
 
-          post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key,
+          post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key, credit_cp: '1000', credit_lp: '2000',
                                                     credit_analysis: {  debt_rate: '8.45', cash_flow:'100.53', credit_status: 'Bueno', 
                                                     previus_credit: 'NO', discount: '20', debt_horizon: ' 3.0', report_date: '2022-05-01', 
                                                     mop_key: 'NO', last_key: '1', balance_due: 'NO', payment_capacity: '65.29', lowest_key: '1',
@@ -72,7 +72,7 @@ RSpec.describe Api::V1::CreditAnalysesController, credit_analysis_type: :request
         
         it 'crea un nuevo analisis de credito' do
           expect do
-            post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key,
+            post '/api/v1/credit_analyses', params: { token: @token.token, secret_key: @my_app.secret_key, credit_cp: '1000', credit_lp: '2000',
                                                        credit_analysis: { debt_rate: '8.45', cash_flow:'100.53', credit_status: 'Bueno', 
                                                        previus_credit: 'NO', discount: '20', debt_horizon: ' 3.0', report_date: '2022-05-01', 
                                                        mop_key: 'NO', last_key: '1', balance_due: 'NO', payment_capacity: '65.29', lowest_key: '1',

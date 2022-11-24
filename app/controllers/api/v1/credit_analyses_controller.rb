@@ -42,8 +42,11 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
           @error_desc.push("No existe el credito: #{@credit_analysis.customer_credit_id}")
           raise ActiveRecord::Rollback
         else
+          @credit_cp = params[:credit_cp]
+          @credit_lp = params[:credit_lp]
           @customers = Customer.where(id: @customer_credit.customer_id)
           @customer = @customers[0]
+          @customer.update(credit_cp: @credit_cp, credit_lp: @credit_lp)
           @contributors = Contributor.where(id: @customer.contributor_id)
           @contributor = @contributors[0]
           @people = Person.where(id: @contributor.person.id)
