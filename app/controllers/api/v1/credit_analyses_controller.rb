@@ -122,7 +122,7 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
                                     monthly_expenses: @montly_expenses,  payment_credit_cp: @customer.credit_cp,
                                     payment_credit_lp: @payment_credit_lp.round(2), debt: @debt.round(2), net_flow: @net_flow.round(2),
                                     payment_capacity: @payment_capacity.round(2), debt_rate: @debt_rate.round(2), cash_flow: @cash_flow.round(2),
-                                    debt_horizon: @customer_credit.debt_time.round(2))
+                                    debt_horizon: @customer_credit.debt_time.round(2), total_amount: @customer_credit.total_requested.round(2))
             @customer.update(family_expenses: @family_expenses.round(2), house_rent: @rent.round(2))
             render template: 'api/v1/credit_analyses/show'
           else
