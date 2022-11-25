@@ -550,7 +550,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
       FROM customer_credits cuc, customers cus, contributors con
       WHERE cus.id = cuc.customer_id
       AND con.id = cus.contributor_id
-      AND cuc.status ='AP'
+      AND cuc.status ='VA'
       AND cuc.currency = ':currency'
       AND cuc.start_date = ':start_date'
       ) 
