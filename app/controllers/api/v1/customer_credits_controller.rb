@@ -450,18 +450,28 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.where(key: 'FRONTEND_URL')
       unless @frontend_url.blank?
-        @mailer_signatories.each do |mailer_signatory|
-          begin
-            @token_commitee =  SecureRandom.hex
+        begin
+          @mailer_signatories.each do |mailer_signatory|
+            @token_commitee =  validated_token_signatory
             # TOKEN CON VIDA UTIL DE 7 DIAS
             @token_commitee_expiry = Time.now + 7.day
             #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
             @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
-          end while CustomerCreditsSignatory.where(signatory_token: @token_commitee).any?
-          #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-          customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
-          # customer_credit_signatory = CustomerCreditsSignatory.create(status: @customer_credit.status,customer_credit_id: @customer_credit.id,user_id: mailer_signatory['id'], signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry)
-          # customer_credit_signatory.save
+            #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+            customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
+            if customer_credit_signatory.blank?
+              @error_desc.push("No se pudieron generar las firmas")
+                  error_array!(@error_desc, :not_found)
+                  raise ActiveRecord::Rollback
+            end
+          end
+        rescue Errno::ENOENT
+          p "File not found"
+          @error_desc.push("Hubo un error al tratar de generar los firmantes")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        else
+          p "File saved"
         end
       else
         # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
@@ -475,6 +485,14 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end
+  end
+
+  def validated_token_signatory
+    token =  SecureRandom.hex
+    while CustomerCreditsSignatory.where(signatory_token: token).any?
+      token =  SecureRandom.hex
+    end
+    return token
   end
 
 end
