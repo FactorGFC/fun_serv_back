@@ -489,6 +489,7 @@ class ApplicationController < ActionController::Base
       @country = @customer_credit_data[0]["pais"]
       @municipio = @customer_credit_data[0]["municipio"]
       @company = @customer_credit_data[0]["nombre_empresa"]
+      @company_telefono = @customer_credit_data[0]["pm_telefono"]
       @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
       @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
       @giro_empresa = @customer_credit_data[0]["giro_empresa"]
