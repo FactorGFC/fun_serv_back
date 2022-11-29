@@ -34,6 +34,7 @@
             </div>
             <div class="col" style="display:inline-block;float:right;">
                 Fecha de consulta: <%= DateTime.parse(@bureau_report['results'][0]['createdAt']).strftime('%d-%m-%Y') %>
+                Numero Control Consulta: <%= @bureau_report['results'][1]['response']['return']['Personas']['Persona'][0]['Encabezado']['NumeroControlConsulta'] %>
             </div>
             <div class="col" style="display:inline-block;float:none;">
                 <h2>
