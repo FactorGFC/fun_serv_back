@@ -65,10 +65,18 @@ class SessionsController < ApplicationController
   # ENVIA UN CORREO AL ANALISTA/ADMIN CUANDO CLIENTE QUIERE REGISTRARSE (RECIBE LOS DATOS DEL CLIENTE: NOMBRE, CORREO Y EMPRESA)
   def send_admin_mailer 
     unless (params[:nombre].blank? || params[:correo].blank? || params[:empresa].blank?)
-      send_register_mail(params[:nombre], params[:correo],params[:empresa])
+     if is_email_valid?(params[:correo])
+        send_register_mail(params[:nombre], params[:correo],params[:empresa])
+      else
+        render json: { message: "El correo no tiene formato correcto", status: false }, status: 206
+      end 
     else
       render json: { message: "Nombre,correo o empresa no deben estar vacios", status: false }, status: 206
     end 
+  end
+
+  def is_email_valid?(email)
+    email =~ /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/
   end
 
 #CUANDO EL CLIENTE/EMPLEADO RECHAZA EL CREDITO
