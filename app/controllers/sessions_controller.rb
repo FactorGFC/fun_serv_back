@@ -64,35 +64,11 @@ class SessionsController < ApplicationController
 
   # ENVIA UN CORREO AL ANALISTA/ADMIN CUANDO CLIENTE QUIERE REGISTRARSE (RECIBE LOS DATOS DEL CLIENTE: NOMBRE, CORREO Y EMPRESA)
   def send_admin_mailer 
-   unless (params[:nombre].blank? || params[:correo].blank? || params[:empresa].blank?)
-      @query = 
-      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-      FROM users u, roles r
-      WHERE u.role_id = r.id
-      AND r.name IN ('Analista')"
-    response = execute_statement(@query)
-    unless response.blank?
-      @mailer_signatories = response.to_a
-      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
-      @mailer_signatories.each do |mailer_signatory|
-        mail_to = mailer_mode_to(mailer_signatory['email'])
-        #email, name, subject, title, content
-        SendMailMailer.analyst2(mail_to,
-          mailer_signatory['name'],
-          "Factor GFC Global - Credi Global - #{params[:nombre]} está interesado en un credito",
-          "Dar de alta como Cliente para iniciar su registro",
-          [@frontend_url,params[:nombre],
-          params[:correo],
-          params[:empresa]]
-        ).deliver_now
-      end
-      render json: { message: 'Ok', status:true }, status: 200
+    unless (params[:nombre].blank? || params[:correo].blank? || params[:empresa].blank?)
+      send_register_mail(params[:nombre], params[:correo],params[:empresa])
     else
-      render json: { message: "No se encontraron analistas", status: false }, status: 206
-    end
-   else
       render json: { message: "Nombre,correo o empresa no deben estar vacios", status: false }, status: 206
-    end
+    end 
   end
 
 #CUANDO EL CLIENTE/EMPLEADO RECHAZA EL CREDITO

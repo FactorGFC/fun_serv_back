@@ -1226,4 +1226,32 @@ class ApplicationController < ActionController::Base
     return new_state
   end
 
+  def send_register_mail(nombre,correo,empresa)
+      @query = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Analista')"
+    response = execute_statement(@query)
+    unless response.blank?
+      @mailer_signatories = response.to_a
+      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+      @mailer_signatories.each do |mailer_signatory|
+        mail_to = mailer_mode_to(mailer_signatory['email'])
+        #email, name, subject, title, content
+        SendMailMailer.analyst2(mail_to,
+          mailer_signatory['name'],
+          "Factor GFC Global - Credi Global - #{nombre} está interesado en un credito",
+          "Dar de alta como Cliente para iniciar su registro",
+          [@frontend_url,nombre,
+          correo,
+          empresa]
+        ).deliver_now
+      end
+      render json: { message: 'Ok', status:true }, status: 200
+    else
+      render json: { message: "No se encontraron analistas", status: false }, status: 206
+    end
+  end
+
 end
