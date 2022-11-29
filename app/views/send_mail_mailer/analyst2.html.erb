@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aprobar como comité</title>
+    <%# <link rel="stylesheet" href="estilos.css"> %>
+</head>
+<body>
+    <div height="100%" width="100%" >
+        <div align="center" valign="top" id="bodyCell">
+            <%# <p class="p1">Asunto: Factor Global GFC - Nómina Personal - Solicitud de aprobación de Crédito - Comité</p> %>
+            <br>
+            <img class="img" alt="Logo Credi-Global" src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/credi_global_logo.jpeg" style="max-width:1252px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" width="327.12" align="middle">
+            <br>
+            <%# <h2 class="h2">Registrar nuevo cliente</h2><br> %>
+            <h1> <%= @title %> </h1><br>
+            <h3 class="h3">Hola <font color="#0286C4"><%= @email_name %></font>. El cliente <font color="0286C4"><%= @content[1] %></font> desea registrarse para solicitar un credito</h3><br>
+            <br>
+            <br>
+            <h3 class="h3"> <font color="#0286C4"><u><a href=<%= @content[0] %>> Dar de alta al nuevo cliente </a></u></font></h3>
+            <br>
+            <br>
+            <h2 class="h3"> Nombre: <font color="#0286C4"><%= @content[1] %></font> </h2>
+            <h2 class="h3"> Correo: <font color="#0286C4"><%= @content[2] %></font> </h2>
+            <h2 class="h3"> Empresa: <font color="#0286C4"><%= @content[3] %></font> </h2>
+            <br><br><br>
+            <div class="row">
+            <colgroup>
+                 <a href="https://www.facebook.com/Factor-GFC-Global-882158781853486" target="_blank"><img src="https://cdn-images.mailchimp.com/icons/social-block-v2/color-facebook-48.png" alt="Facebook" width="24" height="24"></a> 
+                 <a href="https://twitter.com/FactorGfc" target="_blank"><img src="https://cdn-images.mailchimp.com/icons/social-block-v2/color-twitter-48.png" alt="Twitter" width="24" height="24"></a>
+                 <a href="https://www.linkedin.com/company/26518165/admin/" target="_blank"><img src="https://cdn-images.mailchimp.com/icons/social-block-v2/color-linkedin-48.png" alt="LinkedIn" width="24" height="24"></a>
+            </colgroup>
+            </div>
+            <br><br><br><br><br><br>
+            <p class="p"><i>Copyright © </i>2022 FACTOR GFC GLOBAL SA DE CV SOFOM ENR,<i> All rights reserved.</i></p>
+            <img alt="" src="https://mcusercontent.com/1f44359bb26d8944d17c89841/images/c2d47621-7810-4833-abb6-84efcd197da5.png" style="max-width:2374px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" width="146.64000000000001" align="right">
+        </div>
+    </div>
+</body>
+</html>

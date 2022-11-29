@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get '/get_reset_pwd_token', to: 'sessions#get_reset_pwd_token'
   patch '/update_user_pwd', to: 'sessions#update_user'
   post '/customer_credit_signatory', to: 'sessions#signature'
+  post '/send_client_registration_mailer', to: 'sessions#send_admin_mailer'
   get '/terms', to: 'sessions#terms'
   get '/get_customer_credits', to: 'sessions#customer_credits'
   get '/get_credit_customer_report', to: 'sessions#get_credit_customer_report'

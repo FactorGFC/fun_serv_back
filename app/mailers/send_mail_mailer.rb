@@ -37,6 +37,13 @@ class SendMailMailer < ApplicationMailer
     @title = title
     mail(to: email, subject: subject)
   end  
+
+  def analyst2(email, name, subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end  
   
   def customer_nip(email, name, subject, title, content)
     @email_name = name
