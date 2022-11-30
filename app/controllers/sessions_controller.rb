@@ -76,10 +76,10 @@ class SessionsController < ApplicationController
   end
 
   def is_email_valid?(email)
-    email =~ /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/
+    email =~ /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/
   end
 
-#CUANDO EL CLIENTE/EMPLEADO RECHAZA EL CREDITO
+#CUANDO EL CLIENTEEMPLEADO RECHAZA EL CREDITO
   def get_callback_decline
     @error_desc = []
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
