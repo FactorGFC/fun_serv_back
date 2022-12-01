@@ -40,6 +40,7 @@ gem 'httparty', '~> 0.16.4'
 # gem 'ransack', '~> 2.6.0'
 #gem 'prawn'
 #gem 'ilovepdf'
+gem 'rollbar'
 
 gem 'aws-sdk', '~> 3'
 gem 'aws-sdk-core' 
