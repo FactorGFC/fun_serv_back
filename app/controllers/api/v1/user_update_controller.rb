@@ -109,7 +109,7 @@ def customers_params
                                      :food_vouchers, :total_income, :total_savings_found,
                                      :christmas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
-                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id)
+                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id, :extra3)
 end
    
 def customer_personal_references_params

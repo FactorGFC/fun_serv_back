@@ -287,7 +287,11 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           if (start_date.day <= 15)
             @payment_date = start_date.end_of_month 
           else
-            @payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15)
+            if (start_date.month == 12)
+              @payment_date = DateTime.new(start_date.year + 1, start_date.next_month.month, 15) 
+            else
+              @payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15) 
+            end
           end
           #Si no es el primer pago se revisa en que fecha estamos
         else

@@ -941,7 +941,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                        AND cus.company_id = com.id
                        AND cuc.user_id = ':user_id'
                        AND cus.user_id = usr.id
-                       AND cuc.status not in ('LI','RE','RC')
+                       AND cuc.status not in ('SO','RZ','RE','PA','PR','AP')
                        AND ':user_id'<> (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
                        ) UNION ALL
                        (SELECT cuc.start_date fecha_inicio, cus.name empleado, cuc.capital, TO_CHAR(cuc.interests, 'FM9,999,999,990.00') intereses,
@@ -953,7 +953,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                        AND cus.company_id = com.id
                        AND cuc.user_id = usr.id
                        AND ':user_id' = (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
-                       AND cuc.status not in ('LI','RE','RC')
+                       AND cuc.status not in ('SO','RZ','RE','PA','PR','AP')
                        )
                        ) ab;"
     @query = @query.gsub ':user_id', params[:user_id].to_s
