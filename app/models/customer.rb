@@ -71,6 +71,7 @@ class Customer < ApplicationRecord
   has_many :people, through: :contributors
   has_many :legal_entities, through: :contributors
   has_many :credit_bureaus
+  has_many :listado_alsupers
 
   validates :customer_type, presence: true
   validates :name, presence: true

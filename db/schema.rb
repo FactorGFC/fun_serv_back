@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_16_195023) do
+ActiveRecord::Schema.define(version: 2022_11_30_182854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -392,6 +392,31 @@ ActiveRecord::Schema.define(version: 2022_11_16_195023) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "listado_alsupers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "nombre", default: "", null: false
+    t.string "primer_apellido", default: "", null: false
+    t.string "segundo_apellido"
+    t.string "banco"
+    t.string "clabe"
+    t.string "cla_trab"
+    t.string "cla_depto"
+    t.string "departamento"
+    t.string "cla_area"
+    t.string "area"
+    t.string "cla_puesto"
+    t.string "puesto"
+    t.string "noafiliacion", default: "", null: false
+    t.string "rfc", default: "", null: false
+    t.string "curp", default: "", null: false
+    t.string "tarjeta"
+    t.string "tipo_puesto"
+    t.string "fecha_ingreso"
+    t.uuid "customer_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["customer_id"], name: "index_listado_alsupers_on_customer_id"
+  end
+
   create_table "lists", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "domain", null: false
     t.string "key", null: false
@@ -663,6 +688,7 @@ ActiveRecord::Schema.define(version: 2022_11_16_195023) do
   add_foreign_key "documents", "ext_services"
   add_foreign_key "file_type_documents", "documents"
   add_foreign_key "file_type_documents", "file_types"
+  add_foreign_key "listado_alsupers", "customers"
   add_foreign_key "municipalities", "states"
   add_foreign_key "my_apps", "users"
   add_foreign_key "payment_credits", "customer_credits"

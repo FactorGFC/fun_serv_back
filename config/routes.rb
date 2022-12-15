@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       resources :general_parameters
       resources :people
       resources :credit_bureaus
+      resources :listado_alsupers
       resources :legal_entities
       resources :contributors do
         resources :contributor_addresses, except: %i[new edit]
