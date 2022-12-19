@@ -5,6 +5,7 @@
 #  id               :uuid             not null, primary key
 #  area             :string
 #  banco            :string
+#  categoria        :string
 #  cla_area         :string
 #  cla_depto        :string
 #  cla_puesto       :string
@@ -12,6 +13,9 @@
 #  clabe            :string
 #  curp             :string           default(""), not null
 #  departamento     :string
+#  extra1           :string
+#  extra2           :string
+#  extra3           :string
 #  fecha_ingreso    :string
 #  noafiliacion     :string           default(""), not null
 #  nombre           :string           default(""), not null
@@ -53,6 +57,10 @@ FactoryBot.define do
     tarjeta { "123456" }
     tipo_puesto { "Empleado 1" }
     fecha_ingreso {"29-Sep-88"}
+    categoria {"ADMINISTRATIVO ALTO"}
+    extra1 {"HELLO"}
+    extra2 {"HEY"}
+    extra3 {"HO"}
 
     association :customer, factory: :customer
   end

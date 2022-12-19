@@ -5,6 +5,7 @@
 #  id               :uuid             not null, primary key
 #  area             :string
 #  banco            :string
+#  categoria        :string
 #  cla_area         :string
 #  cla_depto        :string
 #  cla_puesto       :string
@@ -12,6 +13,9 @@
 #  clabe            :string
 #  curp             :string           default(""), not null
 #  departamento     :string
+#  extra1           :string
+#  extra2           :string
+#  extra3           :string
 #  fecha_ingreso    :string
 #  noafiliacion     :string           default(""), not null
 #  nombre           :string           default(""), not null
@@ -21,6 +25,7 @@
 #  segundo_apellido :string
 #  tarjeta          :string
 #  tipo_puesto      :string
+#  categoria        :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  customer_id      :uuid

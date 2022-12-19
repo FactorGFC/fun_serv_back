@@ -42,7 +42,7 @@ RSpec.describe Api::V1::ListadoAlsupersController, listado_alsupers_type: :reque
       puts json
       expect(json['data']['attributes'].keys).to contain_exactly('id','area','banco','curp','cla_area','cla_depto','cla_puesto','cla_trab',
                                                                 'clabe','departamento','noafiliacion','nombre','primer_apellido','puesto','rfc',
-                                                                'segundo_apellido','tarjeta','tipo_puesto','fecha_ingreso','customer_id','created_at', 'updated_at')
+                                                                'segundo_apellido','tarjeta','tipo_puesto','fecha_ingreso','categoria','customer_id','extra1','extra2','extra3','created_at', 'updated_at')
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::ListadoAlsupersController, listado_alsupers_type: :reque
                                                    departamento:  'Empleado',cla_area: '123456' ,area: 'Trabajadores',
                                                    cla_puesto: '123456',puesto:  'Empleado' ,noafiliacion:  '123456',
                                                    rfc:  'ABCD123456GH45IO5',curp:  'ABCD123456GH457',tarjeta:  '123456',
-                                                   tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88', customer_id: @customer.id}
+                                                   tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88',categoria: 'ADMINISTRATIVO ALTO',extra1: 'HELLO',extra2: 'HEY',extra3: 'HO', customer_id: @customer.id}
                                                    }
       end
       it { expect(response).to have_http_status(200) }
@@ -74,13 +74,13 @@ RSpec.describe Api::V1::ListadoAlsupersController, listado_alsupers_type: :reque
                                                             departamento:  'Empleado',cla_area: '123456' ,area: 'Trabajadores',
                                                             cla_puesto: '123456',puesto:  'Empleado' ,noafiliacion:  '123456',
                                                             rfc:  'ABCD123456GH45IO5',curp:  'ABCD123456GH457',tarjeta:  '123456',
-                                                            tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88', customer_id: @customer.id}
+                                                            tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88',categoria: 'ADMINISTRATIVO ALTO',extra1: 'HELLO',extra2: 'HEY',extra3: 'HO', customer_id: @customer.id}
                                                             }
         end.to change(ListadoAlsuper, :count).by(1)
       end
       it 'responde con el registro creado' do
         json = JSON.parse(response.body)
-        puts "11111111111111111>>>>>>>>>>>>>>>>>>>>>>>>#{json.inspect}"
+        puts "#{json.inspect}"
         expect(json['data']['attributes']['rfc']).to eq('ABCD123456GH45IO5')
       end
     end
@@ -108,7 +108,7 @@ RSpec.describe Api::V1::ListadoAlsupersController, listado_alsupers_type: :reque
                                                     departamento:  'Empleado',cla_area: '123456' ,area: 'Trabajadores',
                                                     cla_puesto: '123456',puesto:  'Empleado' ,noafiliacion:  '123456',
                                                     rfc:  'ABCD123456GH45IO5',curp:  'ABCD123456GH457',tarjeta:  '123456',
-                                                    tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88', customer_id: @customer.id}
+                                                    tipo_puesto:  'Empleado 1',fecha_ingreso: '29-Sep-88',categoria: 'ADMINISTRATIVO ALTO',extra1: 'HELLO',extra2: 'HEY',extra3: 'HO', customer_id: @customer.id}
                                                     } 
       end
       it { expect(response).to have_http_status(401) }

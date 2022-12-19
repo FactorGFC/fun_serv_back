@@ -78,6 +78,10 @@ class Api::V1::ListadoAlsupersController < Api::V1::MasterApiController
         :tarjeta,
         :tipo_puesto,
         :fecha_ingreso,
-        :customer_id )
+        :categoria,
+        :customer_id,
+        :extra1, 
+        :extra2, 
+        :extra3, )
       end
   end
