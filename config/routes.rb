@@ -104,8 +104,8 @@ Rails.application.routes.draw do
 
       get 'credit_bureau_report/:customer_id' => 'customers#credit_bureau_report', as: :credit_bureau_report
 
-
       get '/customer_credits_signatory/customer_credit_id', to: 'customer_credits_signatories#show_by_credit_id'
+      get '/listado_alsupers/get_empleado_by_nss/:noafiliacion', to: 'listado_alsupers#get_empleado_by_nss'
       #get '/user_registration', to: 'user_registration#create'
       post '/company_registration', to: 'company_registration#create'
       post '/user_registration', to: 'user_registration#create'

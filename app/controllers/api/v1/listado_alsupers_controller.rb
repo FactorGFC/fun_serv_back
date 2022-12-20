@@ -19,6 +19,17 @@ class Api::V1::ListadoAlsupersController < Api::V1::MasterApiController
     # GET /listado_alsupers/1/edit
     def edit
     end
+
+    # GET /listado_alsupers/:nss/
+    def get_empleado_by_nss
+      @listado_alsuper = ListadoAlsuper.where(noafiliacion: params['noafiliacion'])
+      @listado_alsuper = @listado_alsuper[0]
+      unless @listado_alsuper.blank?
+        render template: 'api/v1/listado_alsupers/show'
+      else
+        render json: { error: "No se encuentra empleado con NSS: #{params['noafiliacion']}" }, status: :not_found
+      end
+    end
   
     # POST /listado_alsupers or /listado_alsupers.json
     def create
