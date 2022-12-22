@@ -106,7 +106,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             term = 0
           else
             term = @term.value
-          end
+            max_period = (@company_segment.max_period.to_f * @payment_period.pp_type.to_f)
+            if  (term > max_period)
+            @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, seleccionar otro plazo")
+            error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
+          end   
+        end
             calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
             @months = (@end_date.year * 12 + @end_date.month) - (@date.year * 12 + @date.month)
            
@@ -210,7 +216,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           raise ActiveRecord::Rollback
     else
       if payment_amount.blank?
-
         payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-term.to_f)))
       elsif term == 0
         pay_min = (rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f

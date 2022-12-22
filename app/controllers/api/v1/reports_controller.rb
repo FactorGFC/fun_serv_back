@@ -2689,15 +2689,30 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def get_user_registration
-    @query = "SELECT cus.*, con.*, peo.*, coa.*
-    FROM customer_credits cuc
-    JOIN customers cus ON (cus.id = cuc.customer_id)
-    JOIN contributors con ON (cus.contributor_id = con.id)
-    LEFT JOIN people peo ON (peo.id = con.person_id)
-    JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
-    JOIN states sta ON (sta.id = coa.state_id)
-    JOIN municipalities mun ON (mun.id = coa.municipality_id)
-    JOIN countries cou ON (cou.id = sta.country_id)
+    @query = "SELECT cus.id customer_id, cus.name, cus.salary, cus.salary_period, cus.customer_type, cus.status, cus.other_income,
+    cus.net_expenses, cus.family_expenses, cus.house_rent, cus.credit_cp, cus.credit_lp,
+    cus.attached, cus.extra1 customer_extra1, cus.extra2 customer_extra2, cus.extra3 customer_extra3,
+    cus.contributor_id customer_contributor, cus.user_id customer_user, cus.file_type_id,
+    cus.immediate_superior, cus.seniority, cus.ontime_bonus, cus.assist_bonus, cus.food_vouchers,
+    cus.total_income, cus.total_savings_found, cus.christmas_bonus, cus.taxes, cus.imms,
+    cus.savings_found, cus.savings_found_loand, cus.savings_bank, cus.insurance_discount,
+    cus.child_support, cus.extra_expenses, cus.infonavit, cus.company_id customer_company, cus.job,
+    con.id contributor_id, con.contributor_type, con.bank, con.account_number, con.clabe, con.extra1 contributor_extra1,
+    con.extra2 contributor_extra2, con.extra3 contributor_extra3, con.person_id contributor_person,
+    con.legal_entity_id contributor_le, peo.id people_id, peo.fiscal_regime, peo.rfc, peo.curp, peo.imss, peo.first_name,
+    peo.last_name, peo.second_last_name, peo.gender, peo.nationality, peo.birth_country, peo.birthplace,
+    peo.birthdate, peo.martial_status, peo.minior_dependents, peo.senior_dependents, peo.housing_type,
+    peo.id_type, peo.identification, peo.phone, peo.mobile, peo.email, peo.fiel, peo.extra1 people_extra1,
+    peo.extra2 people_extra2, peo.extra3 people_extra3, coa.street, coa.suburb suburb, coa.external_number, 
+    coa.postal_code , sta.name estado, mun.name municipio, cou.name pais
+   FROM customer_credits cuc
+   JOIN customers cus ON (cus.id = cuc.customer_id)
+   JOIN contributors con ON (cus.contributor_id = con.id)
+   LEFT JOIN people peo ON (peo.id = con.person_id)
+   JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+   JOIN states sta ON (sta.id = coa.state_id)
+   JOIN municipalities mun ON (mun.id = coa.municipality_id)
+   JOIN countries cou ON (cou.id = sta.country_id)
     WHERE cuc.user_id = ':user_id';"
 
     @query = @query.gsub ':user_id', params[:user_id].to_s

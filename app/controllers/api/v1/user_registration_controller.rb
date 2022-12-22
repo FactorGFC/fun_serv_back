@@ -57,7 +57,7 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
         @person = Person.new(people_params)
         if @person.save
           @contributor = Contributor.new(contributor_type: contributors_params[:contributor_type], bank: contributors_params[:bank], account_number: contributors_params[:account_number],
-                                         clabe: contributors_params[:clabe], person_id: @person.id)
+                                         clabe: contributors_params[:clabe], person_id: @person.id, extra1: contributors_params[:extra1])
           unless @contributor.save
             render json: { error: @contributor.errors }, status: :unprocessable_entity
             raise ActiveRecord::Rollback
