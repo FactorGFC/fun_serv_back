@@ -2762,6 +2762,39 @@ def get_credit_customer_report
   @get_credit_customer_report = execute_statement(@query)
   render json: @get_credit_customer_report
  end
+
+ # REPORTE DE LAS CONSULTAS REALIZADAS A BURO EN RANGO DE FECHAS
+ def buro_consults_report
+  # PENDIENTE DEFINIR QUE ES CUENTA
+  @query = "SELECT ab.*
+  FROM((SELECT ROW_NUMBER () OVER (ORDER BY cb.id) as No,
+  cb.bureau_report ->'results'->1->'query'->'Personas'->'Persona'->'Encabezado'->>'NumeroReferenciaOperador' noreferenciaoperador,
+  cb.bureau_report ->'results'->1->'response'->'return'->'Personas'->'Persona'->0->'ResumenReporte'->'ResumenReporte'->0->>'FechaSolicitudReporteMasReciente' fechas,
+  CONCAT (cb.bureau_info ->'identity'->>'firstName', ' ', cb.bureau_info ->'identity'->>'middleName') Nombre,
+  cb.bureau_info ->'identity'->>'firstLastName' paterno,
+  cb.bureau_info ->'identity'->>'secondLastName' materno,
+  cb.bureau_info ->'identity'->>'rfc'  RFC,
+  CONCAT (cb.bureau_info ->'addresses'->0->>'address' ,' ', cb.bureau_info ->'addresses'->0->>'exteriorNumber')  calleyNumero,
+  cb.bureau_info ->'addresses'->0->>'neighborhood' colonia,
+  cb.bureau_info ->'addresses'->0->>'city' ciudad,
+  cb.bureau_info ->'addresses'->0->>'state' edo,
+  cb.extra2 ingresonip,
+  cb.extra3 respuestaautorizacion,
+  cb.customer_id cuenta,
+  cb.bureau_report ->'results'->1->>'id' folioBC
+  FROM credit_bureaus cb
+  WHERE cb.created_at BETWEEN ':fecha_inicio' AND ':fecha_fin'
+     )
+    ) ab;"
+
+  @query = @query.gsub ':fecha_inicio', params[:fecha_inicio].to_s
+  @query = @query.gsub ':fecha_fin', params[:fecha_fin].to_s
+  @buro_consults_report = execute_statement(@query)
+  # @daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
+  # render 'api/v1/reports/show_daily_operations'
+  render json: @buro_consults_report
+ end
+
 end
 
 

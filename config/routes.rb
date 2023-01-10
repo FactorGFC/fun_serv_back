@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       get '/reset_password', to: 'api_sessions#reset_password'
       get '/get_reset_token', to: 'api_sessions#get_reset_token'
       get '/get_credit_customer_report', to: 'reports#get_credit_customer_report'
+      get '/buroConsultsRreport', to: 'reports#buro_consults_report'
       get '/reports/start_date/:start_date/currency/:currency/layout_base/', to: 'reports#layout_base'
       get '/reports/job/:job/financial_workers', to: 'reports#financial_workers'
       get '/reports/user_id/:user_id/user_requests', to: 'reports#user_requests'
