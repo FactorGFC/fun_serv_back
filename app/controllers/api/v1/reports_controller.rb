@@ -2765,8 +2765,7 @@ def get_credit_customer_report
 
  # REPORTE DE LAS CONSULTAS REALIZADAS A BURO EN RANGO DE FECHAS
  def buro_consults_report
-  # PENDIENTE DEFINIR QUE ES CUENTA
-  @query = "SELECT ab.*
+  @query = "SELECT ':cr_folio' buro_consults_report,ab.*
   FROM((SELECT ROW_NUMBER () OVER (ORDER BY cb.id) as No,
   cb.bureau_report ->'results'->1->'query'->'Personas'->'Persona'->'Encabezado'->>'NumeroReferenciaOperador' noreferenciaoperador,
   cb.bureau_report ->'results'->1->'response'->'return'->'Personas'->'Persona'->0->'ResumenReporte'->'ResumenReporte'->0->>'FechaSolicitudReporteMasReciente' fechas,
@@ -2789,6 +2788,10 @@ def get_credit_customer_report
 
   @query = @query.gsub ':fecha_inicio', params[:fecha_inicio].to_s
   @query = @query.gsub ':fecha_fin', params[:fecha_fin].to_s
+  t = Time.now
+  @folio = t.to_i
+  @cr_folio = "BCR#{@folio}"
+  @query = @query.gsub ':cr_folio', @cr_folio
   @buro_consults_report = execute_statement(@query)
   # @daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
   # render 'api/v1/reports/show_daily_operations'
