@@ -2789,8 +2789,8 @@ def get_credit_customer_report
   @query = @query.gsub ':fecha_inicio', params[:fecha_inicio].to_s
   @query = @query.gsub ':fecha_fin', params[:fecha_fin].to_s
   t = Time.now
-  @folio = t.to_i
-  @cr_folio = "BCR#{@folio}"
+  # @folio = t.to_i
+  @cr_folio = "BCR#{t}"
   @query = @query.gsub ':cr_folio', @cr_folio
   @buro_consults_report = execute_statement(@query)
   # @daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
