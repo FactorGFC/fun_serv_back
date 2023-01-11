@@ -2703,7 +2703,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     peo.last_name, peo.second_last_name, peo.gender, peo.nationality, peo.birth_country, peo.birthplace,
     peo.birthdate, peo.martial_status, peo.minior_dependents, peo.senior_dependents, peo.housing_type,
     peo.id_type, peo.identification, peo.phone, peo.mobile, peo.email, peo.fiel, peo.extra1 people_extra1,
-    peo.extra2 people_extra2, peo.extra3 people_extra3, coa.street, coa.suburb suburb, coa.external_number, 
+    peo.extra2 people_extra2, peo.extra3 people_extra3, coa.street, coa.suburb suburb, coa.external_number, coa.apartment_number, coa.address_reference,
     coa.postal_code , sta.name estado, mun.name municipio, cou.name pais
    FROM customer_credits cuc
    JOIN customers cus ON (cus.id = cuc.customer_id)
@@ -2796,6 +2796,32 @@ def get_credit_customer_report
   # @daily_operations.type_map = PG::TypeMapByColumn.new [nil, PG::TextDecoder::JSON.new]
   # render 'api/v1/reports/show_daily_operations'
   render json: @buro_consults_report
+ end
+
+ def get_company_update
+  @query = "SELECT com.id company_id , com.business_name, com.start_date, com.credit_limit, com.credit_available, com.balance, com.document, com.sector,
+    com.subsector, com.company_rate ,con.id contributor_id, con.contributor_type, con.bank, con.account_number, con.clabe, con.extra1 contributor_extra1,
+    con.extra2 contributor_extra2, con.extra3 contributor_extra3, peo.id people_id, peo.fiscal_regime people_fiscal_regime, peo.rfc people_rfc, peo.curp people_curp, 
+    peo.imss, peo.first_name, peo.last_name, peo.second_last_name, peo.gender, peo.nationality, peo.birth_country, peo.birthplace, peo.birthdate, peo.martial_status, 
+    peo.id_type, peo.identification, peo.phone people_phone, peo.mobile people_mobile, peo.email people_email, peo.fiel people_fiel, peo.extra1 people_extra1, 
+    peo.extra2 people_extra2, peo.extra3 people_extra3, lee.id legal_entity_id, lee.fiscal_regime legale_fiscal_regime, lee.rfc legale_rfc, lee.rug, lee.business_name, 
+    lee.phone legale_phone, lee.mobile legale_mobile, lee.email legale_mail, lee.business_email, lee.main_activity, lee.fiel legale_fiel,lee.extra1 legal_entity_extra1, 
+    lee.extra2 legal_entity_extra2, lee.extra3 legal_entity_extra3, coa.id contributor_addresses_id, coa.address_type, coa.suburb suburb, coa.suburb_type, coa.street, 
+    coa.external_number, coa.apartment_number, coa.postal_code, coa.address_reference, coa.postal_code, sta.name estado, mun.name municipio, cou.name pais, sta.id state_id, 
+    sta.name, mun.id municipalitiy_id, mun.name, cou.id country_id, cou.name
+  FROM companies com
+  JOIN contributors con ON (com.contributor_id = con.id)
+  JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+  JOIN states sta ON (sta.id = coa.state_id)
+  JOIN municipalities mun ON (mun.id = coa.municipality_id)
+  JOIN countries cou ON (cou.id = sta.country_id)
+  LEFT JOIN people peo ON (peo.id = con.person_id)
+  LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
+  WHERE com_id = ':company_id';"
+
+  @query = @query.gsub ':company_id', params[:company_id].to_s
+  @get_user_registration = execute_statement(@query)
+  render json: @get_company_update
  end
 
 end

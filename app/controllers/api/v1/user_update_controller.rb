@@ -45,7 +45,7 @@ class Api::V1::UserUpdateController < Api::V1::MasterApiController
     end
     unless params[:contributor_address_id].nil?
       @contributor_address_id = ContributorAddress.where(id: params[:contributor_address_id])
-      if @contributor_address_id[0].update(constributor_addresses_params)
+      if @contributor_address_id[0].update(contributor_addresses_params)
         is_ok = 1
       else 
         is_ok = 0  
@@ -97,7 +97,7 @@ def contributors_params
     params.require(:contributor).permit(:id, :contributor_type, :bank, :account_number, :clabe, :person_id, :legal_entity_id, :extra1, :extra2, :extra3)
 end
 
-def constributor_addresses_params
+def contributor_addresses_params
     params.require(:contributor_address).permit(:id, :contributor_id, :address_type, :street, :external_number, :apartment_number, :suburb_type, :suburb, :address_reference, :postal_code,                                                :municipality_id, :state_id)
 end
 
