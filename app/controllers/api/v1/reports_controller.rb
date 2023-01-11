@@ -2817,10 +2817,10 @@ def get_credit_customer_report
   JOIN countries cou ON (cou.id = sta.country_id)
   LEFT JOIN people peo ON (peo.id = con.person_id)
   LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
-  WHERE com_id = ':company_id';"
+  WHERE com.id = ':company_id';"
 
   @query = @query.gsub ':company_id', params[:company_id].to_s
-  @get_user_registration = execute_statement(@query)
+  @get_company_update = execute_statement(@query)
   render json: @get_company_update
  end
 
