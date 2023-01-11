@@ -448,11 +448,26 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def create_credit_signatories
-    @query = 
+    #NOMINA
+    @query_nomina = 
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
     WHERE u.role_id = r.id
     AND r.name IN ('Comité','Empresa','Director')"
+
+    #NOMINA ALSUPER
+    @query_alsuper = 
+    "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+    FROM users u, roles r
+    WHERE u.role_id = r.id
+    AND r.name IN ('Empresa','Director')"
+
+    if GeneralParameter.where(key: 'ALSUPER_MODE')
+      @query = @query_alsuper 
+    else
+      @query = @query_nomina
+    end
+
     response = execute_statement(@query)
     # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
     unless response.blank?
