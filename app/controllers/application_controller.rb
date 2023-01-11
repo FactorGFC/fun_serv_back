@@ -1231,7 +1231,7 @@ class ApplicationController < ActionController::Base
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
       FROM users u, roles r
       WHERE u.role_id = r.id
-      AND r.name IN ('Analista')"
+      AND u.job IN ('ADMINISTRADOR')"
     response = execute_statement(@query)
     unless response.blank?
       @mailer_signatories = response.to_a
