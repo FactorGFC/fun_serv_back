@@ -403,6 +403,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     end  
     response = execute_statement(@query)
     unless response.blank?
+      @term = Term.find_by_id(@customer_credit.term_id)
       @mailer_signatories = response.to_a
       @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
       begin
@@ -431,7 +432,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           # @current_user.name,
           "Hola",
           @file,
-          [@callback_url_aceptado,@callback_url_rechazado,@customer_credit]
+          [@callback_url_aceptado,@callback_url_rechazado,@customer_credit,@term]
         ).deliver_now
         # ELIMINA PDF DE LOCAL
           File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
