@@ -2729,7 +2729,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     render json: @get_customer_pr
   end
 
-  # Reporte para mostrar los datos del cliente a partir de un credito
+# Reporte para mostrar los datos del cliente a partir de un credito
 def get_credit_customer_report
   @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
   cuc.start_date fecha_credito, cuc.status status_credito, pap.value periodo_pago, 
