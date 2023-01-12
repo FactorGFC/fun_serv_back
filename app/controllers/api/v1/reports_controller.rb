@@ -2769,20 +2769,26 @@ def get_credit_customer_report
   FROM((SELECT ROW_NUMBER () OVER (ORDER BY cb.id) as No,
   cb.bureau_report ->'results'->1->'query'->'Personas'->'Persona'->'Encabezado'->>'NumeroReferenciaOperador' noreferenciaoperador,
   cb.bureau_report ->'results'->1->'response'->'return'->'Personas'->'Persona'->0->'ResumenReporte'->'ResumenReporte'->0->>'FechaSolicitudReporteMasReciente' fechas,
-  CONCAT (cb.bureau_info ->'identity'->>'firstName', ' ', cb.bureau_info ->'identity'->>'middleName') Nombre,
-  cb.bureau_info ->'identity'->>'firstLastName' paterno,
-  cb.bureau_info ->'identity'->>'secondLastName' materno,
-  cb.bureau_info ->'identity'->>'rfc'  RFC,
-  CONCAT (cb.bureau_info ->'addresses'->0->>'address' ,' ', cb.bureau_info ->'addresses'->0->>'exteriorNumber')  calleyNumero,
-  cb.bureau_info ->'addresses'->0->>'neighborhood' colonia,
-  cb.bureau_info ->'addresses'->0->>'city' ciudad,
-  cb.bureau_info ->'addresses'->0->>'state' edo,
+  peo.first_name Nombre,
+  peo.last_name paterno,
+  peo.second_last_name materno,
+  peo.rfc  RFC,
+  CONCAT (ca.street,' ', ca.external_number)  calleyNumero,
+  ca.suburb colonia,
+  mu.name ciudad,
+  st.name edo,
   cb.extra2 ingresonip,
   cb.extra3 respuestaautorizacion,
   cb.customer_id cuenta,
   cb.bureau_report ->'results'->1->>'id' folioBC
-  FROM credit_bureaus cb
+  FROM credit_bureaus cb, contributors con, contributor_addresses ca, customers cus, states st, municipalities mu, people peo
   WHERE cb.created_at BETWEEN ':fecha_inicio' AND ':fecha_fin'
+		AND cb.customer_id = cus.id
+		AND cus.contributor_id = con.id
+		AND cus.contributor_id = ca.contributor_id
+		AND ca.state_id = st.id
+		AND ca.municipality_id = mu.id
+		AND con.person_id = peo.id
      )
     ) ab;"
 
