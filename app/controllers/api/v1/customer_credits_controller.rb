@@ -180,7 +180,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     params.require(:customer_credit).permit(:total_requested, :capital, :interests, :iva, :total_debt,
                                             :total_payments, :status, :start_date, :attached,
                                             :rate, :debt_time, :destination, :amount_allowed, :time_allowed, :iva_percent,
-                                            :customer_id, :term_id, :currency, :user_id, :extra3, :job )
+                                            :customer_id, :term_id, :currency, :user_id, :extra3, :job, :credit_number )
   end
 
 
