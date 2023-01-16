@@ -104,7 +104,20 @@ class Api::V1::CreditBureausController < ApplicationController
         # PRUEBA BURO DE CREDITO
         @buro = get_buro (@customer_credit[0].id)
         unless @buro.nil?
-          render json: { message: 'ok', status: true, buro: @buro }, status: 200
+          #Evalua si la calificacion de buro es negativa
+          if @buro[0]['bureau_report']['results'][1]['status'] == 'SUCCESS'
+            if @buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i > 0
+              render json: { message: 'ok', status: true, buro: @buro }, status: 200
+            else
+              # SCORE CON CODIGO ESPECIAL 
+              render json: { message: "El cliente cuenta con codigo especial de SCORE, SCORE: #{@buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", customer: "#{@customer_credit[0].inspect}", status: false
+              }, status: 206
+            end
+          else
+          # STATUS FAIL EN BURO PERSONA FISICA 
+          render json: { message: "El cliente no cuenta con registros en Buró de Crédito, Estatus de Buró: #{@buro[0]['bureau_report']['results'][1]['status']}", customer: "#{@customer_credit[0].inspect}", status: false
+          }, status: 206
+          end
         else
          # NO SE ENCONTRÓ 
         render json: { message: "Error", status: false
