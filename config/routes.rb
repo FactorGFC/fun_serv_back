@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   patch '/update_user_pwd', to: 'sessions#update_user'
   post '/customer_credit_signatory', to: 'sessions#signature'
   post '/send_client_registration_mailer', to: 'sessions#send_admin_mailer'
+  post '/credit_analysis/has_credit_analysis', to: 'sessions#has_credit_analysis'
+  post '/credit_bureaus/has_credit_bureau', to: 'sessions#has_credit_bureau'
   get '/terms', to: 'sessions#terms'
   get '/get_customer_credits', to: 'sessions#customer_credits'
   get '/get_credit_customer_report', to: 'sessions#get_credit_customer_report'

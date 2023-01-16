@@ -322,4 +322,25 @@ class SessionsController < ApplicationController
     render json: @get_credit_customer_report
   end
 
+  #VALIDA SI EL CLIENTE TIENE GUARDADO EN DB SU ANALISIS DE CREDITO/ DEVUELVE FALSO/VERDADERO CON EL REGISTRO
+  def has_credit_analysis
+    @credit_analysis = CreditAnalysis.where(customer_credit_id: params[:id])
+    unless @credit_analysis.blank?
+      # response = generate_customer_buro_report_pdf(@customer_credit.id)
+        render json: { message: 'Ok', credit_analysis:@credit_analysis, status: true}, status: 200
+    else
+      render json: { message: "No se ha realizado analisis de credito:  #{params[:id]}", status: false }, status: 206
+    end
+  end
+
+  #VALIDA SI EL CLIENTE TIENE GUARDADO EN DB SU CONSULTA DE BURO DE CREDITO/ DEVUELVE FALSO/VERDADERO CON EL REGISTRO
+  def has_credit_bureau
+    @credit_bureau = CreditBureau.where(customer_id: params[:id])
+    unless @credit_bureau.blank?
+      # response = generate_customer_buro_report_pdf(@customer_credit.id)
+        render json: { message: 'Ok', credit_bureau:@credit_bureau, status: true}, status: 200
+    else
+      render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}", status: false }, status: 206
+    end
+  end
 end
