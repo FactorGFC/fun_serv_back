@@ -106,9 +106,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             term = 0
           else
             term = @term.value
-            max_period = (@company_segment.max_period.to_f * @payment_period.pp_type.to_f)
+            max_period = (@company_segment.max_period.to_f * @payment_period.value.to_f)
             if  (term > max_period)
-            @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, seleccionar otro plazo")
+            @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} años , seleccionar otro plazo")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
           end   
@@ -220,13 +220,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       elsif term == 0
         pay_min = (rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f
         if pay_min > 1 
-          @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, ingresar un pago mas alto")
+          @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} años, ingresar un pago mas alto")
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         else
           term = ((Math.log (1/(1-((rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f)))) / (Math.log (1 + rate_with_iva.to_f))).ceil
         end
-        if term < (@payment_period.pp_type.to_f * @company_segment.max_period)
+        if term < (@payment_period.value.to_f * @company_segment.max_period)
           @new_terms = Term.where(value: term)
           @new_term = @new_terms[0]
           if @new_term.blank?
@@ -240,7 +240,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           @new_term_id = @new_term.id
         end
       else
-        @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} meses, ingresar un pago mas alto")
+        @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} años, ingresar un pago mas alto")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
       end
@@ -264,9 +264,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
       end
     start_date = @date
-    #Se suman 7 dias a la fecha de dispersion para que se cumpla un periodo despues de que se le paga al
-    @weekly_pday = start_date + 7.day
-    @weekly_pday =
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales
       case payment_period.to_s
@@ -276,13 +273,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
          if i == 1
           #Si es el primer pago a partir de la fecha de inicio (start_date) se deja pasar un periodo y luego se paga
           #al siguiente dia configurado en el campo extra 3 de company_segments
-          start_date = start_date + 7.day
-           start_date += 1 until start_date.strftime('%u').to_i == @pay_number.to_i
-           @payment_date = start_date 
+           finish_date = start_date + 7.day
+           finish_date += 1 until finish_date.strftime('%u').to_i == @pay_number.to_i
+           @payment_date = finish_date 
          else
           #si no es el primer pago se paga cada miercoles una vez por semana
-          start_date = @payment_date + 7.day
-          @payment_date = start_date
+          start_date = @payment_date
+          @payment_date = start_date + 7.day
         end
       when '24' #pagos por quincenas
         #Se valida si es el primer pago del credito
@@ -320,14 +317,16 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       end
 
       if i == 1
-        interests = total_requested.to_f * rate.to_f
+        distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
+        interests = total_requested.to_f * (diary_rate.to_f * distance_in_days.to_f)
         iva = interests.to_f * (iva_percent.to_f/ 100)
         capital = payment_amount.to_f - interests.to_f - iva.to_f
         current_debt = total_requested.to_f
         remaining_debt = total_requested.to_f - capital.to_f
         payment = capital.to_f + interests.to_f + iva.to_f
       else
-        interests = remaining_debt.to_f * rate.to_f
+        distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
+        interests = remaining_debt.to_f * (diary_rate.to_f * distance_in_days.to_f)
         iva = interests.to_f * (iva_percent.to_f / 100)
         current_debt = remaining_debt.to_f
         if i == term
@@ -362,6 +361,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           capital = payment.to_f - interests.to_f - iva.to_f
           #break
         end
+        @i == i
       end
       @capital += capital
       @interests += interests
@@ -380,6 +380,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       break if (remaining_debt.to_f < 0)
     end
     @total_debt = @total_debt + @capital + @interests + @iva
+    @total_payemnts = @i
   end
 
   # COMITÉ Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
@@ -518,6 +519,13 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       token =  SecureRandom.hex
     end
     return token
+  end
+
+  def distance_of_time_in_days(from_time, to_time = 0, include_seconds = false)
+    from_time = from_time.to_time if from_time.respond_to?(:to_time)
+    to_time = to_time.to_time if to_time.respond_to?(:to_time)
+    distance_in_days = (((to_time - from_time).abs)/86400).round
+    return distance_in_days
   end
 
 end
