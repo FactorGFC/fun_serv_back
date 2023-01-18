@@ -337,10 +337,23 @@ class SessionsController < ApplicationController
   def has_credit_bureau
     @credit_bureau = CreditBureau.where(customer_id: params[:id])
     unless @credit_bureau.blank?
-      # response = generate_customer_buro_report_pdf(@customer_credit.id)
-        render json: { message: 'Ok', credit_bureau:@credit_bureau, status: true}, status: 200
+      #Evalua si la calificacion de buro es negativa
+      if @credit_bureau[0]['bureau_report']['results'][1]['status'] == 'SUCCESS'
+        if @credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i > 0
+          render json: { message: 'Ok', credit_bureau:@credit_bureau, status: true}, status: 200
+        else
+          # SCORE CON CODIGO ESPECIAL 
+          render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", status: false
+          }, status: 206
+        end
+      else
+      # STATUS FAIL EN BURO PERSONA FISICA 
+      render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]['status']}", status: false
+      }, status: 206
+      end
     else
       render json: { message: "No se ha realizado consulta de buro para el customer:  #{params[:id]}", status: false }, status: 206
     end
   end
+
 end
