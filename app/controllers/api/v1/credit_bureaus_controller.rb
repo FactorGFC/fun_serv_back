@@ -110,12 +110,12 @@ class Api::V1::CreditBureausController < ApplicationController
               render json: { message: 'ok', status: true, buro: @buro }, status: 200
             else
               # SCORE CON CODIGO ESPECIAL 
-              render json: { message: "El cliente cuenta con codigo especial de SCORE, SCORE: #{@buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", customer: "#{@customer_credit[0].inspect}", status: false
+              render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", status: false
               }, status: 206
             end
           else
           # STATUS FAIL EN BURO PERSONA FISICA 
-          render json: { message: "El cliente no cuenta con registros en Buró de Crédito, Estatus de Buró: #{@buro[0]['bureau_report']['results'][1]['status']}", customer: "#{@customer_credit[0].inspect}", status: false
+          render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@buro[0]['bureau_report']['results'][1]['status']}", status: false
           }, status: 206
           end
         else
@@ -158,12 +158,12 @@ class Api::V1::CreditBureausController < ApplicationController
             # render json: { message: 'ok', status: true, buro: @buro }, status: 200
           else
             # SCORE CON CODIGO ESPECIAL 
-            render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", customer: "#{@customer_credit[0].inspect}", status: false
+            render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", status: false
             }, status: 206
           end
         else
         # STATUS FAIL EN BURO PERSONA FISICA 
-        render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]['status']}", customer: "#{@customer_credit[0].inspect}", status: false
+        render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]['status']}", status: false
         }, status: 206
         end
       else
