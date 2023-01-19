@@ -60,7 +60,7 @@
                 <td colspan="24" align="center">Número del teléfono móvil asociado a la cuenta:_______________________________.</td>
             </div>
             <div class="row29">
-                <td colspan="24">6.- Monto máximo fijo del cargo autorizado por periodo de facturación: $<%= @pagos_fijos %>.</td>
+                <td colspan="24">6.- Monto máximo fijo del cargo autorizado por periodo de facturación: <%= number_to_currency(@pago_mas_alto) %> PESOS.</td>
             </div>
             <div class="row31">
                 <td colspan="24" rowspan="2">En lugar del monto máximo fijo, divatándose del pago de créditos revolventes asociados a tarjetas de crédito, el  titular de la cuenta podrá optar por autorizar alguna de las opciones de cargo siguientes:</td>

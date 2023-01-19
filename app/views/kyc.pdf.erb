@@ -184,14 +184,14 @@
             <th colspan="24"  align="left"><font style="font-size:10pt">Considerando la nueva solicitud y los créditos vigentes, ¿aproximadamente por cuanto será su pago más alto mensual?</font></th>
           </tr>
           <tr class="row44">
-            <td colspan="24">$0.00</td>
+            <td colspan="24"><%= number_to_currency(@pago_mas_alto) %> PESOS</td>
           </tr>
           <tr class="row45">
             <th colspan="12"  align="left"><font style="font-size:10pt">¿Cuántos pagos, disposiciones y/o movimientos estima realizar como máximo en un mes?</font></th>
             <th colspan="12" ><font style="font-size:10pt">Frecuencia según movimientos</font></th>
           </tr>
           <tr class="row46">
-            <td colspan="12">1 MOVIMIENTO</td>
+            <td colspan="12"><%= @cantidad_pagos_al_mes %></td>
             <td colspan="12">"Baja" de 1 a 2 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"></span>"Media" de 3 a 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt">     XX     </span>"Alta" más de 5 <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"></span></td>
           </tr>
           <tr class="row44">

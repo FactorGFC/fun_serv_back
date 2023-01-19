@@ -449,6 +449,13 @@ class ApplicationController < ActionController::Base
     unless @customer_credit_data.blank?
       # @suburb_type = @customer_credit_data[0][""]
       @term = @customer_credit_data[0]["numero_pagos"]
+      if @term ==  'Semanal'
+        @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
+        @pago_mas_alto = @pagos_fijos * 5
+      elsif @term ==  'Quincenal'
+        @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
+        @pago_mas_alto = @pagos_fijos * 2
+      end
       @puesto = @customer_credit_data[0]["puesto"]
       @plazo = @customer_credit_data[0]["plazo"]   
       @plazo_key = @customer_credit_data[0]["plazo_key"]     
