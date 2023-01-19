@@ -140,8 +140,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                 end
                 # CREA SIGNATORIES
                 create_credit_signatories
-                # METODO QUE VA A MANDARLE UN CORREO AL COMITE PARA QUE APRUEBE EL CREDITO POR APROBAR (PA)
-                # send_committee_mail(@customer_credit)
+                # METODO QUE VA A MANDARLE UN CORREO A TESORERIA PARA QUE DE DE ALTA LA CUENTA BANCARIA DEL EMPLEADO(CLIENTE)
+                send_treasury_client_bank_account_mail(@customer_credit)
                 render 'api/v1/customer_credits/show'
           else
               render 'api/v1/customer_credits/show' 

@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aceptar</title>
+    <title>Datos para Tesorería</title>
     <%# <link rel="stylesheet" href="estilos.css"> %>
 </head>
 <body>
@@ -13,57 +13,15 @@
             <br>
             <img class="img" alt="Logo Credi-Global" src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/credi_global_logo.jpeg" style="max-width:1252px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" width="327.12" align="middle">
             <br>
+            <%# <h2 class="h2">Datos de cliente: Cuenta Bancaria</h2><br> %>
             <h1> <%= @title %> </h1><br>
-            <h2>Hola <%= @email_name %>, Nomina Factor tiene una propuesta de credito para ti: </h2>
+            <h3 class="h3">Hola <font color="#0286C4"><%= @email_name %></font>. El cliente <font color="0286C4"><%= @content[2] %></font> cuenta con los siguientes datos para el alta: </h3><br>
             <br>
             <br>
-			<div class="col">
-			</div>
-			<div class="col">
-            <table style="border-collapse: collapse; width: 100%;">
-                <thead style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
-                    <tr>
-                        <th>Total</th>
-                        <th>IVA</th>
-                        <th>Pago</th>
-                        <th>Estatus</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Plazo</th>
-                    </tr>
-                </thead>
-                <tbody style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
-                    <tr>
-                        <td> <%= @content[2].total_requested %></td>
-                        <td> <%= @content[2].iva %></td>
-                        <td> <%= @content[2].fixed_payment %></td>
-                        <td> <%= @content[2].status %></td>
-                        <td> <%= @content[2].start_date %></td>
-                        <td> <%= @content[2].end_date %></td>
-                        <td> <%= @term[0].key %></td>
-                    </tr>
-                </tbody>
-            </table>
-			</div>
-            <br>
-            <div class="col m4">
-                <%# <form action= <%= @content[0] %>
-                    <%# <input type="submit" value="Aceptar" /> %>
-                <%# </form> %>
-                <br> Para aceptar
-                Haga click en <a href=<%= @content[0] %>> Aceptar </a>
-            </div>
-            <div class="col m4">
-                <%# <form action= <%= @content[1] %>
-                    <%# <input type="submit" value="Rechazar" /> %>
-                <%# <%# </form>  %>
-                Para rechazar
-                Haga click en <a href=<%= @content[1] %>> RECHAZAR </a>
-            </div>
-            <div>
-            <h2> Con la aceptación del crédito se firma digitalmente el documento anexo
-            </h2>
-            </div>
+            <h3 class="h3">Nombre: <font color="#0286C4"><%= @content[2] %></font></h3>
+            <h3 class="h3">Cuenta: <font color="#0286C4"><%= @content[0].account_number %></font></h3>
+            <h3 class="h3">Banco: <font color="#0286C4"><%= @content[0].bank %></font></h3>
+            <h3 class="h3">Clabe: <font color="#0286C4"><%= @content[0].clabe %></font></h3>
             <br>
             <br><br><br>
             <div class="row">

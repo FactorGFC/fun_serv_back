@@ -32,6 +32,13 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
+  def tesoreria(email, name, subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end
+
   def analyst1(email, name, subject, title, content)
     @email_name = name
     @content = content
