@@ -63,6 +63,34 @@ class Api::V1::ContributorsController < Api::V1::MasterApiController
     render json: { message: 'Fué eliminado el contribuyente indicado' }
   end
 
+  def get_contributor_registers
+    @contributors = Contributor.where(id: params[:id])
+    unless @contributors.nil?
+      @contributor = @contributors[0]
+      if @contributor.contributor_type == 'PM'
+        @legal_entities = LegalEntity.where(id: @contributor.legal_entity_id)
+        unless @legal_entities.nil?
+          @legal_entity = @legal_entities[0]
+          render 'api/v1/company_registers/pm_company'
+        else
+          render json: { message: "No se encontró legal entities" }, status: 206
+        end
+      elsif @contributor.contributor_type == 'PF'
+        @people = Person.where(id: @contributor.person_id)
+        unless @people.nil?
+          @person = @people[0]
+          render 'api/v1/company_registers/pf_company'
+        else
+          render json: { message: "No se encontró person" }, status: 206
+        end
+      else
+        render json: { message: "El tipo de contributor no es valido contributor_type: #{@contributor.contributor_type}" }, status: :unprocessable_entity
+      end
+    else
+      render json: { message: "No se encontró contributor con el id: #{params[:id]}" }, status: 206
+    end
+  end
+
   private
 
   def set_contributor
