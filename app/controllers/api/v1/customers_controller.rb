@@ -77,7 +77,9 @@ class Api::V1::CustomersController < Api::V1::MasterApiController
                                      :food_vouchers, :total_income, :total_savings_food,
                                      :chrismas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
-                                     :child_support, :extra_expenses, :infonavit, :company_id)
+                                     :child_support, :extra_expenses, :infonavit, :company_id,
+                                     :public_charge, :public_charge_det, :relative_charge, :benefit,
+                                     :benefit_detail, :responsible, :responsible_detail)
   end
 
   def set_contributor

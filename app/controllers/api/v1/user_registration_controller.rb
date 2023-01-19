@@ -97,7 +97,9 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                  total_income: customer_params[:total_income], total_savings_found: customer_params[:total_savings_found], christmas_bonus: customer_params[:christmas_bonus], taxes: customer_params[:taxes], 
                                  imms: customer_params[:imms], savings_found:customer_params[:savings_found], savings_found_loand: customer_params[:savings_found_loand], savings_bank:customer_params[:savings_bank], 
                                  insurance_discount: customer_params[:insurance_discount], child_support: customer_params[:child_support], extra_expenses: customer_params[:extra_expenses], infonavit: customer_params[:infonavit], company_id: customer_params[:company_id],
-                                 extra3: customer_params[:extra3], job: customer_params[:job] )
+                                 extra3: customer_params[:extra3], job: customer_params[:job], public_charge: customer_params[:public_charge], public_charge_det: customer_params[:public_charge_det], relative_charge: customer_params[:relative_charge],  
+                                 benefit: customer_params[:benefit], benefit_detail: customer_params[:benefit_detail], responsible: customer_params[:responsible], responsible_detail: customer_params[:responsible_detail] 
+                               )
         unless @customer.customer_type.blank?
           @file_types = FileType.where(customer_type: @customer.customer_type)
           if @file_types.blank?
@@ -174,7 +176,9 @@ class Api::V1::UserRegistrationController < Api::V1::MasterApiController
                                      :food_vouchers, :total_income, :total_savings_found,
                                      :christmas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
-                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id, :extra3, :job)
+                                     :child_support, :extra_expenses, :infonavit, :user_id, :company_id, :extra3, :job,
+                                     :public_charge, :public_charge_det, :relative_charge, :benefit,
+                                     :benefit_detail, :responsible, :responsible_detail)
                                     end
   
   def create_contributor_documents
