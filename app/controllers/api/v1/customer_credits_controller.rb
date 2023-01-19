@@ -157,8 +157,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def update
     # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
     @customer_credit.update(customer_credits_params)
-    #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO.
-    
+    #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO.    
     if customer_credits_params['status'] == 'PR'
       customer_credit_mailer
     end
@@ -383,7 +382,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @total_payemnts = @i
   end
 
-  # COMITÉ Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
+  # DIRECTOR Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
   def customer_credit_mailer
     unless @customer_credit.blank?
       @query = 
@@ -405,39 +404,50 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     response = execute_statement(@query)
     unless response.blank?
       @term = Term.find_by_id(@customer_credit.term_id)
-      @mailer_signatories = response.to_a
-      @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
-      begin
-        @token = token
-        @token_expiry = Time.now + 1.day
-        @callback_url_aceptado = "#{@frontend_url}/#/get_callback/#{@token}/aceptado"
-        @callback_url_rechazado = "#{@frontend_url}/#/get_callback/#{@token}/rechazado"
-      end while CustomerCredit.where(extra3: @token).any?
-      @customer_credit.update(extra3: @token)
-      @customer_credit.update(extra2: @token_expiry)
-       # Correo para el cliente
-       #email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate
-        # MANDA EL PDF COMPLETO AL CORREO
-       @mailer_signatories.each do |mailer_signatory|
-        mail_to = mailer_mode_to(mailer_signatory['email'])
-        @customer_credit.update(attached: mailer_signatory['extra1'])
-        URI.open('document.pdf', "wb") do |cd_file|      
-          cd_file.write open(mailer_signatory['extra1'], "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
+      unless @term.nil?
+        @mailer_signatories = response.to_a
+        @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+        begin
+          @token = token
+          @token_expiry = Time.now + 1.day
+          @callback_url_aceptado = "#{@frontend_url}/#/get_callback/#{@token}/aceptado"
+          @callback_url_rechazado = "#{@frontend_url}/#/get_callback/#{@token}/rechazado"
+        end while CustomerCredit.where(extra3: @token).any?
+        @customer_credit.update(extra3: @token)
+        @customer_credit.update(extra2: @token_expiry)
+        # Correo para el cliente
+        #email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate
+          # MANDA EL PDF COMPLETO AL CORREO
+        @mailer_signatories.each do |mailer_signatory|
+          mail_to = mailer_mode_to(mailer_signatory['email'])
+          @customer_credit.update(attached: mailer_signatory['extra1'])
+          URI.open('document.pdf', "wb") do |cd_file|      
+            cd_file.write open(mailer_signatory['extra1'], "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
+          end
+          # @file = CombinePDF.new
+          @file = Rails.root.join('document.pdf')
+          #email, name, subject, title, content
+          SendMailMailer.send_mail_credit(mail_to,
+            mailer_signatory['name'],
+            "Nomina GFC - Confirmar propuesta de credito",
+            # @current_user.name,
+            "Hola",
+            @file,
+            [@callback_url_aceptado,@callback_url_rechazado,@customer_credit],
+            @term[:key]
+          ).deliver_now
+          # ELIMINA PDF DE LOCAL
+            File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
         end
-        # @file = CombinePDF.new
-        @file = Rails.root.join('document.pdf')
-        #email, name, subject, title, content
-        SendMailMailer.send_mail_credit(mail_to,
-          mailer_signatory['name'],
-          "Nomina GFC - Confirmar propuesta de credito",
-          # @current_user.name,
-          "Hola",
-          @file,
-          [@callback_url_aceptado,@callback_url_rechazado,@customer_credit,@term]
-        ).deliver_now
-        # ELIMINA PDF DE LOCAL
-          File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
+      else
+        @error_desc.push("No se encontró el plazo")
+        error_array!(@error_desc, :unprocessable_entity)
+        raise ActiveRecord::Rollback
       end
+    else
+      @error_desc.push("No se encontraron datos del credito")
+      error_array!(@error_desc, :unprocessable_entity)
+      raise ActiveRecord::Rollback
     end
   end
 
