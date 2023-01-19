@@ -436,7 +436,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             [@callback_url_aceptado,@callback_url_rechazado,@customer_credit],
             @term[:key]
           ).deliver_now
-          # ELIMINA PDF DE LOCAL
+          # ELIMINA PDF DE LOCAL 
             File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
         end
       else
