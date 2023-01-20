@@ -7,6 +7,8 @@
 #  id                  :uuid             not null, primary key
 #  assist_bonus        :decimal(15, 4)
 #  attached            :string
+#  benefit             :string
+#  benefit_detail      :string
 #  child_support       :decimal(15, 4)
 #  christmas_bonus     :decimal(15, 4)
 #  credit_cp           :decimal(15, 4)
@@ -28,6 +30,11 @@
 #  net_expenses        :decimal(15, 4)
 #  ontime_bonus        :decimal(15, 4)
 #  other_income        :decimal(15, 4)
+#  public_charge       :string
+#  public_charge_det   :string
+#  relative_charge     :string
+#  responsible         :string
+#  responsible_detail  :string
 #  salary              :decimal(15, 4)   not null
 #  salary_period       :string           not null
 #  savings_bank        :decimal(15, 4)

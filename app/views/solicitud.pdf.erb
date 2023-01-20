@@ -136,7 +136,7 @@
             <th colspan="10" align="left">CORREO ELECTRONICO Y FACEBOOK</th>
           </tr>
           <tr class="row23">
-            <td colspan="8"><%=@telefono%></td>
+            <td colspan="8"><%= @telefono.nil? ? 'NA' : @telefono %></td>
             <td colspan="6"><%=@movil%></td>
             <td colspan="10"><%=@email%></td>
           </tr>
@@ -202,41 +202,35 @@
           <tr class="row38">
             <th colspan="21" bgcolor="#C0C0C0">REFERENCIAS PERSONALES (DE DOS NO FAMILIARES Y DE UN FAMILIAR)</th>
           </tr>
-          <% @referencias_personales.each do |referencia| %>
-            <% if referencia.reference_type != 'Familiar' %>
-          <tr class="row39">
-            <th colspan="10" align="left">NOMBRE COMPLETO </th>
-            <th colspan="6" align="left">DOMICILIO </th>
-            <th colspan="8" align="left">TELEFONO (CON LADA)</th>
-          </tr>
-
-            <tr class="row40">
-              <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
-              <td colspan="6" ><%= referencia.address %></td>
-              <td colspan="8" ><%= referencia.phone %></td>
-            </tr>
-          <tr class="row41">
-          </tr>
-           <% end %>
-           <% end %>
-
-           <% @referencias_personales.each do |referencia| %>
-            <% if referencia.reference_type != 'Compita' %>
-             <tr class="row44">
-            </tr>
-            <tr class="row45">
-            <th colspan="10" align="left">NOMBRE COMPLETO DE UN FAMILIAR QUE NO VIVA CON USTED</th>
-            <th colspan="6" align="left">DOMICILIO </th>
-            <th colspan="8" align="left">TELEFONO (CON LADA)</th>
-          </tr>
-          <tr class="row46">
-            <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
-            <td colspan="6" ><%= referencia.address %></td>
-            <td colspan="8" ><%= referencia.phone %></td>
-          </tr>
-
+          <% @referencias_personales.each do |referencia| 
+             if referencia.reference_type == 'Familiar' %>
+              <tr class="row39">
+                <th colspan="10" align="left">NOMBRE COMPLETO </th>
+                <th colspan="6" align="left">DOMICILIO </th>
+                <th colspan="8" align="left">TELEFONO (CON LADA)</th>
+              </tr>
+              <tr class="row40">
+                <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
+                <td colspan="6" ><%= referencia.address %></td>
+                <td colspan="8" ><%= referencia.phone %></td>
+              </tr>
+              <tr class="row41">
+              </tr>
+            <% else %>
+              <tr class="row44">
+              </tr>
+              <tr class="row45">
+                <th colspan="10" align="left">NOMBRE COMPLETO DE UN FAMILIAR QUE NO VIVA CON USTED</th>
+                <th colspan="6" align="left">DOMICILIO </th>
+                <th colspan="8" align="left">TELEFONO (CON LADA)</th>
+              </tr>
+              <tr class="row46">
+                <td colspan="10" ><%= referencia.first_name %> <%= referencia.last_name %> <%= referencia.second_last_name %></td>
+                <td colspan="6" ><%= referencia.address %></td>
+                <td colspan="8" ><%= referencia.phone %></td>
+              </tr>
             <% end %>
-            <% end %>
+           <% end %>
 
           <%# <tr class="row41"> %>
           <%# </tr> %>

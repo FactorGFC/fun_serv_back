@@ -25,10 +25,6 @@
 #  segundo_apellido :string
 #  tarjeta          :string
 #  tipo_puesto      :string
-#  categoria      :string
-#  extra1      :string
-#  extra2     :string
-#  extra3      :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  customer_id      :uuid
