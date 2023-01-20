@@ -448,18 +448,22 @@ class ApplicationController < ActionController::Base
     @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
     unless @customer_credit_data.blank?
       # @suburb_type = @customer_credit_data[0][""]
+      @pagos_fijos = @customer_credit.fixed_payment
+      @salario = @customer_credit_data[0]["salario"]
+      @plazo_type = @customer_credit_data[0]["plazo_type"]   
       @term = @customer_credit_data[0]["numero_pagos"]
-      if @term ==  'Semanal'
+      if @plazo_type == 'Semanal'
         @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
         @pago_mas_alto = @pagos_fijos * 5
-      elsif @term ==  'Quincenal'
+        @salario2 = @salario.to_f * 4.33
+      elsif @teplazo_typerm == 'Quincenal'
         @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
         @pago_mas_alto = @pagos_fijos * 2
+        @salario2 = @salario.to_f * 2
       end
       @puesto = @customer_credit_data[0]["puesto"]
       @plazo = @customer_credit_data[0]["plazo"]   
       @plazo_key = @customer_credit_data[0]["plazo_key"]     
-      @plazo_type = @customer_credit_data[0]["plazo_type"]   
       @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
       @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
       @banco = @customer_credit_data[0]["banco"]
@@ -476,7 +480,6 @@ class ApplicationController < ActionController::Base
       @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
       @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
       @giro_empresa = @customer_credit_data[0]["giro_empresa"]
-      @salario = @customer_credit_data[0]["salario"]
       @total_gastos = @customer_credit_data[0]["total_gastos"]
       @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
       @ingreso_total = @customer_credit_data[0]["ingreso_total"]
@@ -522,7 +525,6 @@ class ApplicationController < ActionController::Base
       @deuda_total = @customer_credit.total_debt
       @total_pagos = @customer_credit.total_payments
       @balance = @customer_credit.balance
-      @pagos_fijos = @customer_credit.fixed_payment
       @status = @customer_credit.status
       @fecha_inicio = @customer_credit.start_date
       @dia_inicio = @fecha_inicio.strftime("%d")
@@ -566,8 +568,8 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @file = CombinePDF.new
-        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        # @documents_array = ["amortizacion"]
+        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        @documents_array = ["solicitud","kyc"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
