@@ -293,7 +293,7 @@
             <th colspan="13" align="center">DESTINO DEL PAGO DE DEUDAS</th>
           </tr>
           <tr class="row53">
-            <td colspan="9" ><%= number_to_currency(@total_gastos)%> </td>
+            <td colspan="9" > <%=  @total_gastos.nil? ? 'NA' : number_to_currency(@total_gastos) %> </td>
             <th colspan="3" align="left">TARJETAS DE CERDITO COMERCIAL</th>
             <td colspan="1"><%= @creditos_lp.blank? ? '': 'X' %></td>
             <th colspan="4" align="left">HIPOTECARIO</th>
@@ -334,9 +334,9 @@
           </tr>
           <tr class="row61">
             <th  align="left">PLAZO:</th>
-            <td colspan="9" ><%= @plazo %></td>
+            <td colspan="9" ><%= @plazo_key %></td>
             <th  align="left">DESTINO:</th>
-            <td colspan="11" ><%= @destino %></td>
+            <td colspan="11" ><%=  @destino.nil? ? 'NA' : @destino %></td>
           </tr>
           <tr class="row62">
           </tr>
@@ -352,7 +352,7 @@
           </tr>
           <tr class="row65">
             <th align="left">PLAZO:</th>
-            <td colspan="9" ><%= @plazo %></td>
+            <td colspan="9" ><%= @plazo_key %></td>
             <th colspan="2"  align="left">SEGURO DE VIDA:</th>
             <td colspan="11" ><%= number_to_currency(@seguro) %></td>
           </tr>

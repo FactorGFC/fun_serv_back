@@ -515,7 +515,8 @@ class ApplicationController < ActionController::Base
       @creditos_personales = @customer_credit_data[0]["creditos_personales"]
       @creditos_lp = @customer_credit_data[0]["creditos_lp"]
       @customer_id = @customer_credit.customer_id
-      @destino = @customer_credit.destination
+      # @destino = @customer_credit.destination
+      @destino = @customer_credit_data[0]["destino"]
       @monto_total_solicitado = @customer_credit.total_requested
       @intereses_apertura = @monto_total_solicitado * 0.01
       @intereses_apertura = @intereses_apertura.round(2)

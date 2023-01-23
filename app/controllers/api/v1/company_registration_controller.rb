@@ -16,7 +16,7 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
               raise ActiveRecord::Rollback
               #Si no viene vacio se revisa que sea PM o PF
             elsif contributors_params[:contributor_type] != 'PM' and contributors_params[:contributor_type] != 'PF'
-              @error_desc.push('El tipo de contribuyente tiene que ser: PM o PM')
+              @error_desc.push('El tipo de contribuyente tiene que ser: PM o PF')
               error_array!(@error_desc, :not_found)
               raise ActiveRecord::Rollback
             elsif contributors_params[:contributor_type] == 'PM'
