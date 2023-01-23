@@ -300,6 +300,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_190115) do
     t.string "benefit_detail"
     t.string "responsible"
     t.string "responsible_detail"
+    t.string "relative_charge_det"
     t.index ["company_id"], name: "index_customers_on_company_id"
     t.index ["contributor_id"], name: "index_customers_on_contributor_id"
     t.index ["file_type_id"], name: "index_customers_on_file_type_id"
