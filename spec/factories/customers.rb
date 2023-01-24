@@ -32,6 +32,7 @@
 #  public_charge       :string
 #  public_charge_det   :string
 #  relative_charge     :string
+#  relative_charge_det :string
 #  responsible         :string
 #  responsible_detail  :string
 #  salary              :decimal(15, 4)   not null

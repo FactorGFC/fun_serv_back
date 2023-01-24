@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <%= wicked_pdf_stylesheet_link_tag 'application' %>
+  <%= wicked_pdf_stylesheet_link_tag 'application',media: 'all' %>
   <title> KYC </title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style type="text/css">
@@ -105,6 +105,7 @@
             <td  colspan=10"><%= @ine %></td>
             <td colspan="10">INSTITUTO NACIONAL ELECTORAL</td>
           </tr>
+          <tr style="page-break-after: always; display: inline-block;"></tr>
           <tr class="row23">
             <th colspan="24" bgcolor="DADEE2" align="left"><font style="font-size:10pt">DOMICILIO PARTICULAR (Correspondiente a su lugar de residencia)</font></th>
           </tr>
@@ -144,6 +145,7 @@
           <tr class="row31">
             <td colspan="24">NA</td>
           </tr>
+          <div class="page-break"></div>
           <tr class="row32">
             <th colspan="24" bgcolor="DADEE2" align="left"><font style="font-size:10pt">DATOS COMPLEMENTARIOS - Perfil transaccional</font></th>
           </tr>

@@ -499,6 +499,7 @@ class ApplicationController < ActionController::Base
       @curp =@customer_credit_data[0]["pf_curp"]
       @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
       @seguro = @customer_credit_data[0]["seguro"]
+      @seguro_saldo_deudor = @seguro.to_f/1.16
       @nombre = @customer_credit_data[0]["nombre"]
       @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
       @apellido_materno = @customer_credit_data[0]["apellido_materno"]
@@ -578,8 +579,8 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @file = CombinePDF.new
-        # @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        @documents_array = ["solicitud","kyc"]
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        # @documents_array = ["solicitud","kyc"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)

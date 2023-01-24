@@ -6,24 +6,21 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <style type="text/css">
             html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
-            div.comment { display:none }
-            div { border-collapse:hidden; page-break-after:always border-style:hidden }
+            page { width: 280px; border:solid 1px blue;}
+            table { word-wrap: break-word; }
+
         </style>
     </head>
-
     <body>
     <div>
     <div style="position: relative;">
         <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
     </div>
-    <br>
-    <br>
     <div class="row">
         <h4 style='text-align: left;'>
         PAGARÉ ÚNICO CON CONTRATO
         </h4>
     </div>
-    <br>
     <div class="row">
         <p>
             <span style='text-align: justify;'>Por este pagaré me obligo a pagar incondicionalmente a la orden de
@@ -75,13 +72,6 @@
     <div class="row">
     <p>
         <span >
-            
-        </span>
-    </p>
-    </div>
-    <div class="row">
-    <p>
-        <span >
             Los pagos deberán realizarse conforme se detalla en la tabla de amortizaciones que se consigna en el presente título, en las fechas al efecto
             señaladas. El importe principal de este pagaré causará intereses ordinarios y, en su caso, intereses moratorios conforme a las tasas pactadas
             en el Contrato de préstamo sobre Nómina del cual se deriva.
@@ -91,42 +81,49 @@
     <div class="row">
     <p>
         <span >
-            
-        </span>
-    </p>
-    </div>
-    <div class="row">
-    <p>
-        <span >
             Mediante este pagaré se documenta la disposición por la suma de su importe principal, del Contrato de préstamo sobre Nómina, celebrado con fecha 
-            <strong>
-                <u>
-                    <span style="background:yellow;">
-                        <%= @dia %> de <%= @mes %> del <%= @anio%>
-                    </span>.</u>
-            </strong>
+            <strong><u><span style="background:yellow;">
+                        <%= @dia_inicio %> de
+                    </span></u></strong>
+                    <strong><u><span style="background:yellow;">
+                            <%= @mes_inicio %> del <%= @anio_inicio %>
+                    </span></u></strong>
             El presente pagaré único ampara la disposición del préstamo concedido en virtud de dicho contrato.
         </span>
     </p>
     </div>
-    <div class="row">
-    <p>
-        <span >
-            
-        </span>
-    </p>
-    </div>
+    <div class="page">
+    <font size="2" face="Courier New" >
+    <table>
+        <thead style="border: 1px solid #ddd;text-align: left;">
+            <tr>
+                <th>No. pago</th>
+                <th>Monto</th>
+                <th>Fecha pago</th>
+            </tr>
+        </thead>
+        <tbody style="border: 1px solid #ddd;   text-align: center;">
+            <% @amortizacion.each do |payment| %>
+                <tr>
+                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%= payment['pay_number'] %></td>
+                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%= number_to_currency(payment['capital']) %></td>
+                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+    </font>
+</div>
     <div class="row">
     <p>
         <span >
             Este pagaré se suscribe en la Ciudad de Chihuahua, Chihuahua, con fecha 
-            <strong>
-                <u>
-                    <span style="background:yellow;">
-                        <%= @dia %> de <%= @mes %> del <%= @anio %>.
-                    </span>
-                </u>
-            </strong>
+            <strong><u><span style="background:yellow;">
+                        <%= @dia_inicio %> de
+                    </span></u></strong>
+                    <strong><u><span style="background:yellow;">
+                            <%= @mes_inicio %> del <%= @anio_inicio %>
+                    </span></u></strong>
         </span>
     </p>
     </div>

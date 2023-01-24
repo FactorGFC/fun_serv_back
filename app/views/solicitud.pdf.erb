@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <%= wicked_pdf_stylesheet_link_tag 'application' %>
+  <%= wicked_pdf_stylesheet_link_tag 'application',media: 'all' %>
     <title> Solicitud </title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style type="text/css">
@@ -198,7 +198,7 @@
           <tr class="row">
           <td colspan="24" rowspan="4"></td>
           </tr>
-          <div class="page-break"></div>
+          <tr style="page-break-inside: avoid; display: inline-table;">
           <tr class="row38">
             <th colspan="21" bgcolor="#C0C0C0">REFERENCIAS PERSONALES (DE DOS NO FAMILIARES Y DE UN FAMILIAR)</th>
           </tr>

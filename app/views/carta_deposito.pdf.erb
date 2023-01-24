@@ -50,15 +50,17 @@
                 </div>
                 <div class="row">
                     <div class="lcolumn">Seguro por concepto de saldo deudor en <br />caso de fallecimiento (0.45% por año)</div>
-                    <div class="rcolumn">?</div>
+                    <div class="rcolumn"><%= number_to_currency(@seguro_saldo_deudor) %></div>
                 </div>
                 <div class="row">
                     <div class="lcolumn">IVA del seguro:</div>
-                    <div class="rcolumn">?</div>
+                    <% @ivaseguro = @seguro_saldo_deudor.to_f*16.to_f / 100 %>
+                    <div class="rcolumn"><%= number_to_currency(@ivaseguro) %></div>
                 </div>
                 <div class="row">
                     <div class="lcolumn"> <b>Total a depositar: </b></div>
-                    <div class="rcolumn">?</div>
+                    <% @suma = @percentage + @iva2 + @ivaseguro + @seguro_saldo_deudor %>
+                    <div class="rcolumn"><%= number_to_currency(@suma) %></div>
                 </div>
                 </div>
             </div>
