@@ -6,23 +6,23 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <style type="text/css">
             html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:12pt; background-color:white }
-            page { width: 280px; border:solid 1px blue;}
-            table { word-wrap: break-word; }
+            page { height: 200px; overflow: auto;}
 
         </style>
     </head>
     <body>
     <div>
+    <font size="1" face="Courier New" >
     <div style="position: relative;">
-        <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 180px;">
+        <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 100px;">
     </div>
     <div class="row">
-        <h4 style='text-align: left;'>
+        <h6 style='text-align: left;'>
         PAGARÉ ÚNICO CON CONTRATO
-        </h4>
+        </h6>
     </div>
     <div class="row">
-        <p>
+        
             <span style='text-align: justify;'>Por este pagaré me obligo a pagar incondicionalmente a la orden de
                 <strong>
                     FACTOR
@@ -67,19 +67,19 @@
                         de <%= @mes_fin %> del <%= @anio_fin %>.
                     </span></u></strong>
                 </span>
-        </p>
+        
     </div>
     <div class="row">
-    <p>
+    
         <span >
             Los pagos deberán realizarse conforme se detalla en la tabla de amortizaciones que se consigna en el presente título, en las fechas al efecto
             señaladas. El importe principal de este pagaré causará intereses ordinarios y, en su caso, intereses moratorios conforme a las tasas pactadas
             en el Contrato de préstamo sobre Nómina del cual se deriva.
         </span>
-    </p>
+    
     </div>
     <div class="row">
-    <p>
+    
         <span >
             Mediante este pagaré se documenta la disposición por la suma de su importe principal, del Contrato de préstamo sobre Nómina, celebrado con fecha 
             <strong><u><span style="background:yellow;">
@@ -90,32 +90,32 @@
                     </span></u></strong>
             El presente pagaré único ampara la disposición del préstamo concedido en virtud de dicho contrato.
         </span>
-    </p>
+    
     </div>
-    <div class="page">
-    <font size="2" face="Courier New" >
-    <table>
+    <div class="page" style="style="height: 200px; overflow: auto;">
+    <table style="table-layout: fixed;">
         <thead style="border: 1px solid #ddd;text-align: left;">
             <tr>
-                <th>No. pago</th>
-                <th>Monto</th>
-                <th>Fecha pago</th>
+                <th style="padding: 2px;width:0.1%;white-space: nowrap;">No. pago</th>
+                <th style="padding: 2px;width:0.1%;white-space: nowrap;">Monto</th>
+                <th style="padding: 2px;width:0.1%;white-space: nowrap;">Fecha pago</th>
             </tr>
         </thead>
         <tbody style="border: 1px solid #ddd;   text-align: center;">
             <% @amortizacion.each do |payment| %>
                 <tr>
-                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%= payment['pay_number'] %></td>
-                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%= number_to_currency(payment['capital']) %></td>
-                    <td style="padding: 5px;width:0.1%;white-space: nowrap;"> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
+                    <td style="padding: 2px;width:0.1%;white-space: nowrap;"> <%= payment['pay_number'] %></td>
+                    <td style="padding: 2px;width:0.1%;white-space: nowrap;"> <%= number_to_currency(payment['capital']) %></td>
+                    <td style="padding: 2px;width:0.1%;white-space: nowrap;"> <%=  DateTime.parse(payment['payment_date']).strftime('%d-%m-%Y') %></td>
                 </tr>
             <% end %>
         </tbody>
     </table>
-    </font>
+
 </div>
+<br>
     <div class="row">
-    <p>
+    
         <span >
             Este pagaré se suscribe en la Ciudad de Chihuahua, Chihuahua, con fecha 
             <strong><u><span style="background:yellow;">
@@ -125,39 +125,40 @@
                             <%= @mes_inicio %> del <%= @anio_inicio %>
                     </span></u></strong>
         </span>
-    </p>
+    
     </div>
     <br>
     <br>
     <br>
-        </div>
+    </div>
     <div class="row">
-        <p>
+        
             <span align="center" >
                 SUSCRIPTOR
             </span>
-        </p>
+        
         <br>
     </div>
    
     <div class="row">
         <div class="col" align="center">
-        <p>
+        
             <span>
                 ___________________________________________________________
             </span>
-        </p>
+        
         </div>
     </div>
     
     <div class="row">
         <div class="col" align="center">
-            <p>
+            
                 <span>
                     <%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %>
                 </span>
-            </p>
+            
         </div>
     </div>
+    </font>
 
 </body>

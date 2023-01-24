@@ -440,6 +440,7 @@ class ApplicationController < ActionController::Base
     # @mail_factor = 'mescobedo@factorgfc.com'
     @mail_factor = GeneralParameter.get_general_parameter_value('CONTACT_MAIL')
     @folio = @customer_credit.credit_folio
+    @credit_number = @customer_credit.credit_number
     @lugar = 'Chihuahua, Chihuahua'
     @date = Time.now.strftime("%d/%m/%Y")
     @dia = Time.now.strftime("%d")
@@ -580,7 +581,7 @@ class ApplicationController < ActionController::Base
       unless @amortizacion.blank?
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        # @documents_array = ["solicitud","kyc"]
+        # @documents_array = ["pagare"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
