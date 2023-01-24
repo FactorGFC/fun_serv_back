@@ -29,16 +29,16 @@
           </tr>
           <tr class="row6">
             <td  colspan="3">PERIODO PARA EL COMPUTO DE INTERESES</td>
-            <td > $ - ? </td>
+            <td > <%= @plazo_type %> </td>
           </tr>
           <tr class="row7">
             <td  colspan="3">PERIODO PARA EL PAGO DE INTERESES</td>
-            <td > $ - ?</td>
+            <td > <%= @plazo_type %> </td>
             <td  colspan="8">(Iniciando el, )</td>
           </tr>
           <tr class="row8">
             <td  colspan="3">FECHA DE CORTE PARA EL COMPUTO DE INTERESES</td>
-            <td > $ - ?</td>
+            <td ><%= @plazo_type %></td>
           </tr>
           <tr class="row9">
             <td colspan="3"><p style="color:#FF0000";>TASA QUE SUSTITUTIVA DE LA TASA DE INTERÉS ORDINARIA</p></td>
@@ -65,7 +65,7 @@
             <td  colspan="2">NO________</td>
           </tr>
           <tr class="row20">
-            <td colspan="12" align="center"><center>Leído que fue el presente por las partes y enteradas de su contenido y alcance legal, lo firman en dos tantos, en la ciudad de Chihuahua, estado de Chihuahua, a los <%= @dia %> dias del mes <%= @mes.upcase %> del año <%= @anio %> .</center> </td>
+            <td colspan="12" align="center"><center>Leído que fue el presente por las partes y enteradas de su contenido y alcance legal, lo firman en dos tantos, en la ciudad de Chihuahua, estado de Chihuahua, a los <%= @dia_inicio %> dias del mes <%= @mes_inicio.upcase %> del año <%= @anio_inicio %> .</center> </td>
           </tr>
         </tbody>
       </table>

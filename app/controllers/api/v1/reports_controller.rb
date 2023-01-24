@@ -2734,7 +2734,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   # Reporte para mostrar los datos del cliente a partir de un credito
 def get_credit_customer_report
   @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
-  cuc.start_date fecha_credito,cuc.credit_number, cuc.status status_credito, pap.value periodo_pago, pap.pp_type tipo_periodo_pago,
+  cuc.destination ,cuc.start_date fecha_credito,cuc.credit_number, cuc.status status_credito, pap.value periodo_pago, pap.pp_type tipo_periodo_pago,
    cus.id id_cliente,cus.name nombre_cliente,cus.customer_type tipo_cliente,cus.status status_cliente,cus.salary_period,cus.user_id id_usuario,
    cus.file_type_id id_tipo_expediente,cus.other_income otros_ingresos,cus.net_expenses egresos_netos,cus.family_expenses gastos_familiares, 
    cus.house_rent renta,cus.credit_cp creditos_cp, cus.credit_lp creditos_lp, cus.total_income ingreso_total, con.id id_contribuyente, 
