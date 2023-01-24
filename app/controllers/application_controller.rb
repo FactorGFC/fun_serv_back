@@ -551,24 +551,24 @@ class ApplicationController < ActionController::Base
       # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
       # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
       # unless ary.include?(nil)
-        # CUSTOMER COMPANY'S ADDRESS 
-        @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
-        unless @customer_company_address_data.blank?
-          @company_colonia = @customer_company_address_data[0]["colonia"]
-          @company_calle = @customer_company_address_data[0]["calle"]
-          @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
-          @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
-          @company_municipio_name = @customer_company_address_data[0]["municipio"]
-          @company_state_name = @customer_company_address_data[0]["estado"]
-        else
-          @error_desc.push("No se encontró la informacion de la empresa del cliente")
-          error_array!(@error_desc, :not_found)
-          raise ActiveRecord::Rollback
-        end
+      # CUSTOMER COMPANY'S ADDRESS 
+      @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
+      unless @customer_company_address_data.blank?
+        @company_colonia = @customer_company_address_data[0]["colonia"]
+        @company_calle = @customer_company_address_data[0]["calle"]
+        @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
+        @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
+        @company_municipio_name = @customer_company_address_data[0]["municipio"]
+        @company_state_name = @customer_company_address_data[0]["estado"]
+      else
+        @error_desc.push("No se encontró la informacion de la empresa del cliente")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
       # else
-        # @error_desc.push("No se encontró un dato del cliente", ary.select {|k,v| k.blank?})
-        # error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
+      # @error_desc.push("No se encontró un dato del cliente", ary.select {|k,v| k.blank?})
+      # error_array!(@error_desc, :not_found)
+      # raise ActiveRecord::Rollback
       # end
     else
       @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
@@ -579,9 +579,10 @@ class ApplicationController < ActionController::Base
     unless @referencias_personales.blank?
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
+        @fecha_primer_pago = @amortizacion[0]['payment_date']
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
-        # @documents_array = ["pagare"]
+        # @documents_array = ["terminos2"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)
