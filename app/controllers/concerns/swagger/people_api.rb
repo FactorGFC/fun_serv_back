@@ -332,7 +332,7 @@ module Swagger::PeopleApi
 
         parameter name: :extra3 do
           key :in, :query
-          key :description, 'Campo extra configurable3 - No debe mostrarse al usuario'
+          key :description, 'Campo extra configurable3 - No debe mostrarse al usuario - Guardamos el Destino del credito que indique el cliente'
           key :required, false
           key :type, :string
         end

@@ -292,7 +292,7 @@ module Swagger::CustomerCreditsApi
 
         parameter name: :destination do
           key :in, :query
-          key :description, 'Destino del credito'
+          key :description, 'Destino del credito/CAT(Costo Anual Total)'
           key :required, false
           key :type, :string
         end

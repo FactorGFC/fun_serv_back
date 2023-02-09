@@ -86,6 +86,12 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
             payment_period = @payment_period.pp_type
             @monthly_income = @total_income.to_f * payment_period.to_f
             @montly_expenses = @total_expenses.to_f * payment_period.to_f
+            @pagos_fijos = @customer_credit.fixed_payment
+            # CALCULA DESCUENTO
+            calculo1 = (savings_found.to_f + savings_found_loand.to_f + savings_bank.to_f + insurance_discount.to_f + extra_expenses.to_f + infonavit.to_f + child_support.to_f)*2
+            calculo2 = @pagos_fijos * payment_period.to_f
+            calculo3 = calculo1 + calculo2
+            @discounts = calculo3/@monthly_income
             if @person.minior_dependents. nil?
                @person.minior_dependents = 0.00
             end
@@ -122,7 +128,7 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
                                     monthly_expenses: @montly_expenses,  payment_credit_cp: @customer.credit_cp,
                                     payment_credit_lp: @payment_credit_lp.round(2), debt: @debt.round(2), net_flow: @net_flow.round(2),
                                     payment_capacity: @payment_capacity.round(2), debt_rate: @debt_rate.round(2), cash_flow: @cash_flow.round(2),
-                                    debt_horizon: @customer_credit.debt_time.round(2), total_amount: @customer_credit.total_requested.round(2))
+                                    debt_horizon: @customer_credit.debt_time.round(2), total_amount: @customer_credit.total_requested.round(2),discounts: @discounts)
             @customer.update(family_expenses: @family_expenses.round(2), house_rent: @rent.round(2))
             render template: 'api/v1/credit_analyses/show'
           else
