@@ -91,7 +91,7 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
             calculo1 = (savings_found.to_f + savings_found_loand.to_f + savings_bank.to_f + insurance_discount.to_f + extra_expenses.to_f + infonavit.to_f + child_support.to_f)*2
             calculo2 = @pagos_fijos * payment_period.to_f
             calculo3 = calculo1 + calculo2
-            @discounts = calculo3/@monthly_income
+            @discounts = (calculo3/@monthly_income)*100
             if @person.minior_dependents. nil?
                @person.minior_dependents = 0.00
             end
