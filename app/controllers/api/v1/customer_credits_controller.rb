@@ -207,7 +207,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     client_rate = @customer_credit.rate
     rate = (client_rate.to_f / payment_period.to_f) / 100
     diary_rate = ((client_rate.to_f/100) / 360)
-    rate_with_iva = rate.to_f * (1 + (iva_percent.to_f/100))
+    rate_with_iva = rate.round(4).to_f * (1 + (iva_percent.to_f/100))
     #Si payment_amount viene vacio se calcula el pago, si no se calcula el plazo
     if payment_amount.blank? && term == 0
       @error_desc.push("Se debe de mandar el pago o el plazo")
@@ -215,9 +215,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           raise ActiveRecord::Rollback
     else
       if payment_amount.blank?
-        payment_amount = (rate_with_iva.to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.to_f)) ** (-term.to_f)))
+        payment_amount = (rate_with_iva.round(4).to_f * total_requested.to_f) / (1 - ((1 + (rate_with_iva.round(4).to_f)) ** (-term.to_f)))
       elsif term == 0
-        pay_min = (rate_with_iva.to_f * total_requested.to_f) / payment_amount.to_f
+        pay_min = (rate_with_iva.round(4).to_f * total_requested.to_f) / payment_amount.to_f
         if pay_min > 1 
           @error_desc.push("El numero de pagos no puede ser mayor a #{@company_segment.max_period} años, ingresar un pago mas alto")
           error_array!(@error_desc, :not_found)
@@ -323,6 +323,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         current_debt = total_requested.to_f
         remaining_debt = total_requested.to_f - capital.to_f
         payment = capital.to_f + interests.to_f + iva.to_f
+        puts 'raterate_with_iva' + rate_with_iva.inspect
       else
         distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
         interests = remaining_debt.to_f * (diary_rate.to_f * distance_in_days.to_f)
