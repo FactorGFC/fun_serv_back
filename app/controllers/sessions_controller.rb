@@ -27,15 +27,15 @@ class SessionsController < ApplicationController
     @customer_credit = CustomerCredit.where(extra3: params[:call_back_token])
     unless @customer_credit.blank?
       if @customer_credit[0].extra2 > Time.now
-          # if @customer_credit[0].status == 'PR'
+          if @customer_credit[0].status == 'PR'
             @customer_credit.update(status: 'AC')
             @customer_credit.update(extra3: "#{params[:call_back_token]}-AC")
             #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
             send_control_desk_mailer(@customer_credit[0].id)
             render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)' }, status: 200
-          # else
-            # render json: { message: "El credito ya ha sido actualizado por el cliente #{@customer_credit.status}", status: false }, status: 206
-          # end
+          else
+            render json: { message: "No es posible aceptar el crédito #{@customer_credit.status} contacte al administrador", status: false }, status: 206
+          end
       else
         render json: { message: "Token expiró el #{@customer_credit[0].extra2}", status: false }, status: 206
       end
