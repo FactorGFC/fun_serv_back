@@ -190,9 +190,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     date = @customer_credit.start_date
     payment_period = @payment_period.value
     total_requested = @customer_credit.total_requested
+    @commission_per = @company_segment.commission
     if @customer_credit.rate == 0
     @customer_credit.rate = @company_segment.company_rate
-    @commission_per = @company_segment.commission
     else
        @new_rates = ExtRate.where(value: @customer_credit.rate)
        @new_rate = @new_rates[0]
@@ -207,7 +207,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     client_rate = @customer_credit.rate
     rate = (client_rate.to_f / payment_period.to_f) / 100
     diary_rate = ((client_rate.to_f/100) / 360)
-    rate_with_iva = rate.round(4).to_f * (1 + (iva_percent.to_f/100))
+    rate_with_iva = rate.to_f * (1 + (iva_percent.to_f/100))
+    puts 'rate' + rate.round(4).inspect
     #Si payment_amount viene vacio se calcula el pago, si no se calcula el plazo
     if payment_amount.blank? && term == 0
       @error_desc.push("Se debe de mandar el pago o el plazo")

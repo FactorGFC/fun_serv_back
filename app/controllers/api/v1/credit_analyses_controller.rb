@@ -96,8 +96,11 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
                @person.minior_dependents = 0.00
             end
             if @person.senior_dependents.nil?
-               @person.senior_dependents = 0.00
+               @person.senior_dependents = 1.00
+            else
+              @person.senior_dependents = @person.senior_dependents + 1.00
             end
+
             minior_dependents = @person.minior_dependents.to_f * @child_expense.to_f
             senior_dependents = @person.senior_dependents.to_f * @adult_expense.to_f
             @family_expenses = minior_dependents + senior_dependents

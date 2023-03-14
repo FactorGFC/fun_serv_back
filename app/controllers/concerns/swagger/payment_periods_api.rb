@@ -174,7 +174,7 @@ module Swagger::PaymentPeriodsApi
           key :description, 'Tipo periodo de pago'
           key :required, false
           key :type, :string
-          key :enum, ['Mensual','Bimestral','Trimestral', 'Anual']
+          key :enum, ['1','4','2']
         end
 
         parameter name: :token do
