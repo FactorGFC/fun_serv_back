@@ -105,23 +105,35 @@ class Api::V1::CreditBureausController < ApplicationController
         @buro = get_buro (@customer_credit[0].id)
         unless @buro.nil?
           #Evalua si la calificacion de buro es negativa
-          if @buro[0]['bureau_report']['results'][1]['status'] == 'SUCCESS'
-            if @buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i > 0
-              render json: { message: 'ok', status: true, buro: @buro }, status: 200
-            else
-              # SCORE CON CODIGO ESPECIAL 
-              render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", status: false
+          #VALIDA SI LAS CREDENCIALES DE BURO EN MOFFIN HAN EXPIRADO
+          unless @buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['Error'].present?
+            if @buro[0]['bureau_report']['results'][1]['status'].present?
+              if @buro[0]['bureau_report']['results'][1]['status'] == 'SUCCESS'
+                if @buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore'].to_i > 0
+                  render json: { message: 'ok', status: true, buro: @buro }, status: 200
+                else
+                  # SCORE CON CODIGO ESPECIAL 
+                  render json: { message: "El cliente cuenta con codigo especial de SCORE", SCORE: "#{@buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['ScoreBuroCredito']['ScoreBC'][0]['ValorScore']}", status: false
+                  }, status: 206
+                end
+              else
+              # STATUS FAIL EN BURO PERSONA FISICA 
+              render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@buro[0]['bureau_report']['results'][1]['status']}", status: false
               }, status: 206
+              end
+            else
+            # STATUS FAIL EN BURO PERSONA FISICA 
+            render json: { message: "No se encontró un status en buroo", status_de_Buro: "#{@buro[0]['bureau_report']['results'][1]}", status: false
+            }, status: 206
             end
+
           else
-          # STATUS FAIL EN BURO PERSONA FISICA 
-          render json: { message: "El cliente no cuenta con registros en Buró de Crédito", status_de_Buro: "#{@buro[0]['bureau_report']['results'][1]['status']}", status: false
-          }, status: 206
+          # NO SE ENCONTRÓ 
+          render json: { message: "Error desde buró: #{ @buro[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['Error']['UR']}", status: false, razon:"Credenciales de buró expiradas en Moffin" }, status: 206
           end
         else
          # NO SE ENCONTRÓ 
-        render json: { message: "Error", status: false
-        }, status: 206
+        render json: { message: "Error", status: false }, status: 206
         end
       else
         # NO SE ENCONTRÓ 

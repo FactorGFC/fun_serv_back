@@ -493,7 +493,7 @@ class ApplicationController < ActionController::Base
       @total_gastos = @customer_credit_data[0]["total_gastos"]
       @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
       @ingreso_total = @customer_credit_data[0]["ingreso_total"]
-      @otros_ingresos = @customer_credit_data[0]["ingreso_total"]
+      @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
       @jefe_inmediato = @customer_credit_data[0]["jefe_inmediato"]
       @regimen_fiscal = @customer_credit_data[0]["pm_regimen_fiscal"]
       @rfc = @customer_credit_data[0]["pf_rfc"]
@@ -580,6 +580,7 @@ class ApplicationController < ActionController::Base
       @amortizacion = PaymentCredit.get_credit_payments(@customer_credit.id)
       unless @amortizacion.blank?
         @fecha_primer_pago = @amortizacion[0]['payment_date']
+
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
         # @documents_array = ["terminos2"]
@@ -738,7 +739,7 @@ class ApplicationController < ActionController::Base
         unless @person.blank?
           @customer_data = Customer.get_customer_data(@customer.id)
           unless CreditBureau.exists?(customer_id: @customer_credit.customer_id)
-
+            #REALIZA LA CONSULTA DE BURÓ
             # @info = SatW.get_tax_status @person.try(:rfc)
             # puts "@info"
             # puts @info.inspect
