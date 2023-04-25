@@ -24,23 +24,23 @@
                 <thead style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
                     <tr>
                         <th>Total</th>
-                        <th>IVA</th>
                         <th>Pago</th>
-                        <th>Estatus</th>
                         <th>Inicio</th>
                         <th>Fin</th>
                         <th>Plazo</th>
+                        <th>Comision</th>
+                        <th>Seguro</th>
                     </tr>
                 </thead>
                 <tbody style="border: 1px solid #ddd;  padding: 8px; text-align: left;">
                     <tr>
                         <td> <%= @content[2].total_requested %></td>
-                        <td> <%= @content[2].iva %></td>
                         <td> <%= @content[2].fixed_payment %></td>
-                        <td> <%= @content[2].status %></td>
                         <td> <%= @content[2].start_date %></td>
                         <td> <%= @content[2].end_date %></td>
                         <td> <%= @term %></td>
+                        <td> <%= @content[2].comission1 %></td>
+                        <td> <%= @content[2].insurance1 %></td>
                     </tr>
                 </tbody>
             </table>

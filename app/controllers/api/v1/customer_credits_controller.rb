@@ -462,7 +462,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def create_credit_signatories
-    #NOMINA
+    #NOMINA GPA
     @query_nomina = 
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
@@ -476,50 +476,57 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     WHERE u.role_id = r.id
     AND r.name IN ('Empresa','Director')"
 
-    if GeneralParameter.where(key: 'ALSUPER_MODE')
-      @query = @query_alsuper 
-    else
-      @query = @query_nomina
-    end
+    @alsuper_mode = GeneralParameter.where(key: 'ALSUPER_MODE')
+    unless @alsuper_mode.blank?
+      if @alsuper_mode == 'TRUE'
+        @query = @query_alsuper 
+      else
+        @query = @query_nomina
+      end
 
-    response = execute_statement(@query)
-    # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
-    unless response.blank?
-      @mailer_signatories = response.to_a
-      @frontend_url = GeneralParameter.where(key: 'FRONTEND_URL')
-      unless @frontend_url.blank?
-        begin
-          @mailer_signatories.each do |mailer_signatory|
-            @token_commitee =  validated_token_signatory
-            # TOKEN CON VIDA UTIL DE 7 DIAS
-            @token_commitee_expiry = Time.now + 7.day
-            #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
-            @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
-            #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
-            customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
-            if customer_credit_signatory.blank?
-              @error_desc.push("No se pudieron generar las firmas")
-                  error_array!(@error_desc, :not_found)
-                  raise ActiveRecord::Rollback
+      response = execute_statement(@query)
+      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
+      unless response.blank?
+        @mailer_signatories = response.to_a
+        @frontend_url = GeneralParameter.where(key: 'FRONTEND_URL')
+        unless @frontend_url.blank?
+          begin
+            @mailer_signatories.each do |mailer_signatory|
+              @token_commitee =  validated_token_signatory
+              # TOKEN CON VIDA UTIL DE 7 DIAS
+              @token_commitee_expiry = Time.now + 7.day
+              #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
+              @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
+              #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
+              customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
+              if customer_credit_signatory.blank?
+                @error_desc.push("No se pudieron generar las firmas")
+                    error_array!(@error_desc, :not_found)
+                    raise ActiveRecord::Rollback
+              end
             end
+          rescue Errno::ENOENT
+            p "File not found"
+            @error_desc.push("Hubo un error al tratar de generar los firmantes")
+            error_array!(@error_desc, :not_found)
+            raise ActiveRecord::Rollback
+          else
+            p "File saved"
           end
-        rescue Errno::ENOENT
-          p "File not found"
-          @error_desc.push("Hubo un error al tratar de generar los firmantes")
+        else
+          # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+          @error_desc.push("No se encontró parametro general FRONTEND_URL")
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
-        else
-          p "File saved"
         end
       else
         # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-        @error_desc.push("No se encontró parametro general FRONTEND_URL")
+        @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
       end
     else
-      # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
-      @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
+      @error_desc.push("No se encontró parametro general ALSUPER_MODE")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end
