@@ -124,6 +124,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             if @new_term.blank?
               @new_term_id = @customer_credit.term_id
             end
+            @capital = @capital - 0.01
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
                                   end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
                                   debt_time: @debt_time.round(2), insurance1: @insurance.round(2), term_id: @new_term_id)
@@ -357,8 +358,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           payment = capital.to_f + interests.to_f + iva.to_f
         end
         remaining_debt = remaining_debt.to_f - capital.to_f
-        if(remaining_debt < 0)
-          payment = current_debt.to_f + interests.to_f + iva.to_f
+        if(remaining_debt <= 0)
+          payment = current_debt.to_f + interests.to_f + iva.to_f + 0.01
           capital = payment.to_f - interests.to_f - iva.to_f
           #break
         end
