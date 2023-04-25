@@ -150,6 +150,20 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
       end
     end
 
+    def update_analysis
+      @credit_analysis = CreditAnalysis.where(customer_credit_id: params[:old_credit_id])
+      @credit_analysis = @credit_analysis[0]
+      unless @credit_analysis.blank?
+        if @credit_analysis.update(customer_credit_id: params[:new_credit_id])
+          render template: 'api/v1/credit_analyses/show'
+        else
+          render json: { error: 'Error al actualizar analisis' }, status: :unprocessable_entity
+        end
+      else
+        render json: { error: "No se encuentra el analisis con customer_credit_id: #{params[:old_credit_id]}" }, status: :unprocessable_entity
+      end
+    end
+
     def destroy
       @credit_analysis.destroy
       render json: { message: '' }

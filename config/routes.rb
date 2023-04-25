@@ -113,6 +113,7 @@ Rails.application.routes.draw do
       post '/user_registration', to: 'user_registration#create'
       patch '/user_update/update_user_info', to: 'user_update#update_user_info'
       patch '/company_update/company_update_info', to: 'company_update#company_update_info'
+      patch '/update_analysis', to: 'credit_analyses#update_analysis'
       get '/restructure_credit_term', to: 'restructure_credits#term'
       get '/restructure_credit_payment', to: 'restructure_credits#payment'
       get '/sim_credit', to: 'sim_customer_credits#sim_credit'
