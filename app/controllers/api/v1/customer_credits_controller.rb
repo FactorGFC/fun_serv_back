@@ -27,6 +27,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         raise ActiveRecord::Rollback
       else
         @capital = 0
+        @total_payment = 0
         @customer_credit.capital = @capital
         @interests = 0
         @customer_credit.interests = @interests
@@ -124,7 +125,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             if @new_term.blank?
               @new_term_id = @customer_credit.term_id
             end
-            @capital = @capital - 0.01
+          #  @capital = @capital - 0.01
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
                                   end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
                                   debt_time: @debt_time.round(2), insurance1: @insurance.round(2), term_id: @new_term_id)
@@ -209,7 +210,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     rate = (client_rate.to_f / payment_period.to_f) / 100
     diary_rate = ((client_rate.to_f/100) / 360)
     rate_with_iva = rate.to_f * (1 + (iva_percent.to_f/100))
-    puts 'rate' + rate.round(4).inspect
     #Si payment_amount viene vacio se calcula el pago, si no se calcula el plazo
     if payment_amount.blank? && term == 0
       @error_desc.push("Se debe de mandar el pago o el plazo")
@@ -359,15 +359,20 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         end
         remaining_debt = remaining_debt.to_f - capital.to_f
         if(remaining_debt <= 0)
-          payment = current_debt.to_f + interests.to_f + iva.to_f + 0.01
+          payment = current_debt.to_f + interests.to_f + iva.to_f
           capital = payment.to_f - interests.to_f - iva.to_f
-          #break
         end
         @i == i
-      end
+      end 
+      @total_payment += capital.round(2)
       @capital += capital
+      @dif = @capital.round(2) - @total_payment.round(2)
       @interests += interests
       @iva += iva
+      if(remaining_debt <= 0)
+        payment = payment + @dif
+        capital = payment.to_f - interests.to_f - iva.to_f
+      end 
       sim_customer_payments = SimCustomerPayment.create(customer_credit_id: customer_credit_id, pay_number: i, current_debt: current_debt.round(2), remaining_debt:  remaining_debt.round(2),
                                                         payment: payment.round(2),
                                                         capital: capital.round(2), interests: interests.round(2), iva: iva.round(2), payment_date: @payment_date, status: 'PE')
