@@ -134,8 +134,8 @@ class BuroCredito < ApplicationRecord
         http.request(request)
       end
   
-      p "JSON.parse(response.body) ------------------------------------------------------------------------"
-      p JSON.parse(response.body)
+      # p "JSON.parse(response.body) ------------------------------------------------------------------------"
+      # p JSON.parse(response.body)
   
       return JSON.parse(response.body)
   

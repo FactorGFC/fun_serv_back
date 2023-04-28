@@ -772,11 +772,13 @@ class ApplicationController < ActionController::Base
         else
           p "NO REALIZA LA CONSULTA PUES YA ESTA GUARDADA EN DB"
           @credit_bureau = CreditBureau.where(customer_id: @customer_credit.customer_id)
-          @bureau_report = @credit_bureau[0].bureau_report
-          @bureau_info = @credit_bureau[0].bureau_info
-          # @report_result = @bureau_report
+          unless @credit_bureau.blank?
           # RETURNS BURO REPORTS AS JSON
             return @credit_bureau
+          else
+            # NO SE ENCONTRÓ BURÓ
+            render json: { message: "No se encontró reporte de buró en tabla credit_bureaus" }, status: 404
+            end
         end
         else
           @error_desc.push("No se encontró person")
