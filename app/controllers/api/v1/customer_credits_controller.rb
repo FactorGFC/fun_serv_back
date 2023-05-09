@@ -192,7 +192,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def generate_credit_number
-    # GENERAR NUMERO DE CREDITO DEPENDIENDO DEL TIPO DE EMPRESA
+    # GENERAR NUMERO DE CREDITO DEPENDIENDO DEL TIPO DE EMPRESA 
     case @company.company_rate
     when 'GPA'
       @gpa_sequence = GeneralParameter.where(key: 'GPA_SEQUENCE') 
