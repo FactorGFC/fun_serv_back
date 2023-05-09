@@ -126,9 +126,16 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               @new_term_id = @customer_credit.term_id
             end
           #  @capital = @capital - 0.01
+          if @customer_credit.status == 'PA' #PA = POR APROBAR
+            if params[:old_customer_credit].blank?
+              generate_credit_number
+            else
+              recover_old_credit_number(params[:old_customer_credit])
+            end
+          end
             @customer_credit.update(capital: @capital.round(2), interests: @interests.round(2), iva: @iva.round(2), total_debt: @total_debt.round(2), total_payments: @total_payments.round(2),
                                   end_date: @end_date, fixed_payment: @fixed_payment.round(2), commission1: @commission.round(2), payment_period_id: @payment_period.id, start_date: @date, 
-                                  debt_time: @debt_time.round(2), insurance1: @insurance.round(2), term_id: @new_term_id)
+                                  debt_time: @debt_time.round(2), insurance1: @insurance.round(2), term_id: @new_term_id, credit_number: @credit_number)
           if @customer_credit.status == 'SI' # SI = SIMULAR
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
@@ -172,6 +179,64 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   private
+
+  def recover_old_credit_number(old_credit_id)
+    @old = CustomerCredit.where(id: old_credit_id)
+    unless @old.blank?
+      if @old[0]['status'] == 'PA'
+        @credit_number = @old[0]['credit_number']
+      end
+    else
+      generate_credit_number
+    end
+  end
+
+  def generate_credit_number
+    # GENERAR NUMERO DE CREDITO DEPENDIENDO DEL TIPO DE EMPRESA
+    case @company.company_rate
+    when 'GPA'
+      @gpa_sequence = GeneralParameter.where(key: 'GPA_SEQUENCE') 
+      unless @gpa_sequence.blank?
+        @credit_number = @gpa_sequence[0]['value']
+        @gpa_sequence.update(value: ('00000' + (@credit_number.to_i + 1).to_s) )
+        # @credit_number = '000004000'
+      else
+        @error_desc.push("Parametro general no encontrado GPA_SEQUENCE")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+    when 'EXTERNO' 
+      if @company.business_name == 'ALSUPER'
+        @alsuper_sequence = GeneralParameter.where(key:'ALSUPER_SEQUENCE') 
+        unless @alsuper_sequence.blank?
+          @credit_number = @alsuper_sequence[0]['value']
+          @alsuper_sequence.update(value: ('0000' + (@credit_number.to_i + 1).to_s) )
+        else
+          @error_desc.push("Parametro general no encontrado ALSUPER_SEQUENCE")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        end
+      elsif @company.business_name == 'MAUSOLEOS'
+        @mausoleos_sequence = GeneralParameter.where(key:'MAUSOLEOS_SEQUENCE') 
+        unless @mausoleos_sequence.blank?
+        @credit_number = @mausoleos_sequence[0]['value']
+        @mausoleos_sequence.update(value: ('0000' + (@credit_number.to_i + 1).to_s) )
+        else
+          @error_desc.push("Parametro general no encontrado MAUSOLEOS_SEQUENCE")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        end
+      else
+        @error_desc.push("Revise el nombre de la empresa")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+    else 
+      @error_desc.push("La empresa no cuenta con un company_rate válido")
+      error_array!(@error_desc, :not_found)
+      raise ActiveRecord::Rollback
+    end
+  end
 
   def set_customer_credit
     @customer_credit = CustomerCredit.find(params[:id])
