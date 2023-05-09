@@ -206,7 +206,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         raise ActiveRecord::Rollback
       end
     when 'EXTERNO' 
-      if @company.business_name == 'ALSUPER'
+      if (@company.business_name.upcase).include? "ALSUPER"
         @alsuper_sequence = GeneralParameter.where(key:'ALSUPER_SEQUENCE') 
         unless @alsuper_sequence.blank?
           @credit_number = @alsuper_sequence[0]['value']
@@ -216,7 +216,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         end
-      elsif @company.business_name == 'MAUSOLEOS'
+      elsif (@company.business_name.upcase).include? "MAUSOLEOS"
         @mausoleos_sequence = GeneralParameter.where(key:'MAUSOLEOS_SEQUENCE') 
         unless @mausoleos_sequence.blank?
         @credit_number = @mausoleos_sequence[0]['value']
