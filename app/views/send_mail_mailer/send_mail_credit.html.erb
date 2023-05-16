@@ -5,7 +5,67 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Aceptar</title>
-    <%# <link rel="stylesheet" href="estilos.css"> %>
+    <style type="text/css">
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        border-radius: 4px;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+      }
+      
+      .button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+      }
+      
+      .button span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+      }
+      
+      .button:hover span {
+        padding-right: 25px;
+      }
+      
+      .button:hover span:after {
+        opacity: 1;
+        right: 0;
+      }
+      .button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #4CAF50;
+}
+
+.button1:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+</style>
 </head>
 <body>
     <div height="100%" width="100%" >
@@ -47,18 +107,12 @@
 			</div>
             <br>
             <div class="col m4">
-                <%# <form action= <%= @content[0] %>
-                    <%# <input type="submit" value="Aceptar" /> %>
-                <%# </form> %>
                 <br> Para aceptar
-                Haga click en <a href=<%= @content[0] %>> Aceptar </a>
+                Haga click en <%= link_to "Aceptar", @content[0],  class: "button button1" %>
             </div><br>
             <div class="col m4">
-                <%# <form action= <%= @content[1] %>
-                    <%# <input type="submit" value="Rechazar" /> %>
-                <%# <%# </form>  %>
                 Para rechazar
-                Haga click en <a href=<%= @content[1] %>> Rechazar </a>
+                Haga click en <%= link_to "Rechazar", @content[1],  class: "button button2" %>
             </div>
             <div>
             <h2> Con la aceptación del crédito se firma digitalmente el documento anexo
