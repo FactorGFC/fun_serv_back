@@ -110,7 +110,7 @@ def customers_params
                                      :christmas_bonus, :taxes, :imms, :savings_found,
                                      :savings_found_loand, :savings_bank, :insurance_discount,
                                      :child_support, :extra_expenses, :infonavit, :user_id, :company_id, :extra3,
-                                     :public_charge, :public_charge_det, :relative_charge, :relative_charge_det, :benefit,
+                                     :public_charge, :public_charge_det, :relative_charge, :relative_charge_det, :other_income_detail, :benefit,
                                      :benefit_detail, :responsible, :responsible_detail)
 end
    

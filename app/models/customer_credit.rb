@@ -102,7 +102,7 @@ class CustomerCredit < ApplicationRecord
 
   def self.get_customer_credit_data(id)
 
-    @query = "SELECT ter.value numero_pagos, ter.description plazo,ter.key plazo_key,ter.term_type plazo_type, us.job puesto,
+    @query = "SELECT ter.value numero_pagos, ter.description plazo,ter.key plazo_key,ter.term_type plazo_type, cus.job puesto,
     cus.credit_lp creditos_lp,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
     con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
     peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name nombre, peo.last_name apellido_paterno, peo.second_last_name apellido_materno, peo.gender pf_genero, 
@@ -110,7 +110,7 @@ class CustomerCredit < ApplicationRecord
     peo.phone pf_telefono, peo.mobile pf_celular, peo.email pf_correo, peo.fiel pf_fiel,peo.extra3 destino, lee.fiscal_regime pm_regimen_fiscal, lee.rfc pm_rfc, lee.rug pm_rug, lee.business_name pm_nombre, lee.phone pm_telefono, lee.mobile pm_celular, 
     lee.email pm_correo, lee.business_email pm_correo_negocio, lee.main_activity pm_actividad_pricipal, lee.fiel pm_fiel, coa.street calle, coa.suburb colonia, coa.external_number numero_exterior,coa.apartment_number numero_apartamento, coa.postal_code codigo_postal,
     sta.name estado, mun.name municipio, cou.name pais,com.business_name nombre_empresa , com.start_date fecha_inicio_labores, com.sector giro_empresa,com.contributor_id company_contributor_id, cuc.insurance1 seguro, con.person_id person_id,
-    cus.public_charge,cus.public_charge_det,cus.relative_charge,cus.relative_charge_det,cus.benefit,cus.benefit_detail,cus.responsible,cus.responsible_detail
+    cus.public_charge,cus.public_charge_det,cus.relative_charge,cus.relative_charge_det,cus.other_income_detail,cus.benefit,cus.benefit_detail,cus.responsible,cus.responsible_detail
     FROM customer_credits cuc
     JOIN customers cus ON (cus.id = cuc.customer_id)
     JOIN users us ON (us.id = cus.user_id)

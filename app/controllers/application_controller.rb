@@ -483,6 +483,7 @@ class ApplicationController < ActionController::Base
       @public_charge_det = @customer_credit_data[0]["public_charge_det"]
       @relative_charge = @customer_credit_data[0]["relative_charge"]
       @relative_charge_det = @customer_credit_data[0]["relative_charge_det"]
+      @other_income_detail = @customer_credit_data[0]["other_income_detail"]
       @benefit = @customer_credit_data[0]["benefit"]
       @benefit_detail = @customer_credit_data[0]["benefit_detail"]
       @responsible = @customer_credit_data[0]["responsible"]

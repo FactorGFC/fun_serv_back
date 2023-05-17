@@ -2697,7 +2697,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     cus.total_income, cus.total_savings_found, cus.christmas_bonus, cus.taxes, cus.imms,
     cus.savings_found, cus.savings_found_loand, cus.savings_bank, cus.insurance_discount,
     cus.child_support, cus.extra_expenses, cus.infonavit, cus.company_id customer_company, cus.job,
-    cus.public_charge, cus.public_charge_det, cus.relative_charge, cus.relative_charge_det, cus.benefit,
+    cus.public_charge, cus.public_charge_det, cus.relative_charge, cus.relative_charge_det,cus.other_income_detail, cus.benefit,
     cus.benefit_detail, cus.responsible, cus.responsible_detail,
     con.id contributor_id, con.contributor_type, con.bank, con.account_number, con.clabe, con.extra1 contributor_extra1,
     con.extra2 contributor_extra2, con.extra3 contributor_extra3, con.person_id contributor_person,

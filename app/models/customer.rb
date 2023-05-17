@@ -30,6 +30,7 @@
 #  net_expenses        :decimal(15, 4)
 #  ontime_bonus        :decimal(15, 4)
 #  other_income        :decimal(15, 4)
+#  other_income_detail :string
 #  public_charge       :string
 #  public_charge_det   :string
 #  relative_charge     :string
