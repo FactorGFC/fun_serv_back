@@ -121,6 +121,7 @@ Rails.application.routes.draw do
       get '/postal_codes/pc/:pc', to: 'postal_codes#pc', as: 'postal_code_filter'
       get '/authenticate', to: 'api_sessions#create'
       get '/get_contributor_registers/:id', to: 'contributors#get_contributor_registers'
+      get '/get_issuing_contributor_by_rfc/', to: 'contributors#get_issuing_contributor_by_rfc'
       get '/reset_password', to: 'api_sessions#reset_password'
       get '/get_reset_token', to: 'api_sessions#get_reset_token'
       get '/get_credit_customer_report', to: 'reports#get_credit_customer_report'

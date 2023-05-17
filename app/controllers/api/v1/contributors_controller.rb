@@ -91,6 +91,37 @@ class Api::V1::ContributorsController < Api::V1::MasterApiController
     end
   end
 
+  def get_issuing_contributor_by_rfc
+    unless params[:rfc].blank?
+      #BUSCA SI EXISTE EN LEGAL ENTITIES
+      @legal_entity = LegalEntity.where(rfc: params[:rfc])
+      unless @legal_entity.blank?
+        # REGRESA EL CONTRIBUTOR DE LA COMPANY
+        @contributor = Contributor.where(legal_entity_id: @legal_entity[0].id)
+        unless @contributor.blank?
+        render json: { message: "RFC encontrado como Company", contribtor: @contributor, legal_entity: @legal_entity, status: true }, status: 200
+        else
+          render json: { message: "El legal entity #{@legal_entity[0].id} no cuenta con registro en la tabla contributors", status: false }, status: 206
+        end
+      else
+        @person = Person.where(rfc: params[:rfc])
+        unless @person.blank?
+          # REGRESAR EL CONTRIBUTOR DE ESA PERSONA FISICA
+          @contributor = Contributor.where(person_id: @person[0].id)
+          unless @contributor.blank?
+            render json: { message: "RFC encontrado como Persona", contribtor: @contributor, person: @person, status: true }, status: 200
+            else
+              render json: { message: "El person id #{@person[0].id} no cuenta con registro en la tabla contributors" , status: false }, status: 206
+            end
+        else
+          render json: { message: "RFC no encontrado en la base de datos", status: false }, status: 206
+        end
+      end
+    else
+      render json: { message: "RFC no encontrado en la petición", status: false }, status: 206
+    end
+  end
+
   private
 
   def set_contributor
