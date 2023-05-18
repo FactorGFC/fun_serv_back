@@ -36,7 +36,7 @@
                 <span >
                         la cantidad de
                     <strong><u><span style="background:yellow;">
-                        <%= @monto_total_solicitado.to_words.upcase << " ( " <<number_to_currency(@monto_total_solicitado)<< " PESOS " << (@monto_total_solicitado.to_s.split(".")[1] || 0).rjust(2,'0')<< "/100 M.N.)" %>
+                        <%= number_to_currency(@monto_total_solicitado) << " ( " <<@monto_total_solicitado.to_words.upcase<< " PESOS " << (@monto_total_solicitado.to_s.split(".")[1] || 0).rjust(2,'0') << "/100 M.N.)" %>
                     </span></u></strong>
                         En el lugar establecido en el Contrato de préstamo sobre Nomina que adelante se identifica. En un plazo de 
                     <strong><u><span style="background:yellow;">

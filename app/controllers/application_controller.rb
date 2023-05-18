@@ -491,6 +491,8 @@ class ApplicationController < ActionController::Base
       @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
       @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
       @giro_empresa = @customer_credit_data[0]["giro_empresa"]
+      @cat = @customer_credit_data[0]["cat"]
+      @pertenece = @customer_credit_data[0]["pertenece"]
       @total_gastos = @customer_credit_data[0]["total_gastos"]
       @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
       @ingreso_total = @customer_credit_data[0]["ingreso_total"]
@@ -583,7 +585,7 @@ class ApplicationController < ActionController::Base
         @fecha_primer_pago = @amortizacion[0]['payment_date']
 
         @file = CombinePDF.new
-        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","terminos2","pagare","caratula_terminos","amortizacion"]
+        @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","caratula_terminos","terminos2","pagare","amortizacion"]
         # @documents_array = ["terminos2"]
         
         @documents_array.each do |document_name|

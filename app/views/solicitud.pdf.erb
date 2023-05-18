@@ -136,7 +136,7 @@
             <th colspan="10" align="left">CORREO ELECTRONICO Y FACEBOOK</th>
           </tr>
           <tr class="row23">
-            <td colspan="8"><%= @telefono..blank? ? 'NA' : @telefono %></td>
+            <td colspan="8"><%= @telefono.blank? ? 'NA' : @telefono %></td>
             <td colspan="6"><%=@movil%></td>
             <td colspan="10"><%=@email%></td>
           </tr>
@@ -150,7 +150,7 @@
           </tr>
           <tr class="row26">
             <td colspan="11" ><%= @company %></td>
-            <td colspan="4" ><%= @puesto %></td>
+            <td colspan="4" ><%= @puesto.blank? ? 'EMPLEADO' : @puesto %></td>
             <td colspan="6" ><%= @antiguedad.to_i  %> Año/s</td>
           </tr>
           <tr class="row27">
@@ -278,7 +278,7 @@
             <th align="left">MENSUAL</th>
             <td ><%= @frecuencia_de_pago == 'Mensual' ? 'X': '' %></td>
             <td colspan="3" ><%= number_to_currency(@otros_ingresos) %></td>
-            <td colspan="3" > <%= @other_income_detail.blank? ? 'NA' : @other_income_detail %> </td>
+            <td colspan="3" ><%= @other_income_detail.blank? ? 'NA' : @other_income_detail %> </td>
             <td colspan="9" ><%= number_to_currency(@ingreso_total) %></td>
           </tr>
           <tr class="row51">
@@ -336,7 +336,7 @@
             <th  align="left">PLAZO:</th>
             <td colspan="9" ><%= @plazo_key %></td>
             <th  align="left">DESTINO:</th>
-            <td colspan="11" ><%=  @destino..blank? ? 'NA' : @destino %></td>
+            <td colspan="11" ><%=  @destino.blank? ? 'NA' : @destino %></td>
           </tr>
           <tr class="row62">
           </tr>

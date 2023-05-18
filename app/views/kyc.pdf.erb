@@ -80,7 +80,7 @@
             <th  colspan="8"><font style="font-size:10pt">Correo electrónico</font></th>
           </tr>
           <tr class="row18">
-            <td colspan="4"><%= @telefono.nil? ? 'NA' : @telefono %></td>
+            <td colspan="4"><%= @telefono.blank? ? 'NA' : @telefono %></td>
             <td colspan="12"><%= @movil %></td>
             <td colspan="8"><%= @email %></td>
           </tr>
@@ -117,7 +117,7 @@
           <tr class="row25">
             <td colspan="8"><%= @calle %></td>
             <td colspan="8"><%= @numero_exterior %></td>
-            <td colspan="8"><%= @numero_apartamento.nil? ? 'NA' : @numero_apartamento %></td>
+            <td colspan="8"><%= @numero_apartamento.blank? ? 'NA' : @numero_apartamento %></td>
           </tr>
           <tr class="row26">
             <th colspan="8" ><font style="font-size:10pt">Delegación / Municipio</font></th>
@@ -159,7 +159,7 @@
             <th colspan="24"  align="left"><font style="font-size:10pt">Especificar para que será destinado el recurso proveniente del crédito o servicio solicitado a Factor GFC</font></th>
           </tr>
           <tr class="row36">
-            <td colspan="24"><%= @destino %></td>
+            <td colspan="24"><%= @destino.blank? ? 'GASTOS FAMILIARES' : @destino %></td>
           </tr>
           <tr class="row37">
             <th colspan="12"  align="left"><font style="font-size:10pt">¿Cuál es el producto o servicio que está tramitando con Factor GFC?</font></th>
@@ -205,26 +205,26 @@
             <th colspan="24"  align="left"><font style="font-size:10pt">¿Desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?</font>  Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @public_charge == 'SI' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt"> No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @public_charge == 'NO' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt"> </span><span style="color:#E7E6E6; font-family:'Arial'; font-size:9pt"></span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
           </tr>
           <tr class="row49">
-            <td colspan="24">- <%= @public_charge_det.nil? ? 'NA' : @public_charge_det %></td>
+            <td colspan="24">- <%= @public_charge_det.blank? ? 'NA' : @public_charge_det %></td>
           </tr>
           <tr class="row50">
             <th colspan="24"  align="left"><font style="font-size:10pt">¿Su conyugue o algún pariente por consanguinidad o afinidad en segundo grado, desempeña o desempeñó algún cargo público a nivel federal, estatal, municipal en México o en algun país extranjero?  Si </font><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @relative_charge == 'SI' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt"> No</span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @relative_charge == 'NO' ? 'X' : '' %><br />
               </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre, parentesco o relación, la dependencia, el puesto, las principales funciones y periodo de ejercicio)</span></th>
           <tr class="row51">
-            <td colspan="24">- <%=  @relative_charge_det.nil? ? 'NA' : @relative_charge_det %></td>
+            <td colspan="24">- <%=  @relative_charge_det.blank? ? 'NA' : @relative_charge_det %></td>
           </tr>
           <tr class="row52">
             <th colspan="24"  align="left"><font style="font-size:10pt">¿Alguna persona distinta a usted hará uso, obtendrá los beneficios o decidirá sobre el uso, aprovechamiento o destino del recurso proveniente del crédito solicitado?  Si </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @benefit == 'SI' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt"> No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @benefit == 'NO' ? 'X' : '' %><br />
               </span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre de la persona física o moral y el motivo)</font></th>
           </tr>
           <tr class="row53">
-            <td colspan="24">- <%= @benefit_detail.nil? ? 'NA' : @benefit_detail %></td>
+            <td colspan="24">- <%= @benefit_detail.blank? ? 'NA' : @benefit_detail %></td>
           </tr>
           <tr class="row54">
             <th colspan="24"  align="left"><font style="font-size:10pt">¿Alguna persona física o moral distinta a usted aportará, pagará o depósitará con sus propios recursos a la SOFOM para el cumplimiento del presente crédito, así como los gastos y comisiones que se generen del mismo?</font> Si <span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @responsible == 'SI' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt">   No </span><span style="text-decoration:underline;  font-family:'Arial'; font-size:9pt"><%= @responsible == 'NO' ? 'X' : '' %></span><span style=" font-family:'Arial'; font-size:9pt">(De ser así, especificar el nombre de la persona física o moral y especificar el motivo)</span></th>
           </tr>
           <tr class="row55">
-            <td colspan="24">- <%= @responsible_detail.nil? ? 'NA' : @responsible_detail %></td>
+            <td colspan="24">- <%= @responsible_detail.blank? ? 'NA' : @responsible_detail %></td>
           </tr>
           <tr class="row56">
             <th colspan="24"  align="center"> <font style="font-size:8pt"> Declaro que la información y documentación presentada es verídica, que actúo por cuenta propia y que el origen de mis recursos son provenientes de actividades lícitas.</font></th>

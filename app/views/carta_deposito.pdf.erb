@@ -39,8 +39,12 @@
             <div >
                 <div>
                 <div class="row">
-                <div class="lcolumn">Comisión por apertura de 1%:</div>
-                <% @percentage = @monto_total_solicitado.to_f*1.to_f / 100 %>
+                <div class="lcolumn"><%= @pertenece == 'FACTOR' ? 'Comisión por apertura de 0%:' : 'Comisión por apertura de 1%:' %></div>
+                <% if @pertenece == 'FACTOR' %>
+                    <% @percentage = 0 %>
+                <% else %>
+                    <% @percentage = @monto_total_solicitado.to_f*1.to_f / 100 %>
+                <% end %>
                 <div class="rcolumn"><%= number_to_currency(@percentage) %>
                 </div>
                 <div class="row">

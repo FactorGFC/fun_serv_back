@@ -37,7 +37,10 @@
                 Numero de pagos: <%= @plazo_key %>
             </div><br>
             <div class="col" align="right">
-                Tasa: <%= @tasa %>
+                Tasa fija: <%= @tasa %> %
+            </div><br>
+            <div class="col" align="right">
+                Cat: <%= @cat.blank? ? '' : @cat %>% sin iva.
             </div><br>
             </font>
         </div>

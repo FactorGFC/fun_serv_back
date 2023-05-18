@@ -53,8 +53,8 @@
           </tr>
           <tr class="row14">
             <td colspan="3">CAT PROMEDIO</td>
-            <td >0.0%</td>
-            <td >()</td>
+            <td ><%= @cat.blank? ? '' : @cat %>%</td>
+            <td >(<%= @cat.blank? ? '' : @cat.to_i.to_words %> por ciento)</td>
             <td  colspan="3">SIN IVA INCLUIDO</td>
           </tr>
           <tr class="row16">
@@ -117,7 +117,7 @@
           <div>
             <div class="row" style="text-align:center;">
               <div class="col" style="display:inline-block;float:none;"><b>KARINA GONZALEZ RODRIGUEZ<b></div>
-              <div class="col" style="display:inline-block;float:none;"><b>MONICA JUDITH TRILLO ACOSTA<b></div>
+              <div class="col" style="display:inline-block;float:none;"><b>JOEL IVAN REY REZA<b></div>
             </div>
           </div>
        </div>

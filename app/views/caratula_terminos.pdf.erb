@@ -104,7 +104,7 @@
             <th colspan="7" bgcolor="#C0C0C0"><font color="FAFAFA">PLAZO DEL CONTRATO</font></th>
           </tr>
           <tr class="row25">
-            <td colspan="5"><%= @destino %></td>
+            <td colspan="5"><%= @destino.blank? ? 'GASTOS FAMILIARES' : @destino %></td>
             <td colspan="7">Iniciará a partir del <%= @dia_inicio %> de <%= @mes_inicio %> del <%= @anio_inicio %> , para concluir el <%= @dia_fin %>  del <%= @mes_fin %> del año <%= @anio_fin %> .</td>
           </tr>
           <tr class="row28">
@@ -112,7 +112,7 @@
           </tr>
           <tr class="row29">
             <td colspan="3" align="center">COMISIÓN POR APRETURA</td>
-            <td colspan="9"><%= number_to_currency(@intereses_apertura) %> (<%= @intereses_apertura.to_words.upcase << " PESOS " << (@intereses_apertura.to_s.split(".")[1] || 0).rjust(2,'0')<< "/100 M.N." %>) 1% del importe total del credito más IVA </td>
+            <td colspan="9"><%= @pertenece== 'FACTOR' ? '0% (cero por ciento) del importe total del credito más IVA' : '1% (uno por ciento) del importe total del credito más IVA' %> </td>
           </tr>
           <tr class="row30">
             <th colspan="5" bgcolor="#C0C0C0"><font color="FAFAFA">PAGO DE CAPITAL</font></th>
@@ -120,9 +120,9 @@
           </tr>
           <tr class="row31">
             <td colspan="3" align="center">NÚMERO DE PAGOS</td>
-            <td colspan="2"><%= @cantidad_pagos_al_mes %></td>
+            <td colspan="2"><%= @plazo_key %></td>
             <td colspan="4" align="center">TASA DE INTERÉS ORDINARIO FIJA</td>
-            <td colspan="3"><%= @tasa %>%</td>
+            <td colspan="3"><%= @tasa %>% (<%= @tasa.to_i.to_words %>)</td>
           </tr>
           <tr class="row32">
             <td colspan="4" align="center">CONDICIONES ESPECIALES</td>
