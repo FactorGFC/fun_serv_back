@@ -4,9 +4,24 @@
   <%= wicked_pdf_stylesheet_link_tag 'application' %>
     <title>Contrato de prestamo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <style type="text/css">
+    <style type="text/css">
         html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:9pt; background-color:white }
         div.comment { display:none }
+        p{  
+            overflow: hidden;
+                position: relative;
+            }
+          .text { 
+            width: 100%;
+          }
+          .text1 { 
+            width: 100%;
+          }
+          .text:after{
+              content: " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+              position: absolute;
+              padding-left: 5px;
+          }
         /* div { border-collapse:hidden; page-break-after:always border-style:hidden } */
     </style>
 </head>
@@ -17,488 +32,561 @@
             <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;">
         </div>
         <div class="row">
-            <div class="column" align="right" bgcolor="#F4FF12"><font style="font-family:Arial; font-size:9pt"><%= @credit_number %></font>
-            </div>
-        </div>
-        <div class="row">
-            <div class="column" align="right" bgcolor="#F4FF12"><font style="font-family:Arial; font-size:9pt">Chihuahua,Chih. A <%= @date %></font>
+            <div class="col" align="right"  style="float: right;" bgcolor="#F4FF12"><font style="font-family:Arial; font-size:9pt">Chihuahua,Chih. A <%= @date %></font>
             </div>
         </div>
     </div>
     <div>
-        <div align="center" class="column"><h5 align="center">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</h5>
-            <div align="center" class="column"><h5 align="center">Número de préstamo <%= @credit_number %> </h5>
+        <div align="center" class="col"><h7 align="center">CONTRATO DE PRÉSTAMO SOBRE NÓMINA</h7>
+            <div align="center" class="col"><h7 align="center">Número de préstamo <%= @credit_number %> </h7>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="column" style="float: left;  width: 50%;  padding: 5px;">
-            <div>
-                CONTRATO DE PRÉSTAMO EN MONEDA NACIONAL QUE CELEBRAN POR UNA PARTE, FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL 
-                    VARIABLE, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO EL “ACREEDOR”, REPRESENTADO EN ESTE ACTO POR LA(S) PERSONA(S) SEÑALADA(S) EN EL 
-                    APARTADO DE FIRMAS DEL PRESENTE CONTRATO Y EN LA CARÁTULA DE TÉRMINOS, Y POR LA OTRA PARTE, LA PERSONA CUYO NOMBRE APARECE EN EL APARTADO 
-                    DE FIRMAS DEL PRESENTE CONTRATO Y EN LA CARÁTULA DE TÉRMINOS, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO EL “ACREDITADO”, A TODOS ELLOS 
-                    EN SU CONJUNTO SE LES DENOMINARA LAS “PARTES”, ANTE LA PRESENCIA DE DOS TESTIGOS, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y DE CLÁUSULAS:
-                    ----------------------------------------------------------------------------------DE-----------------------------------------------------------------(---------------I.
-                    Declara el ACREDITADO por su propio derecho y bajo protesta de decir verdad que:---------------------------------------------------------------------------
-                    a) Es una persona física, mayor de edad, con capacidad jurídica y económica para obligarse en los términos del presente contrato. ------------------------------
-                    b) Ha solicitado al ACREEDOR, un préstamo hasta por la cantidad que se indica en la Carátula de Términos.--------------------------------------------------------
-                    c) Reconoce expresamente la personalidad y facultades del representante del ACREEDOR, para comparecer a la celebración de este Contrato.--------------
-                    d) Este contrato constituirá una obligación válida y exigible en su contra de conformidad con sus respectivos términos.----------------------------------------------
-                    e) Bajo protesta de decir verdad, declara que: ---------------------------------------------------(i) La información y documentación económica que ha entregado 
-                    con anterioridad al ACREEDOR y con base en los que el ACREEDOR celebra el presente Contrato, presentan de manera exacta, veraz y fidedigna 
-                    su solvencia económica, y al momento de la firma de este instrumento no existe cambio adverso alguno que afecte de manera significativa su 
-                    condición financiera o sus operaciones, por lo que está en aptitud de cumplir oportunamente con todas y cada una de las obligaciones 
-                    consignadas en el presente Contrato.----------------------------------------------------------------------------------------Asimismo, declara que la información y/o datos y/o 
-                    documentos  de  identificación  otorgados  en copia fotostática 
-                    ------ La autorización que se otorga no implica la aceptación para que esta información, datos y documentación sean utilizados por 
-                    terceros distintos de las entidades antes mencionadas. ---------------------------------------------------------
-                    g) Previamente, el ACREEDOR le explicó antes de la fecha de firma del presente contrato y ha entendido perfectamente el contenido del 
-                    mismo y de todos los documentos a suscribir por virtud de este contrato, así como los cargos, comisiones o gastos que se generarán por 
-                    la firma del presente instrumento, así como lo relativo a la forma y fórmulas de aplicar y obtener el Costo Anual Total (CAT) para este 
-                    contrato, mismo que es expresado en términos porcentuales anuales promedio que, para  fines informativos y de comparación, incorpora la 
-                    totalidad de los costos y gastos inherentes al préstamo objeto del presente contrato.----------------------------------------------------
-                    h) Continúa declarando el ACREDITADO que FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL VARIABLE, ha puesto a su 
-                    disposición previamente su Aviso de Privacidad, por lo que conociendo su contenido, otorga su consentimiento para que sus Datos 
-                    Personales, sean tratados y en su caso transferidos conforme se establece en dicho aviso. Asimismo, en caso de que hubiere proporcionado 
-                    Datos Personales de otro(s) Titular(es), se obliga a hacer del conocimiento de ese (esos) Titular(es) que ha proporcionado tales datos a 
-                    FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL VARIABLE, y a hacer de su conocimiento tanto el Aviso de 
-                    Privacidad, como los medios por los cuales esa institución lo tiene a su disposición.----------------------------------------------------------------------------------------
-                    i) Al momento de celebración del presente contrato, se le ha entregado un ejemplar de este contrato junto con sus anexos, incluyendo la 
-                    tabla de pagos, así como copia del (de los) pagaré(s) de disposición, que lleva(n) inserta la tabla de pagos de capital.---------------------------------------------------------------------
-                    j) Actualmente mantiene una relación laboral con la empresa que se indica en la Carátula de Términos, cuyo pago nominal lo recibe a 
-                    través de la dispersión de nómina que realiza la referida empresa con institución bancaria.-----------------------------------------------------------------------------------------------------------------
-                    II. Declara el ACREEDOR, por conducto de su(s) representante(s), que:--------------------------------------------------------------------------
-                    a) Es una persona moral, debidamente constituida conforme a la legislación mexicana, según consta en la escritura pública número 18395, 
-                    volumen 752, celebrada en la ciudad de Chihuahua, Chihuahua, el día 21 de diciembre del 2018, ante la fe del Licenciado Eugenio Fernando 
-                    García Russek, Notario Público Número Veinticuatro del Distrito Judicial Morelos, 
-                    que obra registrada a nombre del ACREDITADO indicada en la Carátula de Términos, o mediante transferencia electrónica de 
-                    fondos interbancarios a la misma cuenta, por lo que en este acto el ACREDITADO, autoriza expresamente al ACREEDOR y extiende 
-                    el recibo más amplio y eficaz que en derecho proceda por la cantidad dispuesta antes mencionada--------------------------------
-                    El o los pagarés de que se trata son de tipo causal, no modifican este contrato y sólo señalan los plazos dentro de los cuales 
-                    deberá quedar pagado el “Préstamo”, así como la disposición del mismo, pero podrá(n) ser descontado(s) por el ACREEDOR, aún antes 
-                    del vencimiento estipulado, para lo cual lo faculta expresamente el ACREDITADO.------------------------------------------------
-                    El ACREDITADO podrá disponer del “Préstamo” siempre y cuando cumpla con todas las obligaciones establecidas en el presente contrato 
-                    y demás condiciones precedentes señaladas en la Carátula de Términos, siempre y cuando el ACREEDOR tenga recursos disponibles.-------------------------------
-                    TERCERA.- DESTINO.- El ACREDITADO se obliga a invertir el monto del “Préstamo”, precisamente a los fines señalados en la Carátula de Términos.---------------------------------------------------------------------------------------------------
-                    CUARTA.- PLAZO.- El plazo de este contrato es el que se señala en la Carátula de Términos del presente contrato.Las Partes convienen 
-                    desde este momento, en que el plazo anteriormente señalado podrá ser prorrogado previo acuerdo por escrito entre las partes.--------------------------------------------------------
-                    QUINTA.- PAGOS.- El pago del “Préstamo” será efectuado por el ACREDITADO, en el domicilio del ACREEDOR, mediante el número de pagos 
-                    que se indica en la Carátula de Términos, el o los  días que se señala Carátula de Términos, por las cantidades y en las fechas que 
-                    se señalan en el (los) pagaré(s) de disposición del presente préstamo en el (los) cual(es) se inserta la tabla de pagos, la cual se 
-                    adjunta al presente contrato como ANEXO identificado con el número “2 DOS”.------------------------------------------------------
-                    El ACREDITADO autoriza que los recursos que en su momento llegase a entregar en exceso a sus obligaciones exigibles conforme al 
-                    presente contrato, no se apliquen para pagos anticipados del principal, sino que se utilicen para cubrir por adelantado los pagos 
-                    periódicos del “Préstamo” inmediatos siguientes.------------------------------------------------------------------------------------
-                    La tasa de interés ordinaria será la que se determine conforme a lo estipulado en la Cláusula denominada TASA DE INTERÉS ORDINARIO 
-                    del presente contrato.-------------------------------------------------------------------------------
-                    En caso de que el día en que deba de realizarse cualquier pago sea inhábil, dicho pago deberá realizarse el día hábil inmediato 
-                    siguiente, dependiendo de las fechas en que la empresa contratante del ACREDITADO deposite el salario de éste último, sin que 
-                    proceda el cobro de comisiones o intereses
-                    ----------Dichos pagos de intereses se cobrarán única y exclusivamente por periodos vencidos, por lo que no podrán ser 
-                    exigidos por adelantado.---------------------Los intereses serán pagaderos según se pacte en la Carátula de Términos, por períodos 
-                    vencidos, en el domicilio del ACREEDOR, por las cantidades y en las fechas pactadas en el (los) pagaré(s) de disposición del presente 
-                    contrato, y de la tabla de pagos, principiando a pagarse el día que se indica en la Carátula de Términos del presente contrato.-----------------------------------
-                    Se considera fecha de corte para efecto del cómputo de intereses el o los días que se pacten en la Carátula de Términos del presente contrato.---------------
-                    En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre los intereses pactados 
-                    en esta cláusula, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con los referidos intereses y cualquier 
-                    otro que conforme a las disposiciones fiscales le sea aplicable.----------------------------------------------------------
-                    Convienen las Partes en que la certificación del Contador del ACREEDOR hará fe, salvo prueba en contrario, respecto de los montos 
-                    relativos a la determinación de la tasa pactada en este contrato.-----------------------------
-                    SÉPTIMA.- TASA DE INTERÉS MORATORIO.- En caso de que el ACREDITADO deje de pagar puntualmente cualquier suma que estuviere obligado 
-                    a cubrir conforme a este contrato, la cantidad no pagada causará intereses moratorios a partir de la fecha en que debió ser cubierta 
-                    hasta la fecha de su pago total, a la tasa de interés anual que resulte de multiplicar el factor que se indica en la Carátula de 
-                    Términos por la Tasa de Interés Ordinario pactada en la Carátula de Términos del presente contrato.------------------------
-                    El ACREDITADO se obliga a pagar al ACREEDOR, en el domicilio de ésta, dichos intereses moratorios.-------------------------------------------------------------------
-                    En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre los intereses pactados 
-                    en esta cláusula, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con los referidos intereses.------------------------------------------------------
-                    Dichos intereses moratorios se causarán durante todo el tiempo en que dure la mora, obligándose asimismo, a pagar los gastos de 
-                    cobranza y en su caso, honorarios de abogado y gastos y costas judiciales que en su momento se llegasen a generar.------------------------------------------------------------------------
-                    OCTAVA.- COMISIÓN.- El ACREDITADO se obliga a pagar al ACREEDOR, en el domicilio de éste, por una sola vez, la comisión que se indica 
-                    en la Carátula de Términos por apertura del mismo la cual se cubrirá
-                    incorpora la totalidad de los costos y gastos inherentes al “Préstamo” (“CAT”).- El ACREDITADO manifiesta que el ACREEDOR, 
-                    hizo de su conocimiento antes de la firma del presente contrato: el contenido del mismo y de todos los documentos a suscribir, 
-                    los cargos, comisiones o gastos que en su caso se generarán por su celebración y, en su caso, los descuentos o bonificaciones a 
-                    que tiene derecho, así como el “CAT” promedio correspondiente al indicado en la Carátula de Términos del presente contrato sin 
-                    el Impuesto al Valor Agregado (IVA), el cual es calculado a la fecha de celebración del presente contrato, exclusivamente para 
-                    fines informativos y de comparación, y además que la tasa de interés ordinario que se aplicará al presente “Préstamo” es fija.------------------------------------------------------------------------------
-                    DÉCIMA PRIMERA.- PAGOS ANTICIPADOS.- El ACREDITADO podrá en cualquier momento pagar anticipadamente, total o parcialmente, 
-                    el saldo insoluto del capital del presente “Préstamo”, sin que le sea aplicable ninguna sanción o comisión alguna. Lo anterior, 
-                    siempre que el ACREDITADO lo solicite, (y) esté al corriente en los pagos exigibles y el importe del pago anticipado sea por una 
-                    cantidad igual o mayor al pago que deba realizarse en el período correspondiente.----------------------------------------------------
-                    Los pagos parciales anticipados se aplicarán en forma exclusiva al saldo insoluto del capital del “Préstamo” y cuando el importe 
-                    de los pagos anticipados no fuere suficiente para amortizar el saldo insoluto del capital en su totalidad, reducirán el monto de 
-                    los pagos periódicos pendientes, salvo que el ACREDITADO previamente solicite por escrito que se disminuya el número de 
-                    pagos/amortizaciones a realizar.-------------------------------------------------------Los Pagos Anticipados se realizarán 
-                    abonando a la cuenta de cheques del ACREEDOR señalada en la Carátula de Términos del presente contrato, las cantidades 
-                    correspondientes, y los mismos serán aplicados en la fecha en que se hagan, conforme a lo previsto en la cláusula denominada 
-                    MEDIOS DE PAGO Y FECHAS DE ACREDITAMIENTO, de este contrato.----------------Cada vez que el ACREEDOR reciba y tenga como 
-                    ACREDITADO el pago anticipado parcial, procederá a calcular el importe de los intereses por devengar con base en el nuevo 
-                    saldo insoluto del capital y entregará por escrito al ACREDITADO la nueva tabla de pagos que corresponda, en su caso, pudiendo 
-                    enviar la nueva tabla de pagos al correo electrónico que ACREDITADO señalo en la Carátula de Términos del presente contrato, 
-                    a más tardar en la fecha en que se dé a conocer el estado de cuenta correspondiente al período en que se realizó el pago 
-                    anticipado.------------------
-                	DÉCIMA TERCERA.- APLICACIÓN DE PAGOS.-  Todo pago realizado bajo el presente contrato será aplicado por el ACREEDOR en 
-                    el siguiente orden: (i) gasto(s) pactados y derivado(s) del presente contrato; (ii) comisiones más el Impuesto al Valor 
-                    Agregado (IVA); (iii) Intereses moratorios más el Impuesto al Valor Agregado (IVA); (iv) Intereses ordinarios más el Impuesto 
-                    al Valor Agregado (I.V.A.),  y en último lugar (v) capital,  de conformidad con el artículo 364 trescientos sesenta y cuatro 
-                    del Código de Comercio en vigor.---------------------DÉCIMA CUARTA.- VENCIMIENTOS EN DÍAS INHÁBILES.- En el supuesto de que 
-                    la fecha en que deba realizarse algún pago de principal, intereses o cualquier otro concepto de conformidad con el presente 
-                    contrato o con el(los) pagaré(s) que documenta(n) la(s) disposición(es) del “Préstamo”, fuere día inhábil conforme a la Ley 
-                    Federal del Trabajo,  la fecha de vencimiento de dicho pago se pospondrá al día hábil inmediato siguiente, sin que proceda 
-                    el cobro de intereses moratorios.------------------------------------------------DÉCIMA QUINTA.- DEPÓSITO AL ACREEDOR. 
-                    Sin perjuicio de lo pactado en las cláusulas conducentes de este contrato, respecto a la obligación del ACREDITADO de 
-                    efectuar los pagos establecidos en dichas cláusulas, en el domicilio del ACREEDOR, el ACREDITADO podrá depositarle al 
-                    ACREEDOR, en la cuenta de cheques a nombre del ACREEDOR señalada en la CARÁTULA DE TÉRMINOS del presente contrato,  las 
-                    cantidades correspondientes al importe de los pagos de capital e intereses y demás accesorios, así como el importe de 
-                    cualquier cargo o contraprestación legal o contractualmente exigible en términos del presente instrumento y de la Ley o en 
-                    cualquier otra cuenta a nombre del ACREEDOR que este último le indique por escrito.-----------------------------------------------------------------------------------------------
-                    DÉCIMA SEXTA.- CESIÓN.- El ACREEDOR queda expresamente autorizada y facultada para ceder o de cualquier forma transferir la 
-                    totalidad de sus derechos y obligaciones derivados del presente contrato y el(los) pagaré(s) de disposición que lo 
-                    documente(n), así como negociar, descontar, re descontar, fondear o en cualquier otra forma transmitir el “Préstamo” y 
-                    sus accesorios en cualquier momento, sin necesidad de obtener el consentimiento del ACREDITADO.----------------------------------------------------------------
-                    Asimismo, en los términos del artículo 299 doscientos noventa y nueve de la Ley General de Títulos y Operaciones de 
-                    “Préstamo”, el ACREDITADO faculta de manera expresa al ACREEDOR, para descontar negociar, o ceder con cualquier Institución 
-                    de “Préstamo”, Organismo Nacional o Internacional, público o privado en todo o en parte, el “Préstamo” que ampara el presente 
-                    contrato, aún antes del vencimiento estipulado para su pago.----------------------
-                    pago de la totalidad del presente “Préstamo”, así como de los accesorios generados, el ACREEDOR entregará o mantendrá 
-                    a disposición del ACREDITADO, el estado de cuenta o documento en el que conste el fin de la relación contractual y la 
-                    inexistencia de adeudos derivados exclusivamente del presente contrato, dentro de los 10 diez días hábiles a partir de 
-                    que se hubiera realizado el pago de los adeudos o en la siguiente fecha de corte.-----------VIGÉSIMA.- IMPUESTOS.- 
-                    El ACREDITADO se obliga a cubrir al ACREEDOR los cargos que procedan por concepto de impuestos, conforme a las leyes 
-                    vigentes aplicables, incluyendo el Impuesto al Valor Agregado (IVA) sobre comisión y demás gastos, los intereses ordinarios 
-                    y en su caso moratorios que se generen conforme a lo pactado en este contrato.--------------------VIGÉSIMA PRIMERA.- LUGAR DE 
-                    PAGO. El ACREDITADO realizará sin necesidad de requerimiento o previa solicitud, cualquier pago tanto de capital como de 
-                    intereses así como de la comisión y los gastos en su caso, en el domicilio que el ACREEDOR señalo en la Carátula de Términos 
-                    del presente contrato, en horas y días hábiles, o en cualquier otro lugar que el ACREEDOR le señale previamente por escrito.-----------------------------------------------
-                    Todas las cantidades pagaderas por el ACREDITADO al ACREEDOR de conformidad con el presente Contrato y el o los pagaré(s), 
-                    serán pagadas en la fecha de su vencimiento, en el domicilio del ACREEDOR, ubicado a la fecha del presente Contrato en Avenida 
-                    La Cantera Número 9301 interior 201 nueve tres cero uno interior dos cero uno, Colonia Las Misiones, C.P. 31115 tres uno uno 
-                    uno cinco, en la Ciudad de Chihuahua, Municipio y Estado del mismo nombre, o en cualquier otro domicilio que con posterioridad 
-                    indique por escrito el ACREEDOR al ACREDITADO, o en cualquier sucursal del ACREEDOR, en días y horas hábiles sin necesidad de 
-                    requerimiento o cobro previo.------------------------------------------------------------------------------------------------------
-                    VIGÉSIMA SEGUNDA.- OBLIGACIONES DE HACER DEL ACREDITADO.- El ACREDITADO deberá cumplir con las siguientes obligaciones, salvo 
-                    que exista consentimiento previo y por escrito de los representantes legales del ACREEDOR que la releven de su cumplimiento.---
-                    a) Comunicar al ACREEDOR cualquier cambio de domicilio;------------------------b) Proporcionar al ACREEDOR, información y 
-                    documentación relativa al presente contrato o a la existencia de su relación laboral entre el ACREDITADO y la empresa señalada 
-                    en el presente contrato, cuando el ACREEDOR se lo solicite, en un término que no exceda de 15 quince días----
-                    faltare al cumplimiento de cualesquiera de las obligaciones contraídas en virtud de este Contrato, o además en los casos que la 
-                    Ley así lo previene, o en cualesquiera de los siguientes supuestos, salvo que exista consentimiento previo y por escrito de los 
-                    representantes legales del ACREEDOR, que lo releven de su cumplimiento:------------------------------------------------------------------
-                    a) Si el ACREDITADO deja de efectuar, en forma total, uno o más de los pagos que se obliga a realizar conforme al presente contrato, 
-                    sean estos de capital, intereses, comisiones, gastos u otros accesorios.----------------------------b) Si el monto del “Préstamo” no es 
-                    empleado precisamente para el fin indicado en el presente contrato.------------------------------------------------------------c) Si 
-                    cualquier declaración hecha y/o información proporcionada por el ACREDITADO, para la celebración de este contrato, o cualquier 
-                    certificación o documento que haya entregado en cumplimiento de las obligaciones a su cargo en este contrato, resulta ser falsa en 
-                    cualquier aspecto.---------------------d) Si los bienes del ACREDITADO son objeto de embargo decretado por cualquier autoridad.-----------------------------------------------------------------------------
-                    e) Si el ACREDITADO incumpliere con cualesquiera de las obligaciones a su cargo, derivadas de este contrato o de la Ley.-------------------------------------------
-                    f) Si el ACREDITADO deja de cumplir con cualquier otro “Préstamo” o préstamo que le hubiere otorgado el ACREEDOR, o en general se de por 
-                    vencida anticipadamente cualquier obligación a plazo que tenga el ACREDITADO con el ACREEDOR.---------------------------------------------------------
-                    g) En caso de muerte, declaración de estado de interdicción, de inhabilitación o ausencia del ACREDITADO.---------------------------------------------------------------
-                    h) Si el ACREDITADO no mantiene vigentes los seguros a que se refieren este contrato, en los términos establecidos en el mismo.-----------------------------
-                    i) Si EL ACREDITADO fuere declarado en concurso mercantil, o si se inicia algún procedimiento judicial para declararlo en concurso.----------------------------
-                    j) Si el ACREDITADO cede sus derechos u obligaciones derivados del presente contrato.-------------------------------------------------------------------------------
-                    k) Si el ACREDITADO no cumple con las obligaciones de hacer y de no hacer señaladas en el presente contrato.----------------------------------------------------------
-                    l) Si el ACREDITADO no entrega al ACREEDOR los comprobantes relativos al destino del “Préstamo”.---------------------------------------------------------------------
-                    m) Si el ACREDITADO, está en desacuerdo con la notificación de modificaciones que pudieran surgir por parte del ACREEDOR.---------------------
-                    n) Si el ACREDITADO no toma oportunamente el (los) seguro(s) pactado(s).--------En los casos anteriores se podrá dar por vencido 
-                    anticipadamente el plazo del “Préstamo”, y se hará exigible en una sola exhibición la totalidad del capital adeudado, de sus intereses 
-                    y demás accesorios legales y convencionales pactados en este contrato. En el entendido de que la 
-                    cuarenta y cinco por ciento anual del saldo insoluto del “Préstamo” en la primera disposición del mismo. El ACREEDOR pondrá a 
-                    disposición del ACREDITADO, en el domicilio señalado en el presente contrato, la póliza del seguro contratado a nombre del 
-                    ACREDITADO, documento que estipula las condiciones generales del mismo. En el supuesto de fallecimiento del ACREDITADO, se deberá 
-                    notificar por escrito por parte de sus derechohabientes al ACREEDOR en un plazo no mayor a 90 (noventa) días a partir de la fecha 
-                    del fallecimiento, debiéndose presentar el original del acta de defunción, así como los demás documentos que en su momento requiera 
-                    el ACREEDOR, para efectos de hacer presentar la solicitud de reclamación del seguro a que se refiere el presente párrafo.-----------------------------------------
-                    El ACREEDOR, no se responsabiliza por la falta de pago oportuno de las primas del (de los) seguro(s) contratado(s).----------------------------------------------
-                    Si llegare a presentarse algún siniestro derivado de la cobertura contratada o en el supuesto que se actualice la misma, el ACREDITADO, 
-                    su conyugue o algún familiar se obligan a enterar en forma inmediata y por escrito al ACREEDOR, de tal circunstancia. Para tal efecto, 
-                    deberá de entregarse en el domicilio del ACREEDOR, los documentos indispensables que se le requieran para que el ACREEDOR pueda llevar a 
-                    cabo los trámites necesarios para solicitar a la Aseguradora el pago de la indemnización en caso de que ello corresponda.---------------------------------------------------------------------
-                    El ACREDITADO acepta que dentro del período en el cual la Aseguradora revisa y determina la procedencia de la reclamación y realiza el 
-                    pago de la misma, no queda liberada de su obligación de cumplir con los pagos del presente “Préstamo” en las fechas de vencimiento 
-                    pactadas en este instrumento, y en caso de no hacerlo, se actualizará las causas de vencimiento anticipado del mismo.-----------------------------------------------------------------
-                    VIGÉSIMA SEXTA.- DE LA INFORMACIÓN ADICIONAL, CONSULTAS, ACLARACIONES Y RECLAMACIONES.- Las Partes convienen, en que cualquier información 
-                    a cargo del ACREEDOR derivada del presente contrato y que no se encuentre consignada en el mismo, o bien, que requiera nuevamente ser 
-                    explicada o revisada por el ACREDITADO, la misma estará a su disposición en el domicilio del ACREEDOR, el cual se señala más adelante, así 
-                    como en la parte declarativa del presente contrato, a la que podrá acudir previa cita, en días y horas hábiles, a efecto de que sea 
-                    atendido por un encargado administrativo contable y ante quien podrá 
-                    como que dicho historial crediticio podrá servir de base para la aprobación de futuros préstamos con el ACREEDOR o con alguna 
-                    otra entidad crediticia.-----------VIGÉSIMA OCTAVA.- El ACREDITADO manifiesta su expresa conformidad con lo establecido en el presente 
-                    contrato, así como que se le proporciona un ejemplar de este contrato, tabla de pagos, así como del(os) pagaré(s) de disposición que 
-                    incluyen la tabla de pagos de capital, a la firma del presente instrumento.-----------------------------------------------------------------------------
-                    VIGÉSIMA NOVENA.- MEDIOS DE PAGO Y FECHAS DE ACREDITAMIENTO.- Sin perjuicio de lo pactado en las cláusulas conducentes de este contrato, 
-                    respecto a la obligación del ACREDITADO de efectuar los pagos establecidos en dichas cláusulas en el domicilio del ACREEDOR, los pagos 
-                    que realice el ACREDITADO, se aplicarán de acuerdo con el medio de pago utilizado de conformidad con lo siguiente: (i) Depósito en 
-                    efectivo en sucursal bancaria donde el ACREEDOR  tiene abierta su cuenta: Se acreditará el mismo día; (ii) Cheque: (a)  Del mismo Banco 
-                    en que el ACREEDOR tiene su cuenta, antes de las 12:00 horas, horario del centro, se acreditará el mismo día; (b) Cuenta de Banco diverso 
-                    al Banco en que el ACREEDOR tiene su cuenta, depositado antes de las 16:00 horas, se acreditará a más tardar el día hábil bancario 
-                    siguiente y después de las 16:00 horas, se acreditará a más tardar el segundo día hábil bancario siguiente; (iii) Domiciliación: Se 
-                    acreditará: (a) En la fecha en que se acuerde con el ACREDITADO, o (b) En la fecha límite de pago; (iv) Transferencias Electrónicas de 
-                    fondos: (a) A través del Sistema de Pagos Electrónicos de Uso Ampliado (SPEUA) y del Sistema de Pagos Electrónicos Interbancarios (SPEI) 
-                    de un banco distinto en que el ACREEDOR tiene su cuenta, antes de las 16:00 horas, se acreditará el mismo día; (b) Siendo del mismo banco 
-                    en que el ACREEDOR tiene su cuenta, antes de las 19:00 horas, se acreditará el mismo día; (c) Sistema de Pagos Electrónicos Interbancarios 
-                    (SPEI) de un banco distinto en que el ACREEDOR tiene su cuenta, después de las 16:00 horas, se acreditará al día hábil siguiente; y (d) 
-                    Siendo del mismo banco en que el ACREEDOR tiene su cuenta, después de las 19:00 horas, se acreditará al día hábil siguiente.--------------------------------------------------------------------
-                    TRIGÉSIMA.- MODIFICACIONES.- Las partes acuerdan que cualquier modificación al presente contrato, deberá de constar por escrito, debiendo 
-                    para tales efectos modificar la Carátula de Términos del presente contrato, la cual deberá estar debidamente firmada por las partes, e 
-                    identificarse con el número de identificación del presente “Préstamo” y número de convenio
-                    cumplimiento de las obligaciones derivadas de este contrato, las Partes y comparecientes se someten a las leyes de los Estados 
-                    Unidos Mexicanos, y a la jurisdicción y competencia de los tribunales de la Ciudad de Chihuahua, Chihuahua, renunciando a cualquier 
-                    otra jurisdicción a la que pudieren tener derecho en virtud de sus domicilios presentes o futuros, de la ubicación de sus bienes o 
-                    por cualquier otra causa.-----------------------------------------------------------TRIGÉSIMA CUARTA.- TÍTULOS DE LAS CLÁUSULAS.- Los 
-                    títulos de las cláusulas que aparecen en el presente instrumento se han puesto con el exclusivo propósito de facilitar su lectura por 
-                    tanto no definen ni limitan el contenido de las mismas. Para efectos de interpretación de este instrumento deberá atenderse exclusivamente 
-                    al contenido de sus declaraciones y cláusulas y de ninguna manera al título de estas últimas-----------------------------------TRIGÉSIMA 
-                    QUINTA.- PLENITUD CONTRACTUAL.- Las partes declaran que lo asentado en las cláusulas que anteceden y las que sigan en este Contrato 
-                    contienen todo lo pactado entre ellas, por lo que no se aceptará ningún otro documento, declaración de testigos o cualquier otro medio 
-                    para considerar variados los términos de este Contrato. En caso de que las partes quisieran modificarlo, el Contrato que en este documento 
-                    se hace constar, tendrá que ser por escrito, en que se haga referencia expresa a la modificación.---------------------------------------------------------------------------------------------
-                    TRIGÉSIMA SEXTA.- EQUIDAD.- Las partes declaran que en lo antes pactado no hay dolo, error ni lesión, por lo que renuncian desde ahora a 
-                    cualquier acción que pudiere corresponderles por esos conceptos.----------------------TRIGÉSIMA SÉPTIMA.- RENUNCIA DE DERECHOS.- La 
-                    omisión por parte del ACREEDOR en el ejercicio de los derechos previstos en este instrumento, en ningún caso tendrán el efecto de una 
-                    renuncia a los mismos, ni que el ejercicio singular o parcial por parte del ACREEDOR de cualquier derecho derivado de este instrumento 
-                    excluye algún otro derecho, facultad o privilegio.--------------------------------------------------------------------------------------------------
-                    TRIGÉSIMA OCTAVA.- GASTOS.- Todos los gastos, comisiones, honorarios, derechos e impuestos que origine este Contrato, serán por cuenta 
-                    del ACREDITADO, quien se obliga a pagarlos en el momento en que se causen.----------------------------------------------------------------------------------------------------
-                    En caso de que el ACREEDOR se vea en la necesidad de sufragar alguno de dichos conceptos, el ACREDITADO se obliga a reembolsárselo de inmediato.-------------------------------------------------------------------------------------------------
-                    El ACREEDOR no efectuará cargos, comisiones o gastos distintos a los especificados en este contrato.---------------------------------------------------------------------
-                    LEÍDO QUE FUE EL PRESENTE CONTRATO POR LAS PARTES Y ENTERADAS DE SU CONTENIDO Y ALCANCE LEGAL, LO FIRMAN EN
-                
-            </div>
+        <div class="col" style="float: left; text-align: justify;font-size:10.5pt;text-justify: inter-word; width: 50%;  padding: 5px; word-wrap:break-word;">
+            <p class="text"><b>CONTRATO DE PRÉSTAMO EN MONEDA NACIONAL QUE CELEBRAN POR UNA PARTE, FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL 
+            VARIABLE, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO EL “ACREEDOR”, REPRESENTADO EN ESTE ACTO POR LA(S) PERSONA(S) SEÑALADA(S) EN EL 
+            APARTADO DE FIRMAS DEL PRESENTE CONTRATO Y EN LA <b>CARÁTULA DE TÉRMINOS</b>, Y POR LA OTRA PARTE, LA PERSONA CUYO NOMBRE APARECE EN EL APARTADO 
+            DE FIRMAS DEL PRESENTE CONTRATO Y EN LA <b>CARÁTULA DE TÉRMINOS</b>, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO EL “ACREDITADO”, A TODOS ELLOS 
+            EN SU CONJUNTO SE LES DENOMINARA LAS “PARTES”, ANTE LA PRESENCIA DE DOS TESTIGOS, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y DE CLÁUSULAS:</b></p>
+            <p class="center-heading" align="center"><b>DECLARACINES</b></p>
+            <p class="text"><b>--- I.Declara el ACREDITADO por su propio derecho y bajo protesta de decir verdad que:</b></p>
+            <p class="text"><b>a)</b> Es una persona física, mayor de edad, con capacidad jurídica y económica para obligarse en los términos del presente contrato.</p>
+            <p class="text"><b>b)</b> Ha solicitado al ACREEDOR, un préstamo hasta por la cantidad que se indica en la <b>Carátula de Términos</b>.</p>
+            <p class="text"><b>c)</b> Reconoce expresamente la personalidad y facultades del representante del ACREEDOR, para comparecer a la celebración de este Contrato.</p>
+            <p class="text"><b>d)</b> Este contrato constituirá una obligación válida y exigible en su contra de conformidad con sus respectivos términos.</p>
+            <p class="text"><b>e)</b> Bajo protesta de decir verdad, declara que:</p>
+            <p class="text">----- (i) La información y documentación económica que ha entregado con anterioridad al ACREEDOR y con base en los que el ACREEDOR celebra el presente Contrato, presentan de manera exacta, veraz y fidedigna 
+            su solvencia económica, y al momento de la firma de este instrumento no existe cambio adverso alguno que afecte de manera significativa su 
+            condición financiera o sus operaciones, por lo que está en aptitud de cumplir oportunamente con todas y cada una de las obligaciones 
+            consignadas en el presente Contrato.</p>
+            <p>----- Asimismo, declara que la información y/o datos y/o documentos  de  identificación  otorgados  en copia fotostática</p>
         </div>
-        <div class="column" syle="float: right;  width: 50%; padding: 5px;">
-           <div> son verídicos y autorizan a que se corrobore lo anterior de estimarse conveniente.--------------------------------------------------------------------------------------------(ii) 
-                    No existe ninguna acción legal o procedimiento alguno en su contra o de sus bienes (o que afecte a los mismos), ante Autoridades 
-                    judiciales o administrativas, que puedan afectar la legalidad, validez, o exigibilidad de las obligaciones derivadas del presente 
-                    contrato, ni pasivos contingentes que afecten su solvencia. ------- (iii) Se encuentra al corriente en el cumplimiento de todas y 
-                    cada una de las obligaciones a su cargo y que a la fecha de este instrumento, no ha incurrido en el incumplimiento de ningún contrato o 
-                    onvenio en los que sea parte, y que como consecuencia de dicho incumplimiento se ponga en riesgo la celebración y cumplimiento de este 
-                    instrumento. -------------------------------------------------------------------------------------------(iv) El origen y procedencia de 
-                    los fondos que por cuenta propia habrá de operar y opera respecto de los productos y servicios que solicita mediante el presente contrato, 
-                    son de su propiedad, y de su actividad profesional y/o laboral lícitas y que terceros no utilizarán recursos provenientes de actividades 
-                    ilícitas para operar con su consentimiento en los productos, cuentas, contratos o servicios donde actúan y operan; también manifiesta que 
-                    no se realizarán transacciones destinadas a favorecer actividades ilícitas.-----
-                    f) Autoriza expresamente al ACREEDOR a que comparta su información y/o datos personales y generales y/ o documentos con cualquiera de las 
-                    entidades o sociedades que formen parte directa o indirectamente de FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL 
-                    VARIABLE, y/o aquellas respecto de las cuales dichas entidades sean de manera directa o indirectamente accionistas mayoritarios, para 
-                    efectos de contratar,  cualquier producto o servicio financiero con alguna de dichas entidades o con motivo de la relación que se mantiene 
-                    o se llegue a mantener con las mismas. Facultando al ACREEDOR para mantener los datos y documentos que obren en el expediente de 
-                    identificación del ACREDITADO a disposición de las entidades o sociedades que formen parte del Grupo al cual el ACREEDOR pertenezca o 
-                    llegue a pertenecer y de las entidades encargadas de su inspección y vigilancia, cuando  dichas  entidades  lo  requieran,  así   como  de 
-                    las Sociedades de Información Crediticia Nacional o Extranjeras.-------------------------------------------
-                    Estado de Chihuahua, cuyo primer testimonio se encuentra inscrito en el Registro Público de Comercio del Estado de Chihuahua, 
-                    bajo el Folio Mercantil Electrónico número 2019010691, con fecha 13 de febrero del 2019.
-                    b) Que su apoderado legal cuenta con facultades suficientes para la celebración de este Contrato, mismas que no les han sido 
-                    revocadas, modificadas o limitadas en forma alguna a la fecha de celebración del presente Contrato, mismas que se encuentran 
-                    otorgadas en la misma escritura constitutiva señalada en el inciso anterior.------------------------------------
-                    c) Con base a las declaraciones del ACREDITADO, está dispuesto a celebrar el presente contrato con el fin de otorgarle un préstamo, 
-                    de conformidad con los términos y condiciones previstos en el presente contrato.-----------------------
-                    d) Es su deseo obligarse en los términos y condiciones previstos en el presente contrato.-----------------------------------------------------------------------------------------
-                    III. EL ACREDITADO manifiesta que previamente a la celebración del presente contrato, el ACREEDOR le ha entregado un ejemplar de 
-                    este contrato junto con sus anexos incluyendo la tabla de pagos en caso que el presente contrato se celebre con una tasa fija de 
-                    interés ordinario o bien la tabla de pagos con fines informativos en caso de que el presente contrato se celebre con una tasa 
-                    variable de interés ordinario.-----------------------------------------------
-                    IV. Las Partes manifiestan que se agrega la Carátula de Términos del presente contrato como ANEXO identificado con el número 
-                    “1 UNO” de este instrumento para que forme parte integrante del mismo.--------------------------------------
-                    V. Una vez efectuadas las anteriores declaraciones, las Partes otorgan y se obligan conforme a las siguientes cláusulas:--------------------------------------------------------------------------------- CLÁUSULAS---------------------------------------------------
-                    PRIMERA.- IMPORTE.- El ACREEDOR otorga al ACREDITADO un préstamo hasta por el monto señalado en la Carátula de Términos, en lo 
-                    sucesivo el “Préstamo”. Dentro de esta cantidad no quedan comprendidos los intereses, gastos, impuestos, comisiones y demás 
-                    accesorios que deba pagar el ACREDITADO al ACREEDOR pactados y derivados de este contrato.-----------------
-                    SEGUNDA.- DISPOSICIÓN.- El ACREDITADO dispondrá del monto del “Préstamo” que se le otorga en un solo acto, mediante la suscripción 
-                    de un o varios pagarés a la orden del ACREEDOR, ello una vez que el ACREDITADO hubiere contratado el seguro a que se refiere la 
-                    Cláusula denominada SEGUROS, de este contrato. Sirviendo el presente como el recibo más eficaz que en derecho proceda. Para ello, 
-                    el ACREEDOR depositará el monto del “Préstamo” en la cuenta de cheques de la institución bancaria 
-                    moratorios. ----------------------------------------------------------------------------------------------------
-                    Sin soslayar la obligación de pago que se pacta en el presente contrato, el ACREDITADO, se obliga a:----------------------------------------------------
-                    I) Instruir y autorizar a la empresa donde labora y que se indica en la Carátula de Términos, para que ésta por conducto del 
-                    departamento de personal realice la retención y efectué directamente el pago de la cantidad o las cantidades que tenga que cubrir
-                    en virtud del presente contrato al ACREEDOR; o-----------------------------------------------------------------------------------
-                    II) Instruir y autorizar a la institución bancaria donde se le deposita su pago nominal para domiciliar con cargo a su cuenta 
-                    de nómina el pago del presente “Préstamo” en la cuenta de cheques del ACREEDOR señalada en la Cláusula denominada DEPOSITO AL 
-                    ACREEDOR de este contrato, en las fechas y por los montos señalados en el (los) pagaré(s) de disposición del presente contrato.---------------------------------------------------------------------------------------
-                    En el evento de que el ACREDITADO deje de prestar sus servicios a la empresa donde actualmente labora, éste se obliga a comunicarlo de 
-                    inmediato en forma fehaciente y por escrito al ACREEDOR. Por lo que se refiere al ACREDITADO, éste continuará obligado a efectuar los pagos 
-                    directamente al ACREEDOR en la cuenta de cheques del ACREEDOR señalada en la Cláusula denominada DEPÓSITO AL ACREEDOR, de este contrato, en 
-                    las fechas y por los montos señalados en el (los) pagaré(s) de disposición del presente contrato, y de la tabla de pagos, así como a cumplir 
-                    con todas y cada una de las obligaciones a su cargo derivadas del presente contrato.-----------------------------------------------------------------------------------------------------
-                    SEXTA.- TASA DE INTERÉS ORDINARIO.- El ACREDITADO se obliga a pagar al ACREEDOR, intereses ordinarios sobre saldos insolutos de la 
-                    suma ejercida, según se pacte en la Carátula de Términos, a una tasa de interés anual fija, más el I.V.A (Impuesto al Valor Agregado).---------------------------------
-                    Las Partes acuerdan que el periodo para el cómputo de intereses será conforme a lo pactado en la Carátula de Términos. Para calcular 
-                    el importe de los intereses ordinarios que deberá pagar el ACREDITADO por periodos vencidos, se deberá dividir la tasa fija porcentual 
-                    de interés anual pactada en el primer párrafo de la presente cláusula sobre la base de un año de 360 (trescientos sesenta) días, 
-                    multiplicando el resultado por los días efectivamente transcurridos desde la fecha de inicio del período hasta la fecha de pago 
-                    correspondiente. En el entendido de que el resultado se deberá multiplicar por el saldo insoluto del “Préstamo”.-------------------------------
-                    al hacer la primera disposición del “Préstamo”.---------------------------------------------------
-                    En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre dicha comisión, el 
-                    ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con la referida comisión.----------------------------------------------------------------
-                    Salvo la comisión pactada en el presente contrato, las Partes acuerdan que no se podrá establecer nuevas comisiones, incrementar 
-                    su monto, ni modificar la tasa de interés convenida, salvo en el caso de reestructuración previo acuerdo por escrito entre las 
-                    Partes, mediante la celebración del correspondiente convenio modificatorio.---------------------------------------
-                    NOVENA.- ESTADOS DE CUENTA.- El ACREEDOR emitirá mensualmente y de forma gratuita un estado de cuenta  relativo a este contrato de 
-                    “Préstamo”, a cuyo efecto el ACREDITADO autoriza expresamente al ACREEDOR para remitirle a la dirección de correo electrónico que 
-                    señaló en la Carátula de Términos de este contrato, el referido estado de cuenta, en el entendido que para modificar la modalidad de 
-                    envío pactada por las Partes en la presente cláusula, el ACREEDOR deberá contar con el consentimiento previo y por escrito del 
-                    ACREDITADO. No obstante lo anterior, el ACREDITADO podrá solicitar en cualquier momento al ACREEDOR el envío del estado de cuenta al 
-                    domicilio que el ACREDITADO señaló en la Carátula de Términos del presente contrato, estando obligado el ACREEDOR a enviar dichos 
-                    estados de cuenta dentro de los 10 diez días siguientes a la fecha de corte señalada en la Carátula de Términos del presente contrato.------------------------------------------------------------------------------------------
-                    Asimismo, el ACREDITADO podrá en cualquier momento, en días y horas hábiles, acudir al domicilio del ACREEDOR para consultar saldos 
-                    y movimientos, debiendo exhibir su identificación oficial vigente u otro documento a satisfacción del ACREEDOR.---------------------------------------------------------
-                    El ACREDITADO tendrá un plazo de 30 treinta días naturales contados a partir de la fecha de corte del estado de cuenta, para objetar 
-                    el mismo, por lo que si no lo recibe oportunamente o por cualquier motivo no lo pudiere consultar en su caso, siendo de su absoluta 
-                    responsabilidad acudir al domicilio del ACREEDOR, a efecto de que de manera gratuita, se le proporcione una copia del mismo, en el 
-                    entendido de que transcurrido el plazo señalado sin objeción por escrito del ACREDITADO, dicho estado de cuenta hará prueba plena.------------------------------------------------------------------------------
-                    DÉCIMA.- Costo Anual Total de financiamiento expresado en términos porcentuales anuales que, para fines informativos y de comparación,
-                    ------En caso de que el ACREDITADO desee pagar anticipadamente de manera total el “Préstamo”, deberá solicitar en el domicilio 
-                    del ACREEDOR indicado en la Carátula de Términos del presente contrato, la cantidad actualizada en la fecha en la que se pretenda 
-                    efectuar el Pago Anticipado, una vez que el ACREDITADO realice el pago total del saldo insoluto del “Préstamo” antes del vencimiento 
-                    del plazo, el ACREEDOR pondrá a disposición del ACREDITADO el estado de cuenta o documentación necesaria en el que conste el fin de 
-                    la relación contractual y la inexistencia de adeudos derivados de dicha relación.---------------------------------------------------------------
-                    En caso de que el ACREDITADO no solicite al ACREEDOR la terminación anticipada del contrato y realice el pago de la totalidad del 
-                    “Préstamo” otorgado, así como de los accesorios generados, el ACREEDOR mantendrá a disposición del ACREDITADO, el estado de cuenta 
-                    o documento en el que conste el fin de la relación contractual y la inexistencia de adeudos derivados exclusivamente de dicha 
-                    relación, dentro de los 10 diez días hábiles a partir de que se hubiera realizado el pago de los adeudos o en la siguiente fecha de 
-                    corte.---------------------------------------------------------------------------------
-                    En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre el pago anticipado 
-                    la cantidad equivalente antes mencionada, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente el pago 
-                    anticipado respectivo con la referida cantidad equivalente.----------------------------------------------------------------------
-                    DÉCIMA SEGUNDA.- PAGOS ADELANTADOS.- El ACREDITADO podrá solicitar al ACREEDOR, en cualquier momento, el que reciba pagos adelantados, 
-                    entendiendo por éstos, pagos que aún no sean exigibles, con el fin de aplicarlos a cubrir pagos periódicos inmediatos siguientes.--------------------------
-                    Cuando el importe del pago adelantado sea superior al que deba cubrirse en un período, el ACREDITADO en este acto autoriza 
-                    expresamente que los recursos que llegue a entregar en exceso a sus obligaciones exigibles, no se apliquen para pagos anticipados 
-                    del principal, sino que se utilicen para cubrir por adelantado los pagos periódicos del “Préstamo” inmediatos siguientes.--------------------------------------------------------------------------------
-                    En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO debe pagar tal impuesto sobre el pago adelantado 
-                    que realice la cantidad equivalente antes mencionada, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente 
-                    con el pago anticipado respectivo. La referida cantidad equivalente.---------------------------------------------
-                    ------El ACREDITADO, no podrá ceder, transferir o disponer total o parcialmente de los derechos y obligaciones derivados del 
-                    presente contrato, salvo que cuente con el consentimiento previo y por escrito del ACREEDOR.-------DÉCIMA SÉPTIMA.- RESTRICCIÓN Y 
-                    DENUNCIA DEL CONTRATO.- Las Partes convienen que el ACREEDOR queda facultada para restringir el monto del “Préstamo” o el plazo 
-                    para hacer uso del mismo, o ambos a la vez, o para denunciar este contrato en cualquier tiempo, mediante comunicación por escrito 
-                    dirigida al ACREDITADO, quedando por consiguiente limitado o extinguido según sea el caso, el derecho de éste para hacer uso del 
-                    saldo no dispuesto.-------------------------------------------------------------------------------------------------
-                    Asimismo, en los términos del artículo 294 doscientos noventa y cuatro de la Ley General de Títulos y Operaciones de “Préstamo”, 
-                    el ACREDITADO podrá denunciar el presente contrato sin responsabilidad alguna, en un período de 10 diez días hábiles posteriores 
-                    a la fecha de firma del presente contrato, siempre y cuando no hubiere otorgado garantía hipotecaria y además no hubiere dispuesto 
-                    de parte o la totalidad del “Préstamo” que se le otorga en el presente instrumento.-----------------------------------------------------------------
-                    DÉCIMA OCTAVA.- CASO FORTUITO O DE FUERZA MAYOR.- El ACREDITADO se obliga a cumplir íntegramente las obligaciones que contrae, 
-                    aún en caso fortuito o de fuerza mayor y acepta su responsabilidad, de acuerdo con el artículo 1994 mil novecientos noventa y 
-                    cuatro del Código Civil del Estado de Chihuahua y su  correlativo del Código Civil  Federal.---------------DÉCIMA NOVENA.- 
-                    TERMINACIÓN DEL CONTRATO Y OBLIGACIONES DEL ACREEDOR AL DARLO POR TERMINADO.- El ACREDITADO podrá dar por terminado el presente 
-                    contrato en cualquier tiempo, inclusive por conducto de cualquier Entidad Financiera, para lo cual deberá solicitar al ACREEDOR 
-                    su cancelación mediante simple comunicación escrita con firma autógrafa presentada en las oficinas del ACREEDOR, y el ACREEDOR 
-                    le informará el saldo insoluto del “Préstamo” a través de cualquiera de los medios previstos en el presente contrato a más tardar 
-                    el día siguiente hábil al de la recepción de la solicitud y dentro de los 5 (cinco) días hábiles siguientes al de la recepción de
-                    la solicitud, pondrá a disposición del ACREDITADO el informe sobre el saldo insoluto a determinada fecha futura, en el domicilio 
-                    del ACREEDOR.--------------------------------------------------------------------Mientras el ACREDITADO no liquide la totalidad 
-                    del saldo que se le dé a conocer, el presente contrato no será cancelado.----------------------------------------------En caso de 
-                    que el ACREDITADO no solicite al ACREEDOR la terminación anticipada del contrato y realice el naturales contados a partir de la 
-                    fecha en que le sea entregada tal solicitud.---c) Proporcionar al ACREEDOR, dentro de 
-                    los 30 treinta días naturales, a partir de la fecha del presente contrato, el soporte documental correspondiente, que 
-                    acredite fehacientemente a satisfacción del ACREEDOR, el destino del “Préstamo”.---------------------------------------------------
-                    d) Invertir el “Préstamo” que se le concede mediante el presente Contrato, en el destino para el cual fue solicitado.-------------------------------------------------------
-                    e) Proporcionar al ACREEDOR dentro de los 5 cinco días naturales, a partir de la fecha del presente contrato, el soporte 
-                    documental correspondiente, que acredite fehacientemente la contratación del(de los) seguro(s) relativo(s) al primer párrafo de 
-                    la cláusula denominada SEGUROS, a satisfacción del ACREEDOR, en las que el ACREEDOR sea señalada como “Beneficiario Preferente 
-                    irrevocable”. Asimismo, proporcionar dentro de los 5 cinco días naturales siguientes a la fecha del vencimiento de la(s) póliza(s) 
-                    contratada(s), la(s) póliza(s) de renovación del (de los) seguro(s) a que alude el primer párrafo de la cláusula referida.---------------------------------------------------
-                    f) Proporcionar al ACREEDOR, información y documentación que permita a la misma efectuar una actualización de su expediente crediticio 
-                    y de identificación, cuando el ACREEDOR se lo solicite, en un término que no exceda de 15 quince días naturales contados a partir de 
-                    la fecha en que le sea requerida.------------------------------------------------------------------------------------VIGÉSIMA TERCERA.- 
-                    OBLIGACIÓN DE NO HACER DEL ACREDITADO.- El ACREDITADO deberá cumplir con la siguiente obligación de no hacer, salvo que exista 
-                    consentimiento previo y por escrito de los representantes legales del ACREEDOR que la releven de su cumplimiento:------------------------
-                    a) Respecto de los acreedores financieros, a la fecha de celebración de este contrato, no modificar las condiciones con ellos pactadas 
-                    relativas al otorgamiento de garantías, ampliación de las mismas y cambios a las condiciones financieras, de tal forma que resulten 
-                    más onerosas para el ACREDITADO.-----------------------------------------------------------------------------------VIGÉSIMA CUARTA.- 
-                    VENCIMIENTO ANTICIPADO.- Las Partes convienen en que el ACREEDOR podrá dar por vencido anticipadamente en cualquier tiempo durante 
-                    la vigencia del presente Contrato, el plazo  estipulado para el pago del mismo, previa notificación a el ACREDITADO, sin necesidad 
-                    de declaración judicial, exigiendo el pago total del “Préstamo” dispuesto, sus intereses y demás prestaciones y consecuencias legales, 
-                    si el ACREDITADO notificación la hará por escrito el ACREEDOR a el ACREDITADO, en el domicilio señalado en la Carátula de Términos del 
-                    presente contrato, dentro de los 5 (cinco) días siguientes a que tenga conocimiento de cualesquiera de las causales anteriores 
-                    que se llegaren a presentar.-----------------------------------------Mientras el saldo insoluto del “Préstamo” no sea pagado, se 
-                    generarán intereses moratorios a cargo del ACREDITADO, a partir de la fecha en que el ACREEDOR notifique al ACREDITADO la terminación 
-                    anticipada del presente contrato.--------------------------------------------------------------------------------------------------
-                    VIGÉSIMA QUINTA.- SEGUROS.- El ACREDITADO se obliga a contratar a la fecha de firma del presente contrato con una compañía aseguradora 
-                    de reconocida solvencia y registrada ante la Comisión Nacional de Seguros y Finanzas un seguro por concepto de saldo deudor en caso de 
-                    fallecimiento a nombre del ACREDITADO, así como a mantenerlo en vigor por todo el plazo de este contrato y mientras exista saldo insoluto 
-                    a su cargo. Dicho(s) seguro(s) deberá(n) amparar la totalidad del monto del “Préstamo” y sus accesorios, en los que se establezca como 
-                    “Beneficiario Preferente e Irrevocable” al ACREEDOR, debiendo el ACREDITADO, entregar a la “Acreditante” la(s) póliza(s), endoso(s) y 
-                    recibo(s) de pago de primas correspondientes, así como la(s) renovación(es) respectiva(s), dentro de un plazo de 5 cinco días naturales 
-                    contados a partir de la fecha de celebración de este contrato, y la(s) renovación(es) posterior(es), dentro de los 5 cinco días naturales
-                    siguientes a la fecha de su vencimiento. Dicha(s) póliza(s) debe(n) estar vigente(s) y pagada(s), así como la(s) prima(s) 
-                    correspondiente(s) en cada renovación, en tanto exista saldo insoluto del “Préstamo” a cargo del ACREDITADO.----------------------------------------------------
-                    En caso de omisión por parte del ACREDITADO respecto al aseguramiento estipulado en esta cláusula, el ACREDITADO faculta al ACREEDOR 
-                    para contratar y/o renovar el(los) seguro(s) correspondiente(s) a nombre y por cuenta del primero, sin que constituya una obligación 
-                    para el ACREEDOR, quedando el ACREDITADO obligado a reembolsar al ACREEDOR, dentro de los 15 quince días siguientes a la fecha de 
-                    contratación del(de los) seguro(s), el importe de las primas y los gastos efectuados más intereses ordinarios a la tasa pactada en la 
-                    Cláusula denominada TASA DE INTERÉS ORDINARIO, los cuales se generarán a partir de la fecha de contratación de dicho(s) seguro(s), hasta 
-                    la fecha en que el monto correspondiente sea totalmente pagado.--------------------------------------------------------------------------------------------------------
-                    En el supuesto de que el ACREDITADO, decida que el ACREEDOR incluya el presente “Préstamo” al seguro grupal denominado “Ramo de Vida 
-                    Grupo”, que tiene contratado con Seguros de Vida Sura México, Sociedad Anónima de Capital Variable, se le descontará sobre el monto 
-                    del “Préstamo” a depositar la cantidad equivalente al 0.45% cero punto------------------------------
-                    formular cualquier clase de consulta o reclamación para su debida atención. Una vez recibida la solicitud de aclaración, el 
-                    ACREEDOR tendrá un plazo máximo de 45 cuarenta y cinco días naturales para entregar al ACREDITADO el dictamen correspondiente, 
-                    anexando copia simple del documento o evidencia considerada para la emisión de dicho dictamen, con base en la información que, 
-                    conforme a las disposiciones aplicables, deba obrar en su poder, así como un informe detallado en el que se respondan todos los 
-                    hechos contenidos en la solicitud presentada por el ACREDITADO.----------------------El dictamen e informe antes referidos deberán 
-                    formularse por escrito y suscribirse por personal del ACREEDOR facultado para ello. En el evento de que, conforme al dictamen que emita 
-                    el ACREEDOR, resulte procedente el cobro del monto respectivo, el ACREDITADO deberá hacer el pago de la cantidad a su cargo, incluyendo 
-                    los intereses ordinarios conforme a lo pactado, sin que proceda el cobro de intereses moratorios y otros accesorios generados por la 
-                    suspensión del pago realizada en términos de esta cláusula; no obstante lo anterior, en caso de no resultar procedente la queja o 
-                    solicitud de aclaración por parte del ACREDITADO, éste último deberá hacer el pago de la cantidad a su cargo, incluyendo los intereses 
-                    ordinarios y los intereses moratorios y cualquier otro accesorio generados durante el plazo de suspensión del pago, conforme a lo pactado 
-                    en este contrato.----------------------------VIGÉSIMA SÉPTIMA.- INVESTIGACIONES.- El ACREDITADO, ratifica la autorización que previa, 
-                    expresa e irrevocablemente otorgo al ACREEDOR en documento por separado con su firma autógrafa, para que solicite a la(s) Sociedad(es)
-                    de Información Crediticia Nacional(es) o Extranjera(s), que considere necesaria(s), toda la información relativa a su historial 
-                    crediticio. De igual manera el ACREEDOR, queda autorizado para llevar a cabo revisiones, investigaciones y monitoreo periódico sobre 
-                    su comportamiento crediticio, y proporcionar información sobre el historial crediticio a dicha(s) sociedad(es) que considere 
-                    necesaria(s), en términos de la Ley para Regular las Sociedades de Información Crediticia. Dicha autorización estará vigente cuando
-                    menos durante 3 (tres) años contados a partir de la fecha de su firma o en tanto exista una relación jurídica con el ACREEDOR. 
-                    El ACREDITADO manifiesta que conoce plenamente la naturaleza, alcance y sus consecuencias de la información que se solicitará en 
-                    forma periódica para su análisis financiero y crediticio y está consciente de las implicaciones que el incumplimiento en el pago del 
-                    “Préstamo” otorgado le puede generar, así 
-                    modificatorio que corresponda en orden cronológico.---------------------------------------TRIGÉSIMA PRIMERA.- TÍTULO EJECUTIVO Y 
-                    CERTIFICACIÓN.- Las Partes convienen que el estado de cuenta certificado por el Contador del ACREEDOR, conjuntamente con el  presente 
-                    contrato y el pagaré o pagarés de disposición suscritos por el ACREDITADO, es título ejecutivo mercantil y hacen prueba plena 
-                    respecto al estado de cuenta del adeudo del ACREDITADO, para todos los efectos legales a que haya lugar, sin necesidad de 
-                    reconocimiento de firma ni de otro requisito, determinándose el saldo insoluto y accesorios legales y convencionales por el Contador 
-                    del ACREEDOR, en los términos de dichos preceptos legales, facultando al ACREEDOR a ejercitar las acciones que derivadas del 
-                    incumplimiento del ACREDITADO prevea la ley.-------------------------------------------------------------------------TRIGÉSIMA SEGUNDA.- 
-                    DOMICILIOS.- Todas las notificaciones, avisos y en general cualquier comunicación que las Partes deban hacerse en relación al presente 
-                    contrato, incluyendo el emplazamiento en caso de juicio, se harán en el domicilio que cada una de ellas ha señalado y que aparece en la 
-                    Carátula de Términos del presente contrato, en todo caso, se entenderá por bien efectuada la notificación, cuando fuera intentada y/o 
-                    realizada en dicho domicilio.------------------------------------------------------------------------------------------Expresan las Partes 
-                    que para el efecto de recibir notificaciones, el domicilio de cada uno de ellos a que antes se hace referencia es convencional, por lo que 
-                    en los términos del artículo 1070 mil setenta del Código de Comercio, están enteramente de acuerdo en que si se acude a su respectivo 
-                    domicilio a practicar notificación personal y dicho domicilio no le(s) corresponde, se proceda a la notificación por edictos sin necesidad 
-                    de que se recabe el informe señalado en el mencionado artículo.--------------------------------------Mientras el ACREDITADO no notifique 
-                    por escrito al ACREEDOR el cambio de su domicilio, los avisos, las notificaciones, los emplazamientos y demás diligencias judiciales o 
-                    extrajudiciales se practicarán en el domicilio señalado en la presente cláusula, y surtirán plenamente sus efectos.-------------------
-                    Cualquier aviso que las Partes deban darse conforme a este Contrato, deberá hacerse por escrito y se entregará en el domicilio que cada 
-                    parte convino en la presente Cláusula. Todas las notificaciones y avisos que se entreguen en el domicilio de la parte correspondiente, 
-                    surtirán efecto en la fecha de entrega de los mismos.-------------------------------------------------------------------TRIGÉSIMA 
-                    TERCERA.- LEGISLACIÓN APLICABLE Y JURISDICCIÓN.- Para todo lo relativo a la interpretación y 
-                    DOS TANTOS, EN LA CIUDAD DE CHIHUAHUA, ESTADO DE CHIHUAHUA, A LOS <%= @dia_inicio %> DÍAS DEL MES DE <%= @mes_inicio.upcase %> DEL AÑO <%= @anio_inicio %>.-------------------------------- 
+        <div class="col" style="float: right; text-align: justify;font-size:10.5pt; text-justify: inter-word; width: 50%; padding: 5px word-wrap:break-word;">
+            <p class="text">son verídicos y autorizan a que se corrobore lo anterior de estimarse conveniente.</p>
+            <p class="text">----- (ii) No existe ninguna acción legal o procedimiento alguno en su contra o de sus bienes (o que afecte a los mismos), ante Autoridades 
+            judiciales o administrativas, que puedan afectar la legalidad, validez, o exigibilidad de las obligaciones derivadas del presente 
+            contrato, ni pasivos contingentes que afecten su solvencia. ---- (iii) Se encuentra al corriente en el cumplimiento de todas y 
+            cada una de las obligaciones a su cargo y que a la fecha de este instrumento, no ha incurrido en el incumplimiento de ningún contrato o 
+            onvenio en los que sea parte, y que como consecuencia de dicho incumplimiento se ponga en riesgo la celebración y cumplimiento de este 
+            instrumento.</p>
+            <p class="text">----- (iv) El origen y procedencia de los fondos que por cuenta propia habrá de operar y opera respecto de los productos y servicios que solicita mediante el presente contrato, 
+            son de su propiedad, y de su actividad profesional y/o laboral lícitas y que terceros no utilizarán recursos provenientes de actividades 
+            ilícitas para operar con su consentimiento en los productos, cuentas, contratos o servicios donde actúan y operan; también manifiesta que 
+            no se realizarán transacciones destinadas a favorecer actividades ilícitas.</p>
+            <p class="text"><b>f)</b> Autoriza expresamente al ACREEDOR a que comparta su información y/o datos personales y generales y/ o documentos con cualquiera de las 
+            entidades o sociedades que formen parte directa o indirectamente de FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL 
+            VARIABLE, y/o aquellas respecto de las cuales dichas entidades sean de manera directa o indirectamente accionistas mayoritarios, para 
+            efectos de contratar,  cualquier producto o servicio financiero con alguna de dichas entidades o con motivo de la relación que se mantiene 
+            o se llegue a mantener con las mismas. Facultando al ACREEDOR para mantener los datos y documentos que obren en el expediente de 
+            identificación del ACREDITADO a disposición de las entidades o sociedades que formen parte del Grupo al cual el ACREEDOR pertenezca o 
+            llegue a pertenecer y de las entidades encargadas de su inspección y vigilancia, cuando  dichas  entidades  lo  requieran,  así   como  de 
+            las Sociedades de Información Crediticia Nacional o Extranjeras.</p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+        <p class="text">----- La autorización que se otorga no implica la aceptación para que esta información, datos y documentación sean utilizados por 
+            terceros distintos de las entidades antes mencionadas.</p>
+            <p class="text"><b>g)</b> Previamente, el ACREEDOR le explicó antes de la fecha de firma del presente contrato y ha entendido perfectamente el contenido del 
+            mismo y de todos los documentos a suscribir por virtud de este contrato, así como los cargos, comisiones o gastos que se generarán por 
+            la firma del presente instrumento, así como lo relativo a la forma y fórmulas de aplicar y obtener el Costo Anual Total (CAT) para este 
+            contrato, mismo que es expresado en términos porcentuales anuales promedio que, para  fines informativos y de comparación, incorpora la 
+            totalidad de los costos y gastos inherentes al préstamo objeto del presente contrato.</p>
+            <p class="text"><b>h)</b> Continúa declarando el ACREDITADO que FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL VARIABLE, ha puesto a su 
+            disposición previamente su Aviso de Privacidad, por lo que conociendo su contenido, otorga su consentimiento para que sus Datos 
+            Personales, sean tratados y en su caso transferidos conforme se establece en dicho aviso. Asimismo, en caso de que hubiere proporcionado 
+            Datos Personales de otro(s) Titular(es), se obliga a hacer del conocimiento de ese (esos) Titular(es) que ha proporcionado tales datos a 
+            FACTOR GFC LEASING, SOCIEDAD ANÓNIMA PROMOTORA DE INVERSIÓN DE CAPITAL VARIABLE, y a hacer de su conocimiento tanto el Aviso de 
+            Privacidad, como los medios por los cuales esa institución lo tiene a su disposición.</p>
+            <p class="text"><b>i)</b> Al momento de celebración del presente contrato, se le ha entregado un ejemplar de este contrato junto con sus anexos, incluyendo la 
+            tabla de pagos, así como copia del (de los) pagaré(s) de disposición, que lleva(n) inserta la tabla de pagos de capital.</p>
+            <p class="text"><b>j)</b> Actualmente mantiene una relación laboral con la empresa que se indica en la <b>Carátula de Términos</b>, cuyo pago nominal lo recibe a 
+            través de la dispersión de nómina que realiza la referida empresa con institución bancaria.</p>
+            <p class="text"><b>--- II. Declara el ACREEDOR, por conducto de su(s) representante(s), que:</p></b>
+            <p><b>a)</b> Es una persona moral, debidamente constituida conforme a la legislación mexicana, según consta en la escritura pública número 18395, 
+            volumen 752, celebrada en la ciudad de Chihuahua, Chihuahua, el día 21 de diciembre del 2018, ante la fe del Licenciado Eugenio Fernando 
+            García Russek, Notario Público Número Veinticuatro del Distrito Judicial Morelos,</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">Estado de Chihuahua, cuyo primer testimonio se encuentra inscrito en el Registro Público de Comercio del Estado de Chihuahua, 
+            bajo el Folio Mercantil Electrónico número 2019010691, con fecha 13 de febrero del 2019.</p>
+            <p class="text"><b>b)</b> Que su apoderado legal cuenta con facultades suficientes para la celebración de este Contrato, mismas que no les han sido 
+            revocadas, modificadas o limitadas en forma alguna a la fecha de celebración del presente Contrato, mismas que se encuentran 
+            otorgadas en la misma escritura constitutiva señalada en el inciso anterior.</p>
+            <p class="text"><b>c)</b> Con base a las declaraciones del ACREDITADO, está dispuesto a celebrar el presente contrato con el fin de otorgarle un préstamo, 
+            de conformidad con los términos y condiciones previstos en el presente contrato.</p>
+            <p class="text"><b>d)</b> Es su deseo obligarse en los términos y condiciones previstos en el presente contrato.</p>
+            <p class="text">--- III. EL ACREDITADO manifiesta que previamente a la celebración del presente contrato, el ACREEDOR le ha entregado un ejemplar de 
+            este contrato junto con sus anexos incluyendo la tabla de pagos en caso que el presente contrato se celebre con una tasa fija de 
+            interés ordinario o bien la tabla de pagos con fines informativos en caso de que el presente contrato se celebre con una tasa 
+            variable de interés ordinario.</p>
+            <p class="text">--- IV. Las Partes manifiestan que se agrega la <b>Carátula de Términos</b> del presente contrato como ANEXO identificado con el número 
+            “1 UNO” de este instrumento para que forme parte integrante del mismo.</p>
+            <p class="text">V. Una vez efectuadas las anteriores declaraciones, las Partes otorgan y se obligan conforme a las siguientes cláusulas:</p>
+            <p class="center-heading" align="center"><b>CLÁUSULAS</b></p>
+            <p class="text"><b>--- PRIMERA.- IMPORTE.-</b> El ACREEDOR otorga al ACREDITADO un préstamo hasta por el monto señalado en la <b>Carátula de Términos</b>, en lo 
+            sucesivo el “Préstamo”. Dentro de esta cantidad no quedan comprendidos los intereses, gastos, impuestos, comisiones y demás 
+            accesorios que deba pagar el ACREDITADO al ACREEDOR pactados y derivados de este contrato.</p>
+            <p class="text"><b>--- SEGUNDA.- DISPOSICIÓN.-</b> El ACREDITADO dispondrá del monto del “Préstamo” que se le otorga en un solo acto, mediante la suscripción 
+            de un o varios pagarés a la orden del ACREEDOR, ello una vez que el ACREDITADO hubiere contratado el seguro a que se refiere la 
+            Cláusula denominada SEGUROS, de este contrato. Sirviendo el presente como el recibo más eficaz que en derecho proceda.</p><p>--- Para ello, 
+            el ACREEDOR depositará el monto del “Préstamo” en la cuenta de cheques de la institución bancaria </p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+        <p class="text">que obra registrada a nombre del ACREDITADO indicada en la <b>Carátula de Términos</b>, o mediante transferencia electrónica de 
+        fondos interbancarios a la misma cuenta, por lo que en este acto el ACREDITADO, autoriza expresamente al ACREEDOR y extiende 
+        el recibo más amplio y eficaz que en derecho proceda por la cantidad dispuesta antes mencionada</p>
+        <p class="text">--- El o los pagarés de que se trata son de tipo causal, no modifican este contrato y sólo señalan los plazos dentro de los cuales 
+        deberá quedar pagado el “Préstamo”, así como la disposición del mismo, pero podrá(n) ser descontado(s) por el ACREEDOR, aún antes 
+        del vencimiento estipulado, para lo cual lo faculta expresamente el ACREDITADO.</p>
+        <p class="text">--- El ACREDITADO podrá disponer del “Préstamo” siempre y cuando cumpla con todas las obligaciones establecidas en el presente contrato 
+        y demás condiciones precedentes señaladas en la <b>Carátula de Términos</b>, siempre y cuando el ACREEDOR tenga recursos disponibles.</p>
+        <p class="text"><b>--- TERCERA.- DESTINO.- </b>El ACREDITADO se obliga a invertir el monto del “Préstamo”, precisamente a los fines señalados en la <b>Carátula de Términos</b>.</p>
+        <p class="text"><b>--- CUARTA.- PLAZO.-</b> El plazo de este contrato es el que se señala en la <b>Carátula de Términos</b> del presente contrato.Las Partes convienen 
+        desde este momento, en que el plazo anteriormente señalado podrá ser prorrogado previo acuerdo por escrito entre las partes.</p>
+        <p class="text"><b>--- QUINTA.- PAGOS.-</b> El pago del “Préstamo” será efectuado por el ACREDITADO, en el domicilio del ACREEDOR, mediante el número de pagos 
+        que se indica en la <b>Carátula de Términos</b>, el o los  días que se señala <b>Carátula de Términos</b>, por las cantidades y en las fechas que 
+        se señalan en el (los) pagaré(s) de disposición del presente préstamo en el (los) cual(es) se inserta la tabla de pagos, la cual se 
+        adjunta al presente contrato como <b>ANEXO identificado con el número “2 DOS”</b>.</p>
+        <p class="text">--- El ACREDITADO autoriza que los recursos que en su momento llegase a entregar en exceso a sus obligaciones exigibles conforme al 
+        presente contrato, no se apliquen para pagos anticipados del principal, sino que se utilicen para cubrir por adelantado los pagos 
+        periódicos del “Préstamo” inmediatos siguientes.</p>
+        <p class="text">--- La tasa de interés ordinaria será la que se determine conforme a lo estipulado en la Cláusula denominada TASA DE INTERÉS ORDINARIO 
+        del presente contrato.</p>
+        <p>En caso de que el día en que deba de realizarse cualquier pago sea inhábil, dicho pago deberá realizarse el día hábil inmediato 
+        siguiente, dependiendo de las fechas en que la empresa contratante del ACREDITADO deposite el salario de</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">éste último, sin que proceda el cobro de comisiones o intereses moratorios.</p>
+            <p class="text"><b>--- Sin soslayar la obligación de pago que se pacta en el presente contrato, el ACREDITADO, se obliga a:</p>
+            <p class="text">I) Instruir y autorizar a la empresa donde labora y que se indica en la <b>Carátula de Términos</b>, para que ésta por conducto del 
+            departamento de personal realice la retención y efectué directamente el pago de la cantidad o las cantidades que tenga que cubrir
+            en virtud del presente contrato al ACREEDOR; o</p>
+            <p class="text">II) Instruir y autorizar a la institución bancaria donde se le deposita su pago nominal para domiciliar con cargo a su cuenta 
+            de nómina el pago del presente “Préstamo” en la cuenta de cheques del ACREEDOR señalada en la Cláusula denominada DEPOSITO AL 
+            ACREEDOR de este contrato, en las fechas y por los montos señalados en el (los) pagaré(s) de disposición del presente contrato.</p>
+            <p class="text">--- En el evento de que el ACREDITADO deje de prestar sus servicios a la empresa donde actualmente labora, éste se obliga a comunicarlo de 
+            inmediato en forma fehaciente y por escrito al ACREEDOR. Por lo que se refiere al ACREDITADO, éste continuará obligado a efectuar los pagos 
+            directamente al ACREEDOR en la cuenta de cheques del ACREEDOR señalada en la Cláusula denominada DEPÓSITO AL ACREEDOR, de este contrato, en 
+            las fechas y por los montos señalados en el (los) pagaré(s) de disposición del presente contrato, y de la tabla de pagos, así como a cumplir 
+            con todas y cada una de las obligaciones a su cargo derivadas del presente contrato.</b></p>
+            <p class="text"><b>--- SEXTA.- TASA DE INTERÉS ORDINARIO.-</b> El ACREDITADO se obliga a pagar al ACREEDOR, intereses ordinarios sobre saldos insolutos de la 
+            suma ejercida, según se pacte en la <b>Carátula de Términos</b>, a una tasa de interés anual fija, más el I.V.A (Impuesto al Valor Agregado).</p>
+            <p class="text">--- Las Partes acuerdan que el periodo para el cómputo de intereses será conforme a lo pactado en la <b>Carátula de Términos</b>. Para calcular 
+            el importe de los intereses ordinarios que deberá pagar el ACREDITADO por periodos vencidos, se deberá dividir la tasa fija porcentual 
+            de interés anual pactada en el primer párrafo de la presente cláusula sobre la base de un año de 360 (trescientos sesenta) días, 
+            multiplicando el resultado por los días efectivamente transcurridos desde la fecha de inicio del período hasta la fecha de pago 
+            correspondiente. En el entendido de que el resultado se deberá multiplicar por el saldo insoluto del “Préstamo”.</p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">--- Dichos pagos de intereses se cobrarán única y exclusivamente por periodos vencidos, por lo que no podrán ser 
+            exigidos por adelantado.</p>
+            <p class="text">--- Los intereses serán pagaderos según se pacte en la <b>Carátula de Términos</b>, por períodos 
+            vencidos, en el domicilio del ACREEDOR, por las cantidades y en las fechas pactadas en el (los) pagaré(s) de disposición del presente 
+            contrato, y de la tabla de pagos, principiando a pagarse el día que se indica en la <b>Carátula de Términos</b> del presente contrato.</p>
+            <p class="text">--- Se considera fecha de corte para efecto del cómputo de intereses el o los días que se pacten en la <b>Carátula de Términos</b> del presente contrato.</p>
+            <p class="text">--- En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre los intereses pactados 
+            en esta cláusula, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con los referidos intereses y cualquier 
+            otro que conforme a las disposiciones fiscales le sea aplicable.</p>
+            <p class="text">--- Convienen las Partes en que la certificación del Contador del ACREEDOR hará fe, salvo prueba en contrario, respecto de los montos 
+            relativos a la determinación de la tasa pactada en este contrato.</p>
+            <p class="text"><b>--- SÉPTIMA.- TASA DE INTERÉS MORATORIO.-</b> En caso de que el ACREDITADO deje de pagar puntualmente cualquier suma que estuviere obligado 
+            a cubrir conforme a este contrato, la cantidad no pagada causará intereses moratorios a partir de la fecha en que debió ser cubierta 
+            hasta la fecha de su pago total, a <b>la tasa de interés anual que resulte de multiplicar el factor que se indica en la Carátula de 
+            Términos por la Tasa de Interés Ordinario</b> pactada en la <b>Carátula de Términos</b> del presente contrato.</p>
+            <p class="text">--- El ACREDITADO se obliga a pagar al ACREEDOR, en el domicilio de ésta, dichos intereses moratorios.</p>
+            <p class="text">--- En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre los intereses pactados 
+            en esta cláusula, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con los referidos intereses.</p>
+            <p class="text">--- Dichos intereses moratorios se causarán durante todo el tiempo en que dure la mora, obligándose asimismo, a pagar los gastos de 
+            cobranza y en su caso, honorarios de abogado y gastos y costas judiciales que en su momento se llegasen a generar.</p>
+            <p><b>--- OCTAVA.- COMISIÓN.-</b> El ACREDITADO se obliga a pagar al ACREEDOR, en el domicilio de éste, por una sola vez, la comisión que se indica 
+            en la <b>Carátula de Términos</b> por apertura del mismo la cual se cubrirá</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">al hacer la primera disposición del “Préstamo”.</p>
+            <p class="text">--- En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre dicha comisión, el 
+            ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente con la referida comisión.</p>
+            <p class="text">--- Salvo la comisión pactada en el presente contrato, las Partes acuerdan que no se podrá establecer nuevas comisiones, incrementar 
+            su monto, ni modificar la tasa de interés convenida, salvo en el caso de reestructuración previo acuerdo por escrito entre las 
+            Partes, mediante la celebración del correspondiente convenio modificatorio.</p>
+            <p class="text"><b>--- NOVENA.- ESTADOS DE CUENTA.-</b> El ACREEDOR emitirá mensualmente y de forma gratuita un estado de cuenta  relativo a este contrato de 
+            “Préstamo”, a cuyo efecto el ACREDITADO autoriza expresamente al ACREEDOR para remitirle a la dirección de correo electrónico que 
+            señaló en la <b>Carátula de Términos</b> de este contrato, el referido estado de cuenta, en el entendido que para modificar la modalidad de 
+            envío pactada por las Partes en la presente cláusula, el ACREEDOR deberá contar con el consentimiento previo y por escrito del 
+            ACREDITADO. No obstante lo anterior, el ACREDITADO podrá solicitar en cualquier momento al ACREEDOR el envío del estado de cuenta al 
+            domicilio que el ACREDITADO señaló en la <b>Carátula de Términos</b> del presente contrato, estando obligado el ACREEDOR a enviar dichos 
+            estados de cuenta dentro de los 10 diez días siguientes a la fecha de corte señalada en la <b>Carátula de Términos</b> del presente contrato.</p>
+            <p class="text">--- Asimismo, el ACREDITADO podrá en cualquier momento, en días y horas hábiles, acudir al domicilio del ACREEDOR para consultar saldos 
+            y movimientos, debiendo exhibir su identificación oficial vigente u otro documento a satisfacción del ACREEDOR.</p>
+            <p class="text">--- El ACREDITADO tendrá un plazo de 30 treinta días naturales contados a partir de la fecha de corte del estado de cuenta, para objetar 
+            el mismo, por lo que si no lo recibe oportunamente o por cualquier motivo no lo pudiere consultar en su caso, siendo de su absoluta 
+            responsabilidad acudir al domicilio del ACREEDOR, a efecto de que de manera gratuita, se le proporcione una copia del mismo, en el 
+            entendido de que transcurrido el plazo señalado sin objeción por escrito del ACREDITADO, dicho estado de cuenta hará prueba plena.</p>
+            <p><b>--- DÉCIMA.- Costo Anual Total de financiamiento expresado en términos porcentuales anuales que, para fines informativos y de comparación,</b></p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="test"><b>incorpora la totalidad de los costos y gastos inherentes al “Préstamo” (“CAT”).-</b> El ACREDITADO manifiesta que el ACREEDOR, 
+            hizo de su conocimiento antes de la firma del presente contrato: el contenido del mismo y de todos los documentos a suscribir, 
+            los cargos, comisiones o gastos que en su caso se generarán por su celebración y, en su caso, los descuentos o bonificaciones a 
+            que tiene derecho, así como el “CAT” promedio correspondiente al indicado en la <b>Carátula de Términos</b> del presente contrato sin 
+            el Impuesto al Valor Agregado (IVA), el cual es calculado a la fecha de celebración del presente contrato, exclusivamente para 
+            fines informativos y de comparación, y además que la tasa de interés ordinario que se aplicará al presente “Préstamo” es fija.</p>
+            <p class="text"><b>--- DÉCIMA PRIMERA.- PAGOS ANTICIPADOS.-</b> El ACREDITADO podrá en cualquier momento pagar anticipadamente, total o parcialmente, 
+            el saldo insoluto del capital del presente “Préstamo”, sin que le sea aplicable ninguna sanción o comisión alguna. Lo anterior, 
+            siempre que el ACREDITADO lo solicite, (y) esté al corriente en los pagos exigibles y el importe del pago anticipado sea por una 
+            cantidad igual o mayor al pago que deba realizarse en el período correspondiente.</p>
+            <p class="text">--- Los pagos parciales anticipados se aplicarán en forma exclusiva al saldo insoluto del capital del “Préstamo” y cuando el importe 
+            de los pagos anticipados no fuere suficiente para amortizar el saldo insoluto del capital en su totalidad, reducirán el monto de 
+            los pagos periódicos pendientes, salvo que el ACREDITADO previamente solicite por escrito que se disminuya el número de 
+            pagos/amortizaciones a realizar.</p>
+            <p class="text">--- Los Pagos Anticipados se realizarán abonando a la cuenta de cheques del ACREEDOR señalada en la <b>Carátula de Términos</b> del presente contrato, las cantidades 
+            correspondientes, y los mismos serán aplicados en la fecha en que se hagan, conforme a lo previsto en la cláusula denominada 
+            MEDIOS DE PAGO Y FECHAS DE ACREDITAMIENTO, de este contrato.</p>
+            <p class="text">--- Cada vez que el ACREEDOR reciba y tenga como ACREDITADO el pago anticipado parcial, procederá a calcular el importe de los intereses por devengar con base en el nuevo 
+            saldo insoluto del capital y entregará por escrito al ACREDITADO la nueva tabla de pagos que corresponda, en su caso, pudiendo 
+            enviar la nueva tabla de pagos al correo electrónico que ACREDITADO señalo en la <b>Carátula de Términos</b> del presente contrato, 
+            a más tardar en la fecha en que se dé a conocer el estado de cuenta correspondiente al período en que se realizó el pago 
+            anticipado.</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">--- En caso de que el ACREDITADO desee pagar anticipadamente de manera total el “Préstamo”, deberá solicitar en el domicilio 
+            del ACREEDOR indicado en la <b>Carátula de Términos</b> del presente contrato, la cantidad actualizada en la fecha en la que se pretenda 
+            efectuar el Pago Anticipado, una vez que el ACREDITADO realice el pago total del saldo insoluto del “Préstamo” antes del vencimiento 
+            del plazo, el ACREEDOR pondrá a disposición del ACREDITADO el estado de cuenta o documentación necesaria en el que conste el fin de 
+            la relación contractual y la inexistencia de adeudos derivados de dicha relación.</p>
+            <p class="text">--- En caso de que el ACREDITADO no solicite al ACREEDOR la terminación anticipada del contrato y realice el pago de la totalidad del 
+            “Préstamo” otorgado, así como de los accesorios generados, el ACREEDOR mantendrá a disposición del ACREDITADO, el estado de cuenta 
+            o documento en el que conste el fin de la relación contractual y la inexistencia de adeudos derivados exclusivamente de dicha 
+            relación, dentro de los 10 diez días hábiles a partir de que se hubiera realizado el pago de los adeudos o en la siguiente fecha de 
+            corte.</p>
+            <p class="text">--- En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO deba pagar tal impuesto sobre el pago anticipado 
+            la cantidad equivalente antes mencionada, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente el pago 
+            anticipado respectivo con la referida cantidad equivalente.</p>
+            <p class="text"><b>--- DÉCIMA SEGUNDA.- PAGOS ADELANTADOS.-</b> El ACREDITADO podrá solicitar al ACREEDOR, en cualquier momento, el que reciba pagos adelantados, 
+            entendiendo por éstos, pagos que aún no sean exigibles, con el fin de aplicarlos a cubrir pagos periódicos inmediatos siguientes.</p>
+            <p class="text">--- Cuando el importe del pago adelantado sea superior al que deba cubrirse en un período, el ACREDITADO en este acto autoriza 
+            expresamente que los recursos que llegue a entregar en exceso a sus obligaciones exigibles, no se apliquen para pagos anticipados 
+            del principal, sino que se utilicen para cubrir por adelantado los pagos periódicos del “Préstamo” inmediatos siguientes.</p>
+            <p class="text">--- En caso de que conforme a la Ley del Impuesto al Valor Agregado, el ACREDITADO debe pagar tal impuesto sobre el pago adelantado 
+            que realice la cantidad equivalente antes mencionada, el ACREDITADO se obliga a pagar al ACREEDOR, el impuesto citado juntamente 
+            con el pago anticipado respectivo. La referida cantidad equivalente.</p>
+            <p><b>--- DÉCIMA TERCERA.- APLICACIÓN DE PAGOS.-</b> Todo pago realizado bajo el presente contrato será aplicado por el ACREEDOR en </p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">el siguiente orden: (i) gasto(s) pactados y derivado(s) del presente contrato; (ii) comisiones más el Impuesto al Valor 
+            Agregado (IVA); (iii) Intereses moratorios más el Impuesto al Valor Agregado (IVA); (iv) Intereses ordinarios más el Impuesto 
+            al Valor Agregado (I.V.A.),  y en último lugar (v) capital,  de conformidad con el artículo 364 trescientos sesenta y cuatro 
+            del Código de Comercio en vigor.</p>
+            <p class="text"><b>--- DÉCIMA CUARTA.- VENCIMIENTOS EN DÍAS INHÁBILES.-</b> En el supuesto de que 
+            la fecha en que deba realizarse algún pago de principal, intereses o cualquier otro concepto de conformidad con el presente 
+            contrato o con el(los) pagaré(s) que documenta(n) la(s) disposición(es) del “Préstamo”, fuere día inhábil conforme a la Ley 
+            Federal del Trabajo,  la fecha de vencimiento de dicho pago se pospondrá al día hábil inmediato siguiente, sin que proceda 
+            el cobro de intereses moratorios.</p>
+            <p class="text"><b>--- DÉCIMA QUINTA.- DEPÓSITO AL ACREEDOR. </b>
+            Sin perjuicio de lo pactado en las cláusulas conducentes de este contrato, respecto a la obligación del ACREDITADO de 
+            efectuar los pagos establecidos en dichas cláusulas, en el domicilio del ACREEDOR, el ACREDITADO podrá depositarle al 
+            ACREEDOR, en la cuenta de cheques a nombre del ACREEDOR señalada en la <b>CARÁTULA DE TÉRMINOS</b> del presente contrato,  las 
+            cantidades correspondientes al importe de los pagos de capital e intereses y demás accesorios, así como el importe de 
+            cualquier cargo o contraprestación legal o contractualmente exigible en términos del presente instrumento y de la Ley o en 
+            cualquier otra cuenta a nombre del ACREEDOR que este último le indique por escrito.</p>
+            <p class="text"><b>--- DÉCIMA SEXTA.- CESIÓN.-</b> El ACREEDOR queda expresamente autorizada y facultada para ceder o de cualquier forma transferir la 
+            totalidad de sus derechos y obligaciones derivados del presente contrato y el(los) pagaré(s) de disposición que lo 
+            documente(n), así como negociar, descontar, re descontar, fondear o en cualquier otra forma transmitir el “Préstamo” y 
+            sus accesorios en cualquier momento, sin necesidad de obtener el consentimiento del ACREDITADO.</p>
+            <p class="text">--- Asimismo, en los términos del artículo 299 doscientos noventa y nueve de la Ley General de Títulos y Operaciones de 
+            “Préstamo”, el ACREDITADO faculta de manera expresa al ACREEDOR, para descontar negociar, o ceder con cualquier Institución 
+            de “Préstamo”, Organismo Nacional o Internacional, público o privado en todo o en parte, el “Préstamo” que ampara el presente 
+            contrato, aún antes del vencimiento estipulado para su pago.</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">--- El ACREDITADO, no podrá ceder, transferir o disponer total o parcialmente de los derechos y obligaciones derivados del 
+            presente contrato, salvo que cuente con el consentimiento previo y por escrito del ACREEDOR.</p>
+            <p class="text"><b>--- DÉCIMA SÉPTIMA.- RESTRICCIÓN Y 
+            DENUNCIA DEL CONTRATO.-</b> Las Partes convienen que el ACREEDOR queda facultada para restringir el monto del “Préstamo” o el plazo 
+            para hacer uso del mismo, o ambos a la vez, o para denunciar este contrato en cualquier tiempo, mediante comunicación por escrito 
+            dirigida al ACREDITADO, quedando por consiguiente limitado o extinguido según sea el caso, el derecho de éste para hacer uso del 
+            saldo no dispuesto.</p>
+            <p class="text">--- Asimismo, en los términos del artículo 294 doscientos noventa y cuatro de la Ley General de Títulos y Operaciones de “Préstamo”, 
+            el ACREDITADO podrá denunciar el presente contrato sin responsabilidad alguna, en un período de 10 diez días hábiles posteriores 
+            a la fecha de firma del presente contrato, siempre y cuando no hubiere otorgado garantía hipotecaria y además no hubiere dispuesto 
+            de parte o la totalidad del “Préstamo” que se le otorga en el presente instrumento.</p>
+            <p class="text"><b>--- DÉCIMA OCTAVA.- CASO FORTUITO O DE FUERZA MAYOR.-</b> El ACREDITADO se obliga a cumplir íntegramente las obligaciones que contrae, 
+            aún en caso fortuito o de fuerza mayor y acepta su responsabilidad, de acuerdo con el artículo 1994 mil novecientos noventa y 
+            cuatro del Código Civil del Estado de Chihuahua y su  correlativo del Código Civil  Federal.</p>
+            <p class="text"><b>--- DÉCIMA NOVENA.- 
+            TERMINACIÓN DEL CONTRATO Y OBLIGACIONES DEL ACREEDOR AL DARLO POR TERMINADO.-</b> El ACREDITADO podrá dar por terminado el presente 
+            contrato en cualquier tiempo, inclusive por conducto de cualquier Entidad Financiera, para lo cual deberá solicitar al ACREEDOR 
+            su cancelación mediante simple comunicación escrita con firma autógrafa presentada en las oficinas del ACREEDOR, y el ACREEDOR 
+            le informará el saldo insoluto del “Préstamo” a través de cualquiera de los medios previstos en el presente contrato a más tardar 
+            el día siguiente hábil al de la recepción de la solicitud y dentro de los 5 (cinco) días hábiles siguientes al de la recepción de
+            la solicitud, pondrá a disposición del ACREDITADO el informe sobre el saldo insoluto a determinada fecha futura, en el domicilio 
+            del ACREEDOR.</p>
+            <p class="text">--- Mientras el ACREDITADO no liquide la totalidad 
+            del saldo que se le dé a conocer, el presente contrato no será cancelado.</p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">--- En caso de que el ACREDITADO no solicite al ACREEDOR la terminación anticipada del contrato y realice el pago de la totalidad del presente “Préstamo”, así como de los accesorios generados, el ACREEDOR entregará o mantendrá 
+            a disposición del ACREDITADO, el estado de cuenta o documento en el que conste el fin de la relación contractual y la 
+            inexistencia de adeudos derivados exclusivamente del presente contrato, dentro de los 10 diez días hábiles a partir de 
+            que se hubiera realizado el pago de los adeudos o en la siguiente fecha de corte.</p>
+            <p class="text"><b>--- VIGÉSIMA.- IMPUESTOS.-</b> El ACREDITADO se obliga a cubrir al ACREEDOR los cargos que procedan por concepto de impuestos, conforme a las leyes 
+            vigentes aplicables, incluyendo el Impuesto al Valor Agregado (IVA) sobre comisión y demás gastos, los intereses ordinarios 
+            y en su caso moratorios que se generen conforme a lo pactado en este contrato.</p>
+            <p class="text"><b>--- VIGÉSIMA PRIMERA.-</b> LUGAR DE PAGO. El ACREDITADO realizará sin necesidad de requerimiento o previa solicitud, cualquier pago tanto de capital como de 
+            intereses así como de la comisión y los gastos en su caso, en el domicilio que el ACREEDOR señalo en la <b>Carátula de Términos</b> 
+            del presente contrato, en horas y días hábiles, o en cualquier otro lugar que el ACREEDOR le señale previamente por escrito.</p>
+            <p class="text">--- Todas las cantidades pagaderas por el ACREDITADO al ACREEDOR de conformidad con el presente Contrato y el o los pagaré(s), 
+            serán pagadas en la fecha de su vencimiento, en el domicilio del ACREEDOR, ubicado a la fecha del presente Contrato en Avenida 
+            La Cantera Número 9301 interior 201 nueve tres cero uno interior dos cero uno, Colonia Las Misiones, C.P. 31115 tres uno uno 
+            uno cinco, en la Ciudad de Chihuahua, Municipio y Estado del mismo nombre, o en cualquier otro domicilio que con posterioridad 
+            indique por escrito el ACREEDOR al ACREDITADO, o en cualquier sucursal del ACREEDOR, en días y horas hábiles sin necesidad de 
+            requerimiento o cobro previo.</p>
+            <p class="text"><b>--- VIGÉSIMA SEGUNDA.- OBLIGACIONES DE HACER DEL ACREDITADO.-</b> El ACREDITADO deberá cumplir con las siguientes obligaciones, salvo 
+            que exista consentimiento previo y por escrito de los representantes legales del ACREEDOR que la releven de su cumplimiento.---
+            <p class="text"><b>a)</b> Comunicar al ACREEDOR cualquier cambio de domicilio.</p>
+            <p><b>b)</b> Proporcionar al ACREEDOR, información y documentación relativa al presente contrato o a la existencia de su relación laboral entre el ACREDITADO y la empresa señalada 
+            en el presente contrato, cuando el ACREEDOR se lo solicite, en un término que no exceda de 15 quince días</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+        <p class="text">naturales contados a partir de la fecha en que le sea entregada tal solicitud.
+        <p class="text"><b>c)</b> Proporcionar al ACREEDOR, dentro de 
+            los 30 treinta días naturales, a partir de la fecha del presente contrato, el soporte documental correspondiente, que 
+            acredite fehacientemente a satisfacción del ACREEDOR, el destino del “Préstamo”.</p>
+            <p class="text"><b>d)</b> Invertir el “Préstamo” que se le concede mediante el presente Contrato, en el destino para el cual fue solicitado.</p>
+            <p class="text"><b>e)</b> Proporcionar al ACREEDOR dentro de los 5 cinco días naturales, a partir de la fecha del presente contrato, el soporte 
+            documental correspondiente, que acredite fehacientemente la contratación del(de los) seguro(s) relativo(s) al primer párrafo de 
+            la cláusula denominada SEGUROS, a satisfacción del ACREEDOR, en las que el ACREEDOR sea señalada como “Beneficiario Preferente 
+            irrevocable”. Asimismo, proporcionar dentro de los 5 cinco días naturales siguientes a la fecha del vencimiento de la(s) póliza(s) 
+            contratada(s), la(s) póliza(s) de renovación del (de los) seguro(s) a que alude el primer párrafo de la cláusula referida.</p>
+            <p class="text"><b>f)</b> Proporcionar al ACREEDOR, información y documentación que permita a la misma efectuar una actualización de su expediente crediticio 
+            y de identificación, cuando el ACREEDOR se lo solicite, en un término que no exceda de 15 quince días naturales contados a partir de 
+            la fecha en que le sea requerida.</p>
+            <p class="text"><b>--- VIGÉSIMA TERCERA.- OBLIGACIÓN DE NO HACER DEL ACREDITADO.-</b> El ACREDITADO deberá cumplir con la siguiente obligación de no hacer, salvo que exista 
+            consentimiento previo y por escrito de los representantes legales del ACREEDOR que la releven de su cumplimiento:</p>
+            <b>a)</b> Respecto de los acreedores financieros, a la fecha de celebración de este contrato, no modificar las condiciones con ellos pactadas 
+            relativas al otorgamiento de garantías, ampliación de las mismas y cambios a las condiciones financieras, de tal forma que resulten 
+            más onerosas para el ACREDITADO.</p>
+            <p><b>--- VIGÉSIMA CUARTA.- VENCIMIENTO ANTICIPADO.-</b> Las Partes convienen en que el ACREEDOR podrá dar por vencido anticipadamente en cualquier tiempo durante 
+            la vigencia del presente Contrato, el plazo  estipulado para el pago del mismo, previa notificación a el ACREDITADO, sin necesidad 
+            de declaración judicial, exigiendo el pago total del “Préstamo” dispuesto, sus intereses y demás prestaciones y consecuencias legales, 
+            si el ACREDITADO 
+            faltare al cumplimiento de cualesquiera de las obligaciones contraídas en virtud de este Contrato, o además en los casos que la 
+            Ley así lo previene, o en cualesquiera de los siguientes supuestos, </p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">salvo que exista consentimiento previo y por escrito de los representantes legales del ACREEDOR, que lo releven de su cumplimiento:</p>
+            <p class="text"><b>a)</b> Si el ACREDITADO deja de efectuar, en forma total, uno o más de los pagos que se obliga a realizar conforme al presente contrato, 
+            sean estos de capital, intereses, comisiones, gastos u otros accesorios.</p>
+            <p class="text"><b>b)</b> Si el monto del “Préstamo” no es 
+            empleado precisamente para el fin indicado en el presente contrato.</p>
+            <p class="text"><b>c)</b> Si cualquier declaración hecha y/o información proporcionada por el ACREDITADO, para la celebración de este contrato, o cualquier 
+            certificación o documento que haya entregado en cumplimiento de las obligaciones a su cargo en este contrato, resulta ser falsa en 
+            cualquier aspecto.</p>
+            <p class="text"><b>d)</b> Si los bienes del ACREDITADO son objeto de embargo decretado por cualquier autoridad.</p>
+            <p class="text"><b>e)</b> Si el ACREDITADO incumpliere con cualesquiera de las obligaciones a su cargo, derivadas de este contrato o de la Ley.</p>
+            <p class="text"><b>f)</b> Si el ACREDITADO deja de cumplir con cualquier otro “Préstamo” o préstamo que le hubiere otorgado el ACREEDOR, o en general se de por 
+            vencida anticipadamente cualquier obligación a plazo que tenga el ACREDITADO con el ACREEDOR.</p>
+            <p class="text"><b>g)</b> En caso de muerte, declaración de estado de interdicción, de inhabilitación o ausencia del ACREDITADO.</p>
+            <p class="text"><b>h)</b> Si el ACREDITADO no mantiene vigentes los seguros a que se refieren este contrato, en los términos establecidos en el mismo.</p>
+            <p class="text"><b>i)</b> Si EL ACREDITADO fuere declarado en concurso mercantil, o si se inicia algún procedimiento judicial para declararlo en concurso.</p>
+            <p class="text"><b>j)</b> Si el ACREDITADO cede sus derechos u obligaciones derivados del presente contrato.</p>
+            <p class="text"><b>k)</b> Si el ACREDITADO no cumple con las obligaciones de hacer y de no hacer señaladas en el presente contrato.</p>
+            <p class="text"><b>l)</b> Si el ACREDITADO no entrega al ACREEDOR los comprobantes relativos al destino del “Préstamo”.</p>
+            <p class="text"><b>m)</b> Si el ACREDITADO, está en desacuerdo con la notificación de modificaciones que pudieran surgir por parte del ACREEDOR.</p>
+            <p class="text"><b>n)</b> Si el ACREDITADO no toma oportunamente el (los) seguro(s) pactado(s).</p>
+            <p class="text">--- En los casos anteriores se podrá dar por vencido anticipadamente el plazo del “Préstamo”, y se hará exigible en una sola exhibición la totalidad del capital adeudado, de sus intereses 
+            y demás accesorios legales y convencionales pactados en este contrato.</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">  
+        <p class="text">En el entendido de que la notificación la hará por escrito el ACREEDOR a el ACREDITADO, en el domicilio señalado en la <b>Carátula de Términos</b> del 
+            presente contrato, dentro de los 5 (cinco) días siguientes a que tenga conocimiento de cualesquiera de las causales anteriores 
+            que se llegaren a presentar.</p>
+            <p class="text">--- Mientras el saldo insoluto del “Préstamo” no sea pagado, se 
+            generarán intereses moratorios a cargo del ACREDITADO, a partir de la fecha en que el ACREEDOR notifique al ACREDITADO la terminación 
+            anticipada del presente contrato.</p>
+            <p class="text"><b>--- VIGÉSIMA QUINTA.- SEGUROS.-</b> El ACREDITADO se obliga a contratar a la fecha de firma del presente contrato con una compañía aseguradora 
+            de reconocida solvencia y registrada ante la Comisión Nacional de Seguros y Finanzas <b><u>un seguro por concepto de saldo deudor en caso de 
+            fallecimiento a nombre del ACREDITADO</u></b>, así como a mantenerlo en vigor por todo el plazo de este contrato y mientras exista saldo insoluto 
+            a su cargo. Dicho(s) seguro(s) deberá(n) amparar la totalidad del monto del “Préstamo” y sus accesorios, en los que se establezca como 
+            “Beneficiario Preferente e Irrevocable” al ACREEDOR, debiendo el ACREDITADO, entregar a la “Acreditante” la(s) póliza(s), endoso(s) y 
+            recibo(s) de pago de primas correspondientes, así como la(s) renovación(es) respectiva(s), dentro de un plazo de 5 cinco días naturales 
+            contados a partir de la fecha de celebración de este contrato, y la(s) renovación(es) posterior(es), dentro de los 5 cinco días naturales
+            siguientes a la fecha de su vencimiento. Dicha(s) póliza(s) debe(n) estar vigente(s) y pagada(s), así como la(s) prima(s) 
+            correspondiente(s) en cada renovación, en tanto exista saldo insoluto del “Préstamo” a cargo del ACREDITADO.</p>
+            <p class="text">--- En caso de omisión por parte del ACREDITADO respecto al aseguramiento estipulado en esta cláusula, el ACREDITADO faculta al ACREEDOR 
+            para contratar y/o renovar el(los) seguro(s) correspondiente(s) a nombre y por cuenta del primero, sin que constituya una obligación 
+            para el ACREEDOR, quedando el ACREDITADO obligado a reembolsar al ACREEDOR, dentro de los 15 quince días siguientes a la fecha de 
+            contratación del(de los) seguro(s), el importe de las primas y los gastos efectuados más intereses ordinarios a la tasa pactada en la 
+            Cláusula denominada TASA DE INTERÉS ORDINARIO, los cuales se generarán a partir de la fecha de contratación de dicho(s) seguro(s), hasta 
+            la fecha en que el monto correspondiente sea totalmente pagado.</p>
+            <p >---En el supuesto de que el ACREDITADO, decida que el ACREEDOR incluya el presente “Préstamo” al seguro grupal </p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">denominado “Ramo de Vida Grupo”, que tiene contratado con Seguros de Vida Sura México, Sociedad Anónima de Capital Variable, se le descontará sobre el monto 
+            del “Préstamo” a depositar la cantidad equivalente al 0.45% cero punto cuarenta y cinco por ciento anual del saldo insoluto del “Préstamo” en la primera disposición del mismo. El ACREEDOR pondrá a 
+            disposición del ACREDITADO, en el domicilio señalado en el presente contrato, la póliza del seguro contratado a nombre del 
+            ACREDITADO, documento que estipula las condiciones generales del mismo. En el supuesto de fallecimiento del ACREDITADO, se deberá 
+            notificar por escrito por parte de sus derechohabientes al ACREEDOR en un plazo no mayor a 90 (noventa) días a partir de la fecha 
+            del fallecimiento, debiéndose presentar el original del acta de defunción, así como los demás documentos que en su momento requiera 
+            el ACREEDOR, para efectos de hacer presentar la solicitud de reclamación del seguro a que se refiere el presente párrafo.</p>
+            <p class="text">El ACREEDOR, no se responsabiliza por la falta de pago oportuno de las primas del (de los) seguro(s) contratado(s)</p>
+            <p class="text">--- Si llegare a presentarse algún siniestro derivado de la cobertura contratada o en el supuesto que se actualice la misma, el ACREDITADO, 
+            su conyugue o algún familiar se obligan a enterar en forma inmediata y por escrito al ACREEDOR, de tal circunstancia. Para tal efecto, 
+            deberá de entregarse en el domicilio del ACREEDOR, los documentos indispensables que se le requieran para que el ACREEDOR pueda llevar a 
+            cabo los trámites necesarios para solicitar a la Aseguradora el pago de la indemnización en caso de que ello corresponda.</p>
+            <p class="text">--- El ACREDITADO acepta que dentro del período en el cual la Aseguradora revisa y determina la procedencia de la reclamación y realiza el 
+            pago de la misma, no queda liberada de su obligación de cumplir con los pagos del presente “Préstamo” en las fechas de vencimiento 
+            pactadas en este instrumento, y en caso de no hacerlo, se actualizará las causas de vencimiento anticipado del mismo.</p>
+            <p><b>--- VIGÉSIMA SEXTA.- DE LA INFORMACIÓN ADICIONAL, CONSULTAS, ACLARACIONES Y RECLAMACIONES.-</b> Las Partes convienen, en que cualquier información 
+            a cargo del ACREEDOR derivada del presente contrato y que no se encuentre consignada en el mismo, o bien, que requiera nuevamente ser 
+            explicada o revisada por el ACREDITADO, la misma estará a su disposición en el domicilio del ACREEDOR, el cual se señala más adelante, así 
+            como en la parte declarativa del presente contrato, a la que podrá acudir previa cita, en días y horas hábiles, a efecto de</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">que sea atendido por un encargado administrativo contable y ante quien podrá formular cualquier clase de consulta o reclamación para su debida atención. Una vez recibida la solicitud de aclaración, el 
+            ACREEDOR tendrá un plazo máximo de 45 cuarenta y cinco días naturales para entregar al ACREDITADO el dictamen correspondiente, 
+            anexando copia simple del documento o evidencia considerada para la emisión de dicho dictamen, con base en la información que, 
+            conforme a las disposiciones aplicables, deba obrar en su poder, así como un informe detallado en el que se respondan todos los 
+            hechos contenidos en la solicitud presentada por el ACREDITADO.</p>
+            <p class="text">--- El dictamen e informe antes referidos deberán 
+            formularse por escrito y suscribirse por personal del ACREEDOR facultado para ello. En el evento de que, conforme al dictamen que emita 
+            el ACREEDOR, resulte procedente el cobro del monto respectivo, el ACREDITADO deberá hacer el pago de la cantidad a su cargo, incluyendo 
+            los intereses ordinarios conforme a lo pactado, sin que proceda el cobro de intereses moratorios y otros accesorios generados por la 
+            suspensión del pago realizada en términos de esta cláusula; no obstante lo anterior, en caso de no resultar procedente la queja o 
+            solicitud de aclaración por parte del ACREDITADO, éste último deberá hacer el pago de la cantidad a su cargo, incluyendo los intereses 
+            ordinarios y los intereses moratorios y cualquier otro accesorio generados durante el plazo de suspensión del pago, conforme a lo pactado 
+            en este contrato.</p>
+            <p><b>--- VIGÉSIMA SÉPTIMA.- INVESTIGACIONES.-</b> El ACREDITADO, ratifica la autorización que previa, 
+            expresa e irrevocablemente otorgo al ACREEDOR en documento por separado con su firma autógrafa, para que solicite a la(s) Sociedad(es)
+            de Información Crediticia Nacional(es) o Extranjera(s), que considere necesaria(s), toda la información relativa a su historial 
+            crediticio. De igual manera el ACREEDOR, queda autorizado para llevar a cabo revisiones, investigaciones y monitoreo periódico sobre 
+            su comportamiento crediticio, y proporcionar información sobre el historial crediticio a dicha(s) sociedad(es) que considere 
+            necesaria(s), en términos de la Ley para Regular las Sociedades de Información Crediticia. Dicha autorización estará vigente cuando
+            menos durante 3 (tres) años contados a partir de la fecha de su firma o en tanto exista una relación jurídica con el ACREEDOR. 
+            El ACREDITADO manifiesta que conoce plenamente la naturaleza, alcance y sus consecuencias de la información que se solicitará en 
+            forma periódica para su análisis financiero y crediticio y está consciente de las implicaciones que el incumplimiento en el</p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text">pago del “Préstamo” otorgado le puede generar, así como que dicho historial crediticio podrá servir de base para la aprobación de futuros préstamos con el ACREEDOR o con alguna 
+            otra entidad crediticia.</p>
+            <p class="text"><b>--- VIGÉSIMA OCTAVA.-</b> El ACREDITADO manifiesta su expresa conformidad con lo establecido en el presente 
+            contrato, así como que se le proporciona un ejemplar de este contrato, tabla de pagos, así como del(os) pagaré(s) de disposición que 
+            incluyen la tabla de pagos de capital, a la firma del presente instrumento.</p>
+            <p class="text"><b>--- VIGÉSIMA NOVENA.-</b> MEDIOS DE PAGO Y FECHAS DE ACREDITAMIENTO.- Sin perjuicio de lo pactado en las cláusulas conducentes de este contrato, 
+            respecto a la obligación del ACREDITADO de efectuar los pagos establecidos en dichas cláusulas en el domicilio del ACREEDOR, los pagos 
+            que realice el ACREDITADO, se aplicarán de acuerdo con el medio de pago utilizado de conformidad con lo siguiente: <b>(i) Depósito en 
+            efectivo en sucursal bancaria donde el ACREEDOR  tiene abierta su cuenta</b>: Se acreditará el mismo día; (ii) Cheque: (a)  Del mismo Banco 
+            en que el ACREEDOR tiene su cuenta, antes de las 12:00 horas, horario del centro, se acreditará el mismo día; (b) Cuenta de Banco diverso 
+            al Banco en que el ACREEDOR tiene su cuenta, depositado antes de las 16:00 horas, se acreditará a más tardar el día hábil bancario 
+            siguiente y después de las 16:00 horas, se acreditará a más tardar el segundo día hábil bancario siguiente; (iii) Domiciliación: Se 
+            acreditará: (a) En la fecha en que se acuerde con el ACREDITADO, o (b) En la fecha límite de pago; <b>(iv) Transferencias Electrónicas de 
+            fondos:</b> (a) A través del Sistema de Pagos Electrónicos de Uso Ampliado (SPEUA) y del Sistema de Pagos Electrónicos Interbancarios (SPEI) 
+            de un banco distinto en que el ACREEDOR tiene su cuenta, antes de las 16:00 horas, se acreditará el mismo día; (b) Siendo del mismo banco 
+            en que el ACREEDOR tiene su cuenta, antes de las 19:00 horas, se acreditará el mismo día; (c) Sistema de Pagos Electrónicos Interbancarios 
+            (SPEI) de un banco distinto en que el ACREEDOR tiene su cuenta, después de las 16:00 horas, se acreditará al día hábil siguiente; y (d) 
+            Siendo del mismo banco en que el ACREEDOR tiene su cuenta, después de las 19:00 horas, se acreditará al día hábil siguiente.</p>
+            <p><b>---TRIGÉSIMA.- MODIFICACIONES.-</b> Las partes acuerdan que cualquier modificación al presente contrato, deberá de constar por escrito, debiendo 
+            para tales efectos modificar la <b>Carátula de Términos</b> del presente contrato, la cual deberá estar debidamente firmada por las partes, e 
+            identificarse con</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">    
+            <p class="text">el número de identificación del presente “Préstamo” y número de convenio modificatorio que corresponda en orden cronológico.</p>
+            <p class="text"><b>--- TRIGÉSIMA PRIMERA.- TÍTULO EJECUTIVO Y CERTIFICACIÓN.-</b> Las Partes convienen que el estado de cuenta certificado por el Contador del ACREEDOR, conjuntamente con el  presente 
+            contrato y el pagaré o pagarés de disposición suscritos por el ACREDITADO, es título ejecutivo mercantil y hacen prueba plena 
+            respecto al estado de cuenta del adeudo del ACREDITADO, para todos los efectos legales a que haya lugar, sin necesidad de 
+            reconocimiento de firma ni de otro requisito, determinándose el saldo insoluto y accesorios legales y convencionales por el Contador 
+            del ACREEDOR, en los términos de dichos preceptos legales, facultando al ACREEDOR a ejercitar las acciones que derivadas del 
+            incumplimiento del ACREDITADO prevea la ley.</p>
+            <p class="text"><b>--- TRIGÉSIMA SEGUNDA.- DOMICILIOS.-</b> Todas las notificaciones, avisos y en general cualquier comunicación que las Partes deban hacerse en relación al presente 
+            contrato, incluyendo el emplazamiento en caso de juicio, se harán en el domicilio que cada una de ellas ha señalado y que aparece en la 
+            <b>Carátula de Términos</b> del presente contrato, en todo caso, se entenderá por bien efectuada la notificación, cuando fuera intentada y/o 
+            realizada en dicho domicilio.</p>
+            <p class="text">--- Expresan las Partes que para el efecto de recibir notificaciones, el domicilio de cada uno de ellos a que antes se hace referencia es convencional, por lo que 
+            en los términos del artículo 1070 mil setenta del Código de Comercio, están enteramente de acuerdo en que si se acude a su respectivo 
+            domicilio a practicar notificación personal y dicho domicilio no le(s) corresponde, se proceda a la notificación por edictos sin necesidad 
+            de que se recabe el informe señalado en el mencionado artículo.</p>
+            <p class="text">--- Mientras el ACREDITADO no notifique 
+            por escrito al ACREEDOR el cambio de su domicilio, los avisos, las notificaciones, los emplazamientos y demás diligencias judiciales o 
+            extrajudiciales se practicarán en el domicilio señalado en la presente cláusula, y surtirán plenamente sus efectos.</p>
+            <p class="text">--- Cualquier aviso que las Partes deban darse conforme a este Contrato, deberá hacerse por escrito y se entregará en el domicilio que cada 
+            parte convino en la presente Cláusula. Todas las notificaciones y avisos que se entreguen en el domicilio de la parte correspondiente, 
+            surtirán efecto en la fecha de entrega de los mismos.</p>
+        </div>
+        <p style="page-break-after: always;">&nbsp;</p>
+    </div>
+    <div class="row">
+        <div class="col" align="center" style="float: left;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">
+            <p class="text"><b>--- TRIGÉSIMA TERCERA.- LEGISLACIÓN APLICABLE Y JURISDICCIÓN.-</b> Para todo lo relativo a la interpretación y cumplimiento de las obligaciones derivadas de este contrato, las Partes y comparecientes se someten a las leyes de los Estados 
+            Unidos Mexicanos, y a la jurisdicción y competencia de los tribunales de la Ciudad de Chihuahua, Chihuahua, renunciando a cualquier 
+            otra jurisdicción a la que pudieren tener derecho en virtud de sus domicilios presentes o futuros, de la ubicación de sus bienes o 
+            por cualquier otra causa.</p>
+            <p class="text"><b>--- TRIGÉSIMA CUARTA.- TÍTULOS DE LAS CLÁUSULAS.-</b> Los 
+            títulos de las cláusulas que aparecen en el presente instrumento se han puesto con el exclusivo propósito de facilitar su lectura por 
+            tanto no definen ni limitan el contenido de las mismas. Para efectos de interpretación de este instrumento deberá atenderse exclusivamente 
+            al contenido de sus declaraciones y cláusulas y de ninguna manera al título de estas últimas</p>
+            <p class="text"><b>--- TRIGÉSIMA QUINTA.- PLENITUD CONTRACTUAL.-</b> Las partes declaran que lo asentado en las cláusulas que anteceden y las que sigan en este Contrato 
+            contienen todo lo pactado entre ellas, por lo que no se aceptará ningún otro documento, declaración de testigos o cualquier otro medio 
+            para considerar variados los términos de este Contrato. En caso de que las partes quisieran modificarlo, el Contrato que en este documento 
+            se hace constar, tendrá que ser por escrito, en que se haga referencia expresa a la modificación.</p>
+            <p class="text"><b>--- TRIGÉSIMA SEXTA.- EQUIDAD.-</b> Las partes declaran que en lo antes pactado no hay dolo, error ni lesión, por lo que renuncian desde ahora a 
+            cualquier acción que pudiere corresponderles por esos conceptos.</p>
+            <p class="text"><b>--- TRIGÉSIMA SÉPTIMA.- RENUNCIA DE DERECHOS.-</b> La 
+            omisión por parte del ACREEDOR en el ejercicio de los derechos previstos en este instrumento, en ningún caso tendrán el efecto de una 
+            renuncia a los mismos, ni que el ejercicio singular o parcial por parte del ACREEDOR de cualquier derecho derivado de este instrumento 
+            excluye algún otro derecho, facultad o privilegio.</p>
+            <p class="text"><b>--- TRIGÉSIMA OCTAVA.- GASTOS.-</b> Todos los gastos, comisiones, honorarios, derechos e impuestos que origine este Contrato, serán por cuenta 
+            del ACREDITADO, quien se obliga a pagarlos en el momento en que se causen.</p>
+            <p class="text">--- En caso de que el ACREEDOR se vea en la necesidad de sufragar alguno de dichos conceptos, el ACREDITADO se obliga a reembolsárselo de inmediato.</p>
+            <p class="text">--- El ACREEDOR no efectuará cargos, comisiones o gastos distintos a los especificados en este contrato.</p>
+        </div>
+        <div class="col" align="center" style="float: right;text-align: justify;font-size:10.5pt;text-justify: inter-word;  width: 50%; padding: 5px;">    
+            <p class="text">--- LEÍDO QUE FUE EL PRESENTE CONTRATO POR LAS PARTES Y ENTERADAS DE SU CONTENIDO Y ALCANCE LEGAL, LO FIRMAN EN
+                    DOS TANTOS, EN LA CIUDAD DE CHIHUAHUA, ESTADO DE CHIHUAHUA, A LOS <%= @dia_inicio %> DÍAS DEL MES DE <%= @mes_inicio.upcase %> DEL AÑO <%= @anio_inicio %>.</p>                   <br>
                     <br>
                     <br>
                     <br>
                     <br>
-                    <br>
-                    <br>
-                    <br>
-                <br><span align="center">EL ACREDITADO
-                    <br><br>________________________________________
-                    <br><%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %> 
-                <br><br>EL ACREEDOR
+                <br><span align="center" style="float: right;"><b>EL ACREDITADO</b>
+                    <br><br><br><br>________________________________________
+                    <br><b><%= @nombre %> <%= @apellido_paterno %> <%= @apellido_materno %> </b>
+                <br><br><b>EL ACREEDOR
                     FACTOR GFC LEASING, S.A.P.I. DE C.V.
-                    REPRESENTADO EN ESTE ACTO POR:
-                    <br><br>________________________________________
-                    <br>JORGE FERNANDO GARCIA SCHMITT
-                <br><br>TESTIGOS
-                    <br><br>________________________________________
-                    <br>KARINA GONZALEZ RODRIGUEZ
-                    <br><br>________________________________________
-                    <br>JOEL IVAN REY REZA</span>
-            </div>
+                    REPRESENTADO EN ESTE ACTO POR:</b>
+                    <br><br><br><br>________________________________________
+                    <br><b>JORGE FERNANDO GARCIA SCHMITT</b>
+                <br><br><b><br><br><b>TESTIGOS</b>
+                    <br><br><br><br>________________________________________
+                    <br><b>KARINA GONZALEZ RODRIGUEZ</b>
+                    <br><br><br><br>________________________________________
+                    <br><b>JOEL IVAN REY REZA</b></span>
         </div>
     </div>
 </body>
