@@ -457,6 +457,7 @@ class ApplicationController < ActionController::Base
         @plazo_type = @customer_credit_data[0]["plazo_type"]   
         @term = @customer_credit_data[0]["numero_pagos"]
         if @plazo_type == 'Semanal'
+          @plazo_term = @term.to_s + ' Semanas'
           @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
           @pago_mas_alto = @pagos_fijos * 5
           @salario2 = @salario.to_f * 4.33
@@ -464,10 +465,11 @@ class ApplicationController < ActionController::Base
           @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
           @pago_mas_alto = @pagos_fijos * 2
           @salario2 = @salario.to_f * 2
+          @plazo_term = @term.to_s + ' Quincenas'
         end
         @puesto = @customer_credit_data[0]["puesto"]
         @plazo = @customer_credit_data[0]["plazo"]   
-        @plazo_key = @customer_credit_data[0]["plazo_key"]     
+        @plazo_key = @customer_credit_data[0]["plazo_key"] 
         @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
         @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
         @banco = @customer_credit_data[0]["banco"]
@@ -596,7 +598,6 @@ class ApplicationController < ActionController::Base
 
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","caratula_terminos","terminos2","pagare","amortizacion"]
-        # @documents_array = ["amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)

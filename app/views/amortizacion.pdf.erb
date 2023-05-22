@@ -31,17 +31,14 @@
                 Fecha de Inicio: <%= @fecha_inicio.strftime("%d/%m/%Y") %>
             </div><br>
             <div class="col" align="right">
-                Plazo: <%= @plazo %>
-            </div><br>
-            <div class="col" align="right">
-                Numero de pagos: <%= @plazo_key %>
+                Numero de pagos: <%= @plazo_term %>
             </div><br>
             <div class="col" align="right">
                 Tasa fija: <%= @tasa %> %
             </div><br>
             <div class="col" align="right">
-                Cat: <%= @cat.blank? ? '' : @cat %>% sin iva.
-            </div><br>
+                Cat: <%= @cat.blank? ? '' : @cat %>% sin IVA.
+            </div>
             </font>
         </div>
         <div class="row">
