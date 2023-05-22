@@ -103,7 +103,7 @@ class CustomerCredit < ApplicationRecord
   def self.get_customer_credit_data(id)
 
     @query = "SELECT ter.value numero_pagos, ter.description plazo,ter.key plazo_key,ter.term_type plazo_type, cus.job puesto,
-    cus.credit_lp creditos_lp,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cuc.destination cat,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
+    cus.credit_lp creditos_lp,ca.car_credit credito_automovil,cus.infonavit hipoteca,cus.extra_expenses otros_gastos,cus.credit_cp creditos_personales,cus.seniority antiguedad,cus.house_rent renta,cus.immediate_superior jefe_inmediato,cus.other_income otros_ingresos,cus.total_income ingreso_total,cuc.destination cat,cus.salary_period frecuencia_de_pago,cus.net_expenses total_gastos,cus.salary salario,cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
     con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
     peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name nombre, peo.last_name apellido_paterno, peo.second_last_name apellido_materno, peo.gender pf_genero, 
     peo.nationality pf_nacionalidad, peo.birthplace pf_lugar_nacimiento, peo.birthdate pf_fecha_nacimiento, peo.martial_status pf_estado_civil,peo.martial_regime pf_regimen_marital,peo.senior_dependents dependientes_mayores,peo.minior_dependents dependientes_menores,peo.housing_type tipo_vivienda, peo.id_type pf_tipo_identificacion, peo.identification pf_numero_identificacion, 
@@ -113,6 +113,7 @@ class CustomerCredit < ApplicationRecord
     cus.public_charge,cus.public_charge_det,cus.relative_charge,cus.relative_charge_det,cus.other_income_detail,cus.benefit,cus.benefit_detail,cus.responsible,cus.responsible_detail
     FROM customer_credits cuc
     JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN credit_analyses ca ON (ca.customer_credit_id = cuc.id)
     JOIN users us ON (us.id = cus.user_id)
     JOIN companies com ON (cus.company_id = com.id)
     JOIN contributors con ON (cus.contributor_id = con.id)

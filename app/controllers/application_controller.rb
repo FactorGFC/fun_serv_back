@@ -438,6 +438,7 @@ class ApplicationController < ActionController::Base
   def generate_customer_credit_request_report_pdf
     # @mail_factor = 'sistemasfgfc@gmail.com'
     # @mail_factor = 'mescobedo@factorgfc.com'
+    @error_desc = []
     @mail_factor = GeneralParameter.get_general_parameter_value('CONTACT_MAIL')
     @folio = @customer_credit.credit_folio
     @credit_number = @customer_credit.credit_number
@@ -446,135 +447,144 @@ class ApplicationController < ActionController::Base
     @dia = Time.now.strftime("%d")
     @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
     @anio = Time.now.strftime("%Y")
-    @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
-    unless @customer_credit_data.blank?
-      # @suburb_type = @customer_credit_data[0][""]
-      @pagos_fijos = @customer_credit.fixed_payment
-      @salario = @customer_credit_data[0]["salario"]
-      @plazo_type = @customer_credit_data[0]["plazo_type"]   
-      @term = @customer_credit_data[0]["numero_pagos"]
-      if @plazo_type == 'Semanal'
-        @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
-        @pago_mas_alto = @pagos_fijos * 5
-        @salario2 = @salario.to_f * 4.33
-      elsif @teplazo_typerm == 'Quincenal'
-        @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
-        @pago_mas_alto = @pagos_fijos * 2
-        @salario2 = @salario.to_f * 2
-      end
-      @puesto = @customer_credit_data[0]["puesto"]
-      @plazo = @customer_credit_data[0]["plazo"]   
-      @plazo_key = @customer_credit_data[0]["plazo_key"]     
-      @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
-      @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
-      @banco = @customer_credit_data[0]["banco"]
-      @calle = @customer_credit_data[0]["calle"]
-      @numero_exterior = @customer_credit_data[0]["numero_exterior"]
-      @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
-      @colonia = @customer_credit_data[0]["colonia"]
-      @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
-      @estado = @customer_credit_data[0]["estado"]
-      @country = @customer_credit_data[0]["pais"]
-      @municipio = @customer_credit_data[0]["municipio"]
-      @company = @customer_credit_data[0]["nombre_empresa"]
-      @company_telefono = @customer_credit_data[0]["pm_telefono"]
-      @company_telefono = @customer_credit_data[0]["pm_telefono"]
-      @public_charge = @customer_credit_data[0]["public_charge"]
-      @public_charge_det = @customer_credit_data[0]["public_charge_det"]
-      @relative_charge = @customer_credit_data[0]["relative_charge"]
-      @relative_charge_det = @customer_credit_data[0]["relative_charge_det"]
-      @other_income_detail = @customer_credit_data[0]["other_income_detail"]
-      @benefit = @customer_credit_data[0]["benefit"]
-      @benefit_detail = @customer_credit_data[0]["benefit_detail"]
-      @responsible = @customer_credit_data[0]["responsible"]
-      @responsible_detail = @customer_credit_data[0]["responsible_detail"]
-      @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
-      @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
-      @giro_empresa = @customer_credit_data[0]["giro_empresa"]
-      @cat = @customer_credit_data[0]["cat"]
-      @pertenece = @customer_credit_data[0]["pertenece"]
-      @total_gastos = @customer_credit_data[0]["total_gastos"]
-      @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
-      @ingreso_total = @customer_credit_data[0]["ingreso_total"]
-      @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
-      @jefe_inmediato = @customer_credit_data[0]["jefe_inmediato"]
-      @regimen_fiscal = @customer_credit_data[0]["pm_regimen_fiscal"]
-      @rfc = @customer_credit_data[0]["pf_rfc"]
-      @curp =@customer_credit_data[0]["pf_curp"]
-      @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
-      @seguro = @customer_credit_data[0]["seguro"]
-      @seguro_saldo_deudor = @seguro.to_f/1.16
-      @nombre = @customer_credit_data[0]["nombre"]
-      @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
-      @apellido_materno = @customer_credit_data[0]["apellido_materno"]
-      @sexo = @customer_credit_data[0]["pf_genero"]
-      @nacionalidad = @customer_credit_data[0]["pf_nacionalidad"]
-      @lugar_nacimiento = @customer_credit_data[0]["pf_lugar_nacimiento"]
-      @fecha_nacimiento = @customer_credit_data[0]["pf_fecha_nacimiento"].to_date 
-      @age = Date.today.year - @fecha_nacimiento.year
-      @age -= 1 if Date.today < @fecha_nacimiento + @age.years #for days before birthday
-      @estado_civil = @customer_credit_data[0]["pf_estado_civil"]
-      @regimen_marital = @customer_credit_data[0]["pf_regimen_marital"]
-      @dependientes_mayores =  @customer_credit_data[0]["dependientes_mayores"]
-      @dependientes_menores = @customer_credit_data[0]["dependientes_menores"]
-      @tipo_vivienda = @customer_credit_data[0]["tipo_vivienda"]
-      @identificacion_oficial = @customer_credit_data[0]["pf_tipo_identificacion"]
-      @ine = @customer_credit_data[0]["pf_numero_identificacion"]
-      @telefono = @customer_credit_data[0]["pf_telefono"]
-      @movil = @customer_credit_data[0]["pf_celular"]
-      @email = @customer_credit_data[0]["pf_correo"]
-      @gastos_renta = @customer_credit_data[0]["renta"]
-      @antiguedad = @customer_credit_data[0]["antiguedad"]
-      @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
-      @creditos_personales = @customer_credit_data[0]["creditos_personales"]
-      @creditos_lp = @customer_credit_data[0]["creditos_lp"]
-      @customer_id = @customer_credit.customer_id
-      # @destino = @customer_credit.destination
-      @destino = @customer_credit_data[0]["destino"]
-      @monto_total_solicitado = @customer_credit.total_requested
-      @intereses_apertura = @monto_total_solicitado * 0.01
-      @intereses_apertura = @intereses_apertura.round(2)
-      @capital = @customer_credit.capital
-      @intereses = @customer_credit.interests
-      @iva = @customer_credit.iva
-      @deuda_total = @customer_credit.total_debt
-      @total_pagos = @customer_credit.total_payments
-      @balance = @customer_credit.balance
-      @status = @customer_credit.status
-      @fecha_inicio = @customer_credit.start_date
-      @dia_inicio = @fecha_inicio.strftime("%d")
-      @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
-      @anio_inicio = @fecha_inicio.strftime("%Y")
-      @fecha_fin = @customer_credit.end_date
-      @dia_fin = @fecha_fin.strftime("%d")
-      @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
-      @anio_fin = @fecha_fin.strftime("%Y")
-      @tasa = @customer_credit.rate
-      @person_id = @customer_credit_data[0]["person_id"]
-      # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
-      # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
-      # unless ary.include?(nil)
-      # CUSTOMER COMPANY'S ADDRESS 
-      @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
-      unless @customer_company_address_data.blank?
-        @company_colonia = @customer_company_address_data[0]["colonia"]
-        @company_calle = @customer_company_address_data[0]["calle"]
-        @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
-        @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
-        @company_municipio_name = @customer_company_address_data[0]["municipio"]
-        @company_state_name = @customer_company_address_data[0]["estado"]
+    @credit_analysis = CreditAnalysis.where(customer_credit_id: @customer_credit.id)
+    unless @credit_analysis.blank?
+      @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
+      unless @customer_credit_data.blank?
+        # @suburb_type = @customer_credit_data[0][""]
+        @pagos_fijos = @customer_credit.fixed_payment
+        @salario = @customer_credit_data[0]["salario"]
+        @plazo_type = @customer_credit_data[0]["plazo_type"]   
+        @term = @customer_credit_data[0]["numero_pagos"]
+        if @plazo_type == 'Semanal'
+          @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
+          @pago_mas_alto = @pagos_fijos * 5
+          @salario2 = @salario.to_f * 4.33
+        elsif @teplazo_typerm == 'Quincenal'
+          @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
+          @pago_mas_alto = @pagos_fijos * 2
+          @salario2 = @salario.to_f * 2
+        end
+        @puesto = @customer_credit_data[0]["puesto"]
+        @plazo = @customer_credit_data[0]["plazo"]   
+        @plazo_key = @customer_credit_data[0]["plazo_key"]     
+        @cuenta_bancaria = @customer_credit_data[0]["cuenta_bancaria"]
+        @cuenta_clabe = @customer_credit_data[0]["cuenta_clabe"]
+        @banco = @customer_credit_data[0]["banco"]
+        @calle = @customer_credit_data[0]["calle"]
+        @numero_exterior = @customer_credit_data[0]["numero_exterior"]
+        @numero_apartamento = @customer_credit_data[0]["numero_apartamento"]
+        @colonia = @customer_credit_data[0]["colonia"]
+        @codigo_postal = @customer_credit_data[0]["codigo_postal"]      
+        @estado = @customer_credit_data[0]["estado"]
+        @country = @customer_credit_data[0]["pais"]
+        @municipio = @customer_credit_data[0]["municipio"]
+        @company = @customer_credit_data[0]["nombre_empresa"]
+        @company_telefono = @customer_credit_data[0]["pm_telefono"]
+        @public_charge = @customer_credit_data[0]["public_charge"]
+        @public_charge_det = @customer_credit_data[0]["public_charge_det"]
+        @relative_charge = @customer_credit_data[0]["relative_charge"]
+        @relative_charge_det = @customer_credit_data[0]["relative_charge_det"]
+        @other_income_detail = @customer_credit_data[0]["other_income_detail"]
+        @benefit = @customer_credit_data[0]["benefit"]
+        @benefit_detail = @customer_credit_data[0]["benefit_detail"]
+        @responsible = @customer_credit_data[0]["responsible"]
+        @responsible_detail = @customer_credit_data[0]["responsible_detail"]
+        @company_contributor_id = @customer_credit_data[0]["company_contributor_id"]
+        @fecha_inicio_labores = @customer_credit_data[0]["fecha_inicio_labores"]
+        @giro_empresa = @customer_credit_data[0]["giro_empresa"]
+        @cat = @customer_credit_data[0]["cat"]
+        @otros_gastos = @customer_credit_data[0]["otros_gastos"]
+        @hipoteca = @customer_credit_data[0]["hipoteca"]
+        @credito_automovil = @customer_credit_data[0]["credito_automovil"]
+        @pertenece = @customer_credit_data[0]["pertenece"]
+        @total_gastos = @customer_credit_data[0]["total_gastos"]
+        @frecuencia_de_pago = @customer_credit_data[0]["frecuencia_de_pago"]
+        @ingreso_total = @customer_credit_data[0]["ingreso_total"]
+        @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
+        @jefe_inmediato = @customer_credit_data[0]["jefe_inmediato"]
+        @regimen_fiscal = @customer_credit_data[0]["pm_regimen_fiscal"]
+        @rfc = @customer_credit_data[0]["pf_rfc"]
+        @curp =@customer_credit_data[0]["pf_curp"]
+        @NSS = @customer_credit_data[0]["pf_numero_seguro_social"]
+        @seguro = @customer_credit_data[0]["seguro"]
+        @seguro_saldo_deudor = @seguro.to_f/1.16
+        @nombre = @customer_credit_data[0]["nombre"]
+        @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
+        @apellido_materno = @customer_credit_data[0]["apellido_materno"]
+        @sexo = @customer_credit_data[0]["pf_genero"]
+        @nacionalidad = @customer_credit_data[0]["pf_nacionalidad"]
+        @lugar_nacimiento = @customer_credit_data[0]["pf_lugar_nacimiento"]
+        @fecha_nacimiento = @customer_credit_data[0]["pf_fecha_nacimiento"].to_date 
+        @age = Date.today.year - @fecha_nacimiento.year
+        @age -= 1 if Date.today < @fecha_nacimiento + @age.years #for days before birthday
+        @estado_civil = @customer_credit_data[0]["pf_estado_civil"]
+        @regimen_marital = @customer_credit_data[0]["pf_regimen_marital"]
+        @dependientes_mayores =  @customer_credit_data[0]["dependientes_mayores"]
+        @dependientes_menores = @customer_credit_data[0]["dependientes_menores"]
+        @tipo_vivienda = @customer_credit_data[0]["tipo_vivienda"]
+        @identificacion_oficial = @customer_credit_data[0]["pf_tipo_identificacion"]
+        @ine = @customer_credit_data[0]["pf_numero_identificacion"]
+        @telefono = @customer_credit_data[0]["pf_telefono"]
+        @movil = @customer_credit_data[0]["pf_celular"]
+        @email = @customer_credit_data[0]["pf_correo"]
+        @gastos_renta = @customer_credit_data[0]["renta"]
+        @antiguedad = @customer_credit_data[0]["antiguedad"]
+        @otros_ingresos = @customer_credit_data[0]["otros_ingresos"]
+        @creditos_personales = @customer_credit_data[0]["creditos_personales"]
+        @creditos_lp = @customer_credit_data[0]["creditos_lp"]
+        @customer_id = @customer_credit.customer_id
+        # @destino = @customer_credit.destination
+        @destino = @customer_credit_data[0]["destino"]
+        @monto_total_solicitado = @customer_credit.total_requested
+        @intereses_apertura = @monto_total_solicitado * 0.01
+        @intereses_apertura = @intereses_apertura.round(2)
+        @capital = @customer_credit.capital
+        @intereses = @customer_credit.interests
+        @iva = @customer_credit.iva
+        @deuda_total = @customer_credit.total_debt
+        @total_pagos = @customer_credit.total_payments
+        @balance = @customer_credit.balance
+        @status = @customer_credit.status
+        @fecha_inicio = @customer_credit.start_date
+        @dia_inicio = @fecha_inicio.strftime("%d")
+        @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
+        @anio_inicio = @fecha_inicio.strftime("%Y")
+        @fecha_fin = @customer_credit.end_date
+        @dia_fin = @fecha_fin.strftime("%d")
+        @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
+        @anio_fin = @fecha_fin.strftime("%Y")
+        @tasa = @customer_credit.rate
+        @person_id = @customer_credit_data[0]["person_id"]
+        # ary = [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin]
+        # unless [@term,@plazo,@cuenta_bancaria,@cuenta_clabe,@banco,@calle,@numero_exterior,@numero_apartamento,@colonia,@codigo_postal,@estado,@municipio,@company,@company_contributor_id,@fecha_inicio_labores,@giro_empresa,@salario,@total_gastos,@frecuencia_de_pago,@ingreso_total,@otros_ingresos,@jefe_inmediato,@regimen_fiscal,@rfc,@curp,@NSS,@nombre,@apellido_paterno,@apellido_materno,@sexo,@nacionalidad,@lugar_nacimiento,@fecha_nacimiento,@age,@estado_civil,@regimen_marital,@dependientes_mayores,@dependientes_menores,@tipo_vivienda,@identificacion_oficial,@ine,@telefono,@movil,@email,@gastos_renta,@antiguedad,@otros_ingresos,@creditos_personales,@creditos_lp,@customer_id,@destino,@monto_total_solicitado,@capital,@intereses,@iva,@deuda_total,@total_pagos,@balance,@pagos_fijos,@status,@fecha_inicio,@dia_inicio,@mes_inicio,@anio_inicio,@fecha_fin,@dia_fin,@mes_fin,@anio_fin].include?(nil)
+        # unless ary.include?(nil)
+        # CUSTOMER COMPANY'S ADDRESS 
+        @customer_company_address_data = Customer.get_customer_company_address(@customer_credit.id)
+        unless @customer_company_address_data.blank?
+          @company_colonia = @customer_company_address_data[0]["colonia"]
+          @company_calle = @customer_company_address_data[0]["calle"]
+          @company_numero_exterior = @customer_company_address_data[0]["numero_exrerior"]
+          @company_codigo_postal = @customer_company_address_data[0]["codigo_postal"]
+          @company_municipio_name = @customer_company_address_data[0]["municipio"]
+          @company_state_name = @customer_company_address_data[0]["estado"]
+        else
+          @error_desc.push("No se encontró la informacion de la empresa del cliente")
+          error_array!(@error_desc, :not_found)
+          raise ActiveRecord::Rollback
+        end
+        # else
+        # @error_desc.push("No se encontró un dato del cliente", ary.select {|k,v| k.blank?})
+        # error_array!(@error_desc, :not_found)
+        # raise ActiveRecord::Rollback
+        # end
       else
-        @error_desc.push("No se encontró la informacion de la empresa del cliente")
+        @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
       end
-      # else
-      # @error_desc.push("No se encontró un dato del cliente", ary.select {|k,v| k.blank?})
-      # error_array!(@error_desc, :not_found)
-      # raise ActiveRecord::Rollback
-      # end
     else
-      @error_desc.push("No se encontró la informacion del cliente (customer_credit_data)")
+      @error_desc.push("No se ha capturaro el analisis de credito")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end
@@ -586,7 +596,7 @@ class ApplicationController < ActionController::Base
 
         @file = CombinePDF.new
         @documents_array = ["solicitud","kyc","carta_deposito","domiciliacion","privacidad","prestamo","caratula_terminos","terminos2","pagare","amortizacion"]
-        # @documents_array = ["terminos2"]
+        # @documents_array = ["amortizacion"]
         
         @documents_array.each do |document_name|
           render_pdf_to_s3(document_name)

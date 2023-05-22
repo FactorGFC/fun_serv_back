@@ -46,7 +46,6 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
           @credit_lp = params[:credit_lp]
           @customers = Customer.where(id: @customer_credit.customer_id)
           @customer = @customers[0]
-          @customer.update(credit_cp: @credit_cp, credit_lp: @credit_lp)
           @contributors = Contributor.where(id: @customer.contributor_id)
           @contributor = @contributors[0]
           @people = Person.where(id: @contributor.person.id)
@@ -82,11 +81,12 @@ class Api::V1::CreditAnalysesController <  Api::V1::MasterApiController
             infonavit = @customer.infonavit
             child_support = @customer.child_support
             @total_expenses = taxes.to_f + imss.to_f + savings_found.to_f + savings_found_loand.to_f + savings_bank.to_f + insurance_discount.to_f 
-                              + extra_expenses.to_f + infonavit.to_f + child_support.to_f
+            + extra_expenses.to_f + infonavit.to_f + child_support.to_f
             payment_period = @payment_period.pp_type
             @monthly_income = @total_income.to_f * payment_period.to_f
             @montly_expenses = @total_expenses.to_f * payment_period.to_f
             @pagos_fijos = @customer_credit.fixed_payment
+            @customer.update(credit_cp: @credit_cp, credit_lp: @credit_lp,total_income: @monthly_income,net_expenses: @montly_expenses)
             # CALCULA DESCUENTO
             calculo1 = (savings_found.to_f + savings_found_loand.to_f + savings_bank.to_f + insurance_discount.to_f + extra_expenses.to_f + infonavit.to_f + child_support.to_f)*2
             calculo2 = @pagos_fijos * payment_period.to_f
