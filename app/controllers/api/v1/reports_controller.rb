@@ -969,10 +969,8 @@ end
     @query = "SELECT id, name, email
     FROM users
     WHERE job IN (':job', 'CONTROL', 'TESORERÍA', 'ADMINISTRADOR')
-    AND status = 'AC'
-    AND company_id = ':company_id';"
+    AND status = 'AC';"
     @query = @query.gsub ':job', params[:job].to_s
-    @query = @query.gsub ':company_id', params[:company_id].to_s
     @financial_workers = execute_statement(@query)
     render json: @financial_workers
   end
