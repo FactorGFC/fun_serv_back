@@ -32,7 +32,7 @@
             <img src="https://elasticbeanstalk-us-east-1-448997109223.s3.amazonaws.com/nomina_back/imagenes/leasing_logo.jpg" alt="logo leasing" style="width: 200px;">
         </div>
         <div class="row">
-            <div class="col" align="right"  style="float: right;" bgcolor="#F4FF12"><font style="font-family:Arial; font-size:9pt">Chihuahua,Chih. A <%= @date %></font>
+            <div class="col" align="right"  style="float: right;" bgcolor="#F4FF12"><font style="font-family:Arial; font-size:9pt">Chihuahua,Chih. A <%= @fecha_inicio.to_date.strftime("%d/%m/%Y") %></font>
             </div>
         </div>
     </div>

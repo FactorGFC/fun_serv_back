@@ -28,7 +28,7 @@
           </tr>
           <tr class="row3">
             <td colspan="13">2. IDENTIFICACION OFICIAL VIGENTE CON FIRMA</td>
-            <td colspan="10" align="center"><%= @lugar %> a: <%= @date %></td>
+            <td colspan="10" align="center"><%= @lugar %> a: <%= @fecha_inicio.to_date.strftime("%d/%m/%Y") %></td>
           </tr>
           <tr class="row4">
             <td colspan="13">3. COMPROBANTE DE DOMICILIO (TELMEX, LUZ, AGUA NO MAYOR A 3 MESES)</td>
@@ -36,7 +36,7 @@
           </tr>
           <tr class="row5">
             <td colspan="13">4. COMPROBANTE DE INGRESIS NO MAYOR A TRES MESES</td>
-            <td colspan="10" align="center"><%= @credit_number %></td>
+            <td colspan="10" align="center"></td>
           </tr>
           <tr class="row6">
             <th colspan="24" bgcolor="#C0C0C0">DATOS GENERALES</th>
@@ -53,7 +53,7 @@
             <th align="left">SOLTERO</th>
             <td ><%= @estado_civil == 'SO' ? 'X' : '' %></td>
             <th colspan="1" align="left">BIENES MANCOMUNADOS</th>
-            <td colspan="2" ><%= @regimen_marital == 'Bienes mancomunados' ? 'X' : '' %></td>
+            <td colspan="2" ><%= @regimen_marital == 'BM' ? 'X' : '' %></td>
             <th colspan="7" align="left">NUMERO DE DEPENDIENTES ECONOMICOS</th>
           </tr>
           <tr class="row11">
@@ -66,7 +66,7 @@
             <th align="left">CASADO</th>
             <td colspan="1"><%= @estado_civil == 'CA' ? 'X' : '' %></td>
             <th colspan="2"align="left">BIENES SEPARADOS</th>
-            <td ><%= @regimen_marital == 'Bienes  separados' ? 'X' : '' %></td>
+            <td ><%= @regimen_marital == 'BS' ? 'X' : '' %></td>
             <th colspan="1" align="left">MAYORES</th>
             <td ><%= @dependientes_mayores%> </td>
             <th align="left">MENORES:</th>
@@ -277,9 +277,9 @@
             <td colspan="1" </td>
             <th align="left">MENSUAL</th>
             <td ><%= @frecuencia_de_pago == 'Mensual' ? 'X': '' %></td>
-            <td colspan="3" ><%= number_to_currency(@otros_ingresos) %></td>
+            <td colspan="3" ><%= @otros_ingresos.blank? || @otros_ingresos.to_i == 0 ? 'NA' : number_to_currency(@otros_ingresos) %></td>
             <td colspan="3" ><%= @other_income_detail.blank? ? 'NA' : @other_income_detail %> </td>
-            <td colspan="9" ><%= number_to_currency(@ingreso_total) %></td>
+            <td colspan="9" ><%= @otros_ingresos.blank? ? number_to_currency(@salario2.to_i ) : number_to_currency(@salario2.to_i + @otros_ingresos.to_i ) %></td>
           </tr>
           <tr class="row51">
           <td colspan="7" ></td>
@@ -329,8 +329,8 @@
           </tr>
           <tr class="row60">
             <th colspan="8" align="left">IMPORTE DEL CREDITO SOLICITADO </th>
-            <td colspan="4" ><%= number_to_currency(@monto_total_solicitado)%></td>
-            <td colspan="12"></td>
+            <td colspan="8" ><%= number_to_currency(@monto_total_solicitado)%> <%= (@monto_total_solicitado.to_i.to_words).upcase %> PESOS</td>
+            <td colspan="8"></td>
           </tr>
           <tr class="row61">
             <th  align="left">PLAZO:</th>
@@ -345,10 +345,10 @@
           </tr>
           <tr class="row64">
             <th colspan="8" align="left">IMPORTE DEL CREDITO AUTORIZADO  </th>
-            <td colspan="4">
-              <%=  number_to_currency(@monto_total_solicitado) %> PESOS
+            <td colspan="8">
+              <%=  number_to_currency(@monto_total_solicitado) %> <%= (@monto_total_solicitado.to_i.to_words).upcase %> PESOS
             </td>
-            <td colspan="12"></td>
+            <td colspan="8"></td>
           </tr>
           <tr class="row65">
             <th align="left">PLAZO:</th>
@@ -368,7 +368,7 @@
           </tr>
           <tr class="row70">
             <td colspan="7"><%= @lugar %></td>
-            <td colspan="4"><%= @date %></td>
+            <td colspan="4"><%= @fecha_inicio.to_date.strftime("%d/%m/%Y") %></td>
             <th colspan="4" align="center"><center>FIRMA DEL SOLICITANTE (EL ACREDITADO)</center></th>
             <th colspan="6" align="center"><center> FIRMA DE ACEPTACION A LO ESTABLECIDO EN EL PRESENTE CONTRATO</center></th>
           </tr>

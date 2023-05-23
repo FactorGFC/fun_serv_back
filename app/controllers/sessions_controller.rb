@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
             @customer_credit.update(extra3: "#{params[:call_back_token]}-AC")
             #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
             send_control_desk_mailer(@customer_credit[0].id)
-            render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)' }, status: 200
+            render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)', status: true }, status: 200
           else
             render json: { message: "No es posible aceptar el crédito #{@customer_credit.status} contacte al administrador", status: false }, status: 206
           end
@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
       unless @customer.blank?
         if @customer[0].file_token_expiration > Time.now
               @customer.update(file_token: "#{params[:call_back_token]}-AC")
-              render json: { message: 'Ok, Expediente firmado (ACEPTADO)' }, status: 200
+              render json: { message: 'Ok, Expediente firmado (ACEPTADO)', status: true }, status: 200
         else
           render json: { message: "Token expiró el #{@customer[0].file_callback}", status: false }, status: 206
         end
