@@ -139,14 +139,15 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           if @customer_credit.status == 'SI' # SI = SIMULAR
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
-          elsif @customer_credit.status == 'PR' #PR = PROPUESTO
+          # elsif @customer_credit.status == 'PR' #PR = PROPUESTO
             # MANDA CORREO AL CLIENTE PARA QUE LO APRUEBE
-                customer_credit_mailer
-                render 'api/v1/customer_credits/show'
+            # TO DO: MODIFICAR MAILER PARA QUE NO ADJUNTE EL DOCUMENTO EXPEDIENTE
+                # customer_credit_mailer
+                # render 'api/v1/customer_credits/show'
           elsif @customer_credit.status == 'PA' #PA = POR APROBAR
-                if documents_mode
-                  generate_customer_credit_request_report_pdf
-                end
+                # if documents_mode
+                #   generate_customer_credit_request_report_pdf
+                # end
                 # CREA SIGNATORIES
                 create_credit_signatories
                 # METODO QUE VA A MANDARLE UN CORREO A TESORERIA PARA QUE DE DE ALTA LA CUENTA BANCARIA DEL EMPLEADO(CLIENTE)
@@ -164,13 +165,25 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def update
-    # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
-    @customer_credit.update(customer_credits_params)
-    #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO.    
-    if customer_credits_params['status'] == 'PR'
-      customer_credit_mailer
+    ActiveRecord::Base.transaction do
+      # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
+      @customer_credit.update(customer_credits_params)
+      #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO. 
+  
+      if customer_credits_params['status'] == 'PR'
+        customer_credit_mailer
+      end
+      
+      unless customer_credits_params['destination'].blank?
+        # RENDERIZA DOCUMENTO PARA DEPSUES MANDARLO EN ADJUNTO EN UN MAILER
+        if documents_mode
+          generate_customer_credit_request_report_pdf
+        end
+        # MAILER QUE ADJUNT EL DOCUMENTO EXPEDIENTE CON EL CAT LLENO
+        customer_credit_file_mailer
+      end
+      render 'api/v1/customer_credits/show'
     end
-    render 'api/v1/customer_credits/show'
   end
 
   def destroy
@@ -194,7 +207,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def generate_credit_number
     # GENERAR NUMERO DE CREDITO DEPENDIENDO DEL TIPO DE EMPRESA 
     case @company.company_rate
-    when 'GPA'
+    when 'GPA','FACTOR'
       @gpa_sequence = GeneralParameter.where(key: 'GPA_SEQUENCE') 
       unless @gpa_sequence.blank?
         @credit_number = @gpa_sequence[0]['value']
@@ -457,6 +470,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
   # DIRECTOR Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
   def customer_credit_mailer
+    @error_desc = [];
     unless @customer_credit.blank?
       @query = 
       "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
@@ -489,23 +503,16 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @customer_credit.update(extra3: @token)
         @customer_credit.update(extra2: @token_expiry)
         # Correo para el cliente
-        #email, name, subject, supplier, company, invoices, signatories, request, create_user, max_days, limit_days, year_base_days, final_rate
-          # MANDA EL PDF COMPLETO AL CORREO
         @mailer_signatories.each do |mailer_signatory|
           mail_to = mailer_mode_to(mailer_signatory['email'])
           @customer_credit.update(attached: mailer_signatory['extra1'])
-          URI.open('document.pdf', "wb") do |cd_file|      
-            cd_file.write open(mailer_signatory['extra1'], "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
-          end
-          # @file = CombinePDF.new
-          @file = Rails.root.join('document.pdf')
           #email, name, subject, title, content
           SendMailMailer.send_mail_credit(mail_to,
             mailer_signatory['name'],
             "Nomina GFC - Confirmar propuesta de credito",
             # @current_user.name,
             "Hola",
-            @file,
+            # @file,
             [@callback_url_aceptado,@callback_url_rechazado,@customer_credit],
             @term[:key]
           ).deliver_now
@@ -515,6 +522,84 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       else
         @error_desc.push("No se encontró el plazo")
         error_array!(@error_desc, :unprocessable_entity)
+        raise ActiveRecord::Rollback
+      end
+    else
+      @error_desc.push("No se encontraron datos del credito")
+      error_array!(@error_desc, :unprocessable_entity)
+      raise ActiveRecord::Rollback
+    end
+  end
+
+  def customer_credit_file_mailer
+    @error_desc = [];
+    unless @customer_credit.blank?
+      @query = 
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
+        FROM contributors con, people peo, customers cus
+        WHERE con.person_id = peo.id
+        AND cus.contributor_id = con.id
+        AND cus.id = ':customer_id'"
+      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
+    else
+      @query = 
+      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email, peo.extra1
+        FROM contributors con, people peo, customers cus
+        WHERE con.person_id = peo.id
+        AND cus.contributor_id = con.id
+        AND cus.id = ':customer_id'"
+      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
+    end  
+    response = execute_statement(@query)
+    unless response.blank?
+      @term = Term.find_by_id(@customer_credit.term_id)
+      unless @term.nil?
+      @customer = Customer.find_by_id(@customer_credit.customer_id)
+      unless @customer.nil?
+        @mailer_signatories = response.to_a
+        @frontend_url = GeneralParameter.get_general_parameter_value('FRONTEND_URL')
+        begin
+          @token = token
+          @token_expiry = Time.now + 1.day
+          #CALLBACK QUE MUESTRA ACEPTACION Y FIRMA DEL EXPEDIENTE
+          @callback_url_expediente_aceptado = "#{@frontend_url}/#/file_callback/#{@token}/aceptado"
+        end while Customer.where(file_token: @token).any?
+        @customer.update(file_token: @token)
+        @customer.update(file_token_expiration: @token_expiry)
+        # Correo para el cliente
+        #email, name, subject, supplier, company, file
+          # MANDA EL PDF COMPLETO AL CORREO
+        @mailer_signatories.each do |mailer_signatory|
+          mail_to = mailer_mode_to(mailer_signatory['email'])
+          @customer_credit.update(attached: mailer_signatory['extra1'])
+
+          URI.open('document.pdf', "wb") do |cd_file|      
+            cd_file.write open(mailer_signatory['extra1'], "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
+          end
+          @file = CombinePDF.new
+          @file = Rails.root.join('document.pdf')
+          
+          #email, name, subject, title, content
+          SendMailMailer.send_mail_credit_file(mail_to,
+            mailer_signatory['name'],
+            "Credi Global - Firma de expediente del Credito",
+            # @current_user.name,
+            "Hola",
+            @file,
+            [@callback_url_expediente_aceptado,@customer_credit],
+            @term[:key]
+          ).deliver_now
+          # ELIMINA PDF DE LOCAL 
+            File.delete(Rails.root.join("document.pdf"))if File.exist?(Rails.root.join("document.pdf"))
+        end
+      else
+        @error_desc.push("No se encontró el customer")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
+      else
+        @error_desc.push("No se encontró el plazo")
+        error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
       end
     else

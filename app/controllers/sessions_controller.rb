@@ -44,6 +44,21 @@ class SessionsController < ApplicationController
     end
   end
 
+# CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO 
+  def file_callback
+      @customer = Customer.where(file_token: params[:call_back_token])
+      unless @customer.blank?
+        if @customer[0].file_token_expiration > Time.now
+              @customer.update(file_token: "#{params[:call_back_token]}-AC")
+              render json: { message: 'Ok, Expediente firmado (ACEPTADO)' }, status: 200
+        else
+          render json: { message: "Token expiró el #{@customer[0].file_callback}", status: false }, status: 206
+        end
+      else 
+        render json: { message: "No encuentra el customer ", place: "file_callback",status: false }, status: 206
+      end
+  end
+
 #MAILER DE ESTADO DE CUENTA
   def send_account_status_mailer
     @id = params[:id]

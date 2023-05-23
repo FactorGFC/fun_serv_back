@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_17_214041) do
+ActiveRecord::Schema.define(version: 2023_05_22_215955) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -302,6 +302,8 @@ ActiveRecord::Schema.define(version: 2023_05_17_214041) do
     t.string "responsible_detail"
     t.string "relative_charge_det"
     t.string "other_income_detail"
+    t.string "file_token"
+    t.string "file_token_expiration"
     t.index ["company_id"], name: "index_customers_on_company_id"
     t.index ["contributor_id"], name: "index_customers_on_contributor_id"
     t.index ["file_type_id"], name: "index_customers_on_file_type_id"

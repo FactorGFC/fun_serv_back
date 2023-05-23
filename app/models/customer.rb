@@ -4,55 +4,57 @@
 #
 # Table name: customers
 #
-#  id                  :uuid             not null, primary key
-#  assist_bonus        :decimal(15, 4)
-#  attached            :string
-#  benefit             :string
-#  benefit_detail      :string
-#  child_support       :decimal(15, 4)
-#  christmas_bonus     :decimal(15, 4)
-#  credit_cp           :decimal(15, 4)
-#  credit_lp           :decimal(15, 4)
-#  customer_type       :string           not null
-#  extra1              :string
-#  extra2              :string
-#  extra3              :string
-#  extra_expenses      :decimal(15, 4)
-#  family_expenses     :decimal(15, 4)
-#  food_vouchers       :decimal(15, 4)
-#  house_rent          :decimal(15, 4)
-#  immediate_superior  :string
-#  imms                :decimal(15, 4)
-#  infonavit           :decimal(15, 4)
-#  insurance_discount  :decimal(15, 4)
-#  job                 :string
-#  name                :string           not null
-#  net_expenses        :decimal(15, 4)
-#  ontime_bonus        :decimal(15, 4)
-#  other_income        :decimal(15, 4)
-#  other_income_detail :string
-#  public_charge       :string
-#  public_charge_det   :string
-#  relative_charge     :string
-#  relative_charge_det :string
-#  responsible         :string
-#  responsible_detail  :string
-#  salary              :decimal(15, 4)   not null
-#  salary_period       :string           not null
-#  savings_bank        :decimal(15, 4)
-#  savings_found       :decimal(15, 4)
-#  savings_found_loand :decimal(15, 4)
-#  seniority           :decimal(15, 4)
-#  status              :string           not null
-#  taxes               :decimal(15, 4)
-#  total_income        :decimal(15, 4)
-#  total_savings_found :decimal(15, 4)
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  company_id          :uuid
-#  contributor_id      :uuid             not null
-#  file_type_id        :uuid
-#  user_id             :uuid
+#  id                    :uuid             not null, primary key
+#  assist_bonus          :decimal(15, 4)
+#  attached              :string
+#  benefit               :string
+#  benefit_detail        :string
+#  child_support         :decimal(15, 4)
+#  christmas_bonus       :decimal(15, 4)
+#  credit_cp             :decimal(15, 4)
+#  credit_lp             :decimal(15, 4)
+#  customer_type         :string           not null
+#  extra1                :string
+#  extra2                :string
+#  extra3                :string
+#  extra_expenses        :decimal(15, 4)
+#  family_expenses       :decimal(15, 4)
+#  file_token            :string
+#  file_token_expiration :string
+#  food_vouchers         :decimal(15, 4)
+#  house_rent            :decimal(15, 4)
+#  immediate_superior    :string
+#  imms                  :decimal(15, 4)
+#  infonavit             :decimal(15, 4)
+#  insurance_discount    :decimal(15, 4)
+#  job                   :string
+#  name                  :string           not null
+#  net_expenses          :decimal(15, 4)
+#  ontime_bonus          :decimal(15, 4)
+#  other_income          :decimal(15, 4)
+#  other_income_detail   :string
+#  public_charge         :string
+#  public_charge_det     :string
+#  relative_charge       :string
+#  relative_charge_det   :string
+#  responsible           :string
+#  responsible_detail    :string
+#  salary                :decimal(15, 4)   not null
+#  salary_period         :string           not null
+#  savings_bank          :decimal(15, 4)
+#  savings_found         :decimal(15, 4)
+#  savings_found_loand   :decimal(15, 4)
+#  seniority             :decimal(15, 4)
+#  status                :string           not null
+#  taxes                 :decimal(15, 4)
+#  total_income          :decimal(15, 4)
+#  total_savings_found   :decimal(15, 4)
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  company_id            :uuid
+#  contributor_id        :uuid             not null
+#  file_type_id          :uuid
+#  user_id               :uuid
 #
 # Indexes
 #

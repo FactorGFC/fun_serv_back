@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get '/', to: 'welcome#ok'
   get '/health_check', to: 'welcome#ok'
   post '/get_callback', to: 'sessions#get_callback'
+  post '/file_callback', to: 'sessions#file_callback'
   post '/get_callback_decline', to: 'sessions#get_callback_decline'
   post '/get_callback_token', to: 'sessions#get_callback_token'
   post '/get_comitee_callback_token', to: 'sessions#get_comitee_callback_token'
