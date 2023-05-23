@@ -537,9 +537,9 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     greatest(cuc.credit_folio,rpad(cuc.credit_folio, 30)) referencia_concepto,
     greatest(cuc.credit_folio,rpad(cuc.credit_folio, 30)) referencia, 
     CASE
-    WHEN inv.currency = 'PESOS'
+    WHEN cuc.currency = 'PESOS'
     THEN 'MXP'
-    WHEN inv.currency = 'DOLARES'
+    WHEN cuc.currency = 'DOLARES'
     THEN 'USD'
     END divisa,
     replace(TO_CHAR(0, 'FM000000000000.00'),'.','') iva,
