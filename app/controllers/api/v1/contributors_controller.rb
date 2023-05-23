@@ -99,7 +99,12 @@ class Api::V1::ContributorsController < Api::V1::MasterApiController
         # REGRESA EL CONTRIBUTOR DE LA COMPANY
         @contributor = Contributor.where(legal_entity_id: @legal_entity[0].id)
         unless @contributor.blank?
-        render json: { message: "RFC encontrado como Company", contributor: @contributor, legal_entity: @legal_entity, status: true }, status: 200
+          @company = Company.where(contributor_id: @contributor[0].id )
+          unless @company.blank?
+          render json: { message: "RFC encontrado como Company",company: @company, contributor: @contributor, legal_entity: @legal_entity, status: true }, status: 200
+          else
+            render json: { message: "El no se encuentra el company", status: false }, status: 206
+          end
         else
           render json: { message: "El legal entity #{@legal_entity[0].id} no cuenta con registro en la tabla contributors", status: false }, status: 206
         end
