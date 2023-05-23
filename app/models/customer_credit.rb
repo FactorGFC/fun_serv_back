@@ -97,7 +97,7 @@ class CustomerCredit < ApplicationRecord
   def create_folio
     t = Time.now
     folio = t.to_i
-    self[:credit_folio] = "CN#{folio.to_s}"
+    self[:credit_folio] = "#{folio.to_s}"
   end
 
   def self.get_customer_credit_data(id)

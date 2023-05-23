@@ -40,13 +40,14 @@ RSpec.describe Api::V1::UsersController, type: :request do
     it 'manda los atributos del usuario' do
       json = JSON.parse(response.body)
       expect(json['data']['attributes'].keys).to contain_exactly('id', 'role_id', 'email', 'name', 'job', 'gender', 'status', 'password_digest', 'reset_password_token', 'created_at',
-                                                                 'updated_at')
+                                                                 'updated_at', 'company_id')
     end
   end
 
   describe 'POST /users' do
     context 'User sin rol' do
       before :each do
+       # @compnay = FactoryBot.create(:company)
         @user = FactoryBot.create(:sequence_user)
         @token = FactoryBot.create(:token, expires_at: DateTime.now + 10.minutes, user: @user, my_app: my_app)
         auth = { email: 'c@mail.com', password: '123456789', name: 'eloy' }

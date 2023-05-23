@@ -519,65 +519,69 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def layout_base
-      @query_titulo_supplier = "SELECT TRIM(to_char(to_date(':start_date','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
-      FROM(SELECT TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe
-        FROM customer_credits cuc, companies com, contributors con, customers cus
-        WHERE cus.id = cuc.customer_id
-        AND con.id = cus.contributor_id
-        AND cuc.status ='VA'
-        AND cuc.currency = ':currency'
-        AND cuc.start_date = ':start_date'                      
-      ) ab;"
-
-    @query_supplier = "SELECT ':pr_folio' payment_report_folio, ab.*
-    FROM((SELECT '01' tipo_operacion, con.extra1 destinatario,  cuc.id id_customer_credit,
-      CASE
-      WHEN con.bank = 'BASE'
-      THEN con.account_number
-      ELSE con.clabe
-      END cuenta_destino,
-      TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe,
-      cuc.credit_folio referencia_concepto,
-      cuc.credit_folio referencia,
-      CASE
-      WHEN cuc.currency = 'PESOS'
-      THEN 'MXN'
-      WHEN cuc.currency = 'DÓLARES'
-      THEN 'USD'
-      WHEN cuc.currency = 'DOLARES'
-      THEN 'USD'
-      END divisa
-      FROM customer_credits cuc, customers cus, contributors con
+    @query_titulo_supplier = "SELECT TRIM(to_char(to_date(':start_date','YYYY-MM-DD'),'YYYYMMDD')|| TO_CHAR (count(ab.*), 'fm000')||'01'||'DP') titulo
+    FROM(SELECT TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe
+      FROM customer_credits cuc, companies com, contributors con, customers cus
       WHERE cus.id = cuc.customer_id
       AND con.id = cus.contributor_id
       AND cuc.status ='VA'
       AND cuc.currency = ':currency'
-      AND cuc.start_date = ':start_date'
-      ) 
+      AND cuc.start_date = ':start_date'                      
     ) ab;"
 
-   
-      @query_titulo = @query_titulo_supplier
-      @query = @query_supplier
+  @query_supplier = "SELECT ':pr_folio' payment_report_folio, ab.*
+  FROM((SELECT cuc.id id_customer_credit, '01' tipo_operacion, greatest((left(con.extra1, 30)),rpad(left(con.extra1, 30), 30)) destinatario,
+    greatest(con.clabe, rpad(con.clabe, 48)) cuenta_destino, 
+    replace(TO_CHAR(cuc.total_requested, 'FM000000000000.00'),'.','') importe,
+    greatest(substr(cuc.credit_folio,1,7),lpad(substr(cuc.credit_folio,1,7), 30)) referencia_numerica,
+    greatest(cuc.credit_folio,rpad(cuc.credit_folio, 30)) referencia_concepto,
+    greatest(cuc.credit_folio,rpad(cuc.credit_folio, 30)) referencia, 
+    CASE
+    WHEN inv.currency = 'PESOS'
+    THEN 'MXP'
+    WHEN inv.currency = 'DOLARES'
+    THEN 'USD'
+    END divisa,
+    replace(TO_CHAR(0, 'FM000000000000.00'),'.','') iva,
+    CASE
+    WHEN con.legal_entity_id IS NULL
+    THEN greatest(peo.rfc,rpad(peo.rfc, 13))
+    ELSE greatest(len.rfc,rpad(len.rfc, 13))
+    END rfc_destinatario,
+    greatest((select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BASE'),rpad((select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BASE'), 18)) cuenta_cargo
+    FROM customer_credits cuc, customers cus, contributors con
+    LEFT JOIN legal_entities len ON (len.id = con.legal_entity_id)
+    LEFT JOIN people peo ON (peo.id = con.person_id)
+    WHERE cus.id = cuc.customer_id
+    AND con.id = cus.contributor_id
+    AND cuc.status ='VA'
+    AND cuc.currency = ':currency'
+    AND cuc.start_date = ':start_date'
+    ) 
+  ) ab;"
+
+ 
+    @query_titulo = @query_titulo_supplier
+    @query = @query_supplier
 
 
-    @query_titulo = @query_titulo.gsub ':start_date', params[:start_date].to_s
-    @query_titulo = @query_titulo.gsub ':currency', params[:currency].to_s
-    @base_titulo = execute_statement(@query_titulo)
-    @pr_folio = @base_titulo[0]['titulo']
-    @query = @query.gsub ':start_date', params[:start_date].to_s
-    @query = @query.gsub ':pr_folio', @pr_folio
-    @query = @query.gsub ':currency', params[:currency].to_s
-    @layout_base = execute_statement(@query)
-    unless @layout_base.blank?
-      @layout_base.each do |report_row|
-        @customer_credit = CustomerCredit.where(id: report_row['id_customer_credit'].to_s)
-        puts report_row.inspect
-        @customer_credit.update(extra1: report_row['payment_report_folio'].to_s)
-      end
+  @query_titulo = @query_titulo.gsub ':start_date', params[:start_date].to_s
+  @query_titulo = @query_titulo.gsub ':currency', params[:currency].to_s
+  @base_titulo = execute_statement(@query_titulo)
+  @pr_folio = @base_titulo[0]['titulo']
+  @query = @query.gsub ':start_date', params[:start_date].to_s
+  @query = @query.gsub ':pr_folio', @pr_folio
+  @query = @query.gsub ':currency', params[:currency].to_s
+  @layout_base = execute_statement(@query)
+  unless @layout_base.blank?
+    @layout_base.each do |report_row|
+      @customer_credit = CustomerCredit.where(id: report_row['id_customer_credit'].to_s)
+      puts report_row.inspect
+      @customer_credit.update(extra1: report_row['payment_report_folio'].to_s)
     end
-    render json: @layout_base
   end
+  render json: @layout_base
+end
 
   def layout_scotiabank # Este banco esta pendiente conforme a lo que vi en la conferencia con ellos Falta agregar lo de las facturas con saldo
     @query = "SELECT ':pr_folio' payment_report_folio, 'EE' tipo_archivo, 'DP' tipo_registro, '04' tipo_movimiento, ab.*
@@ -954,7 +958,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                        AND cuc.user_id = usr.id
                        AND ':user_id' = (SELECT users.id FROM users WHERE email = (SELECT value FROM general_parameters WHERE key = 'USUARIO_ADMINISTRADOR'))
                        AND cuc.status not in ('SO','RZ','RE','PA','PR')
-                       )
+                       ) 
                        ) ab;"
     @query = @query.gsub ':user_id', params[:user_id].to_s
     @user_requests = execute_statement(@query)
@@ -965,8 +969,10 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
     @query = "SELECT id, name, email
     FROM users
     WHERE job IN (':job', 'CONTROL', 'TESORERÍA', 'ADMINISTRADOR')
-    AND status = 'AC';"
+    AND status = 'AC'
+    AND company_id = ':company_id';"
     @query = @query.gsub ':job', params[:job].to_s
+    @query = @query.gsub ':company_id', params[:company_id].to_s
     @financial_workers = execute_statement(@query)
     render json: @financial_workers
   end

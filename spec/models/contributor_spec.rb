@@ -4,9 +4,9 @@
 # Table name: contributors
 #
 #  id               :uuid             not null, primary key
-#  account_number   :bigint
+#  account_number   :string
 #  bank             :string
-#  clabe            :bigint
+#  clabe            :string
 #  contributor_type :string           not null
 #  extra1           :string
 #  extra2           :string

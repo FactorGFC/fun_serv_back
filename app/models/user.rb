@@ -14,14 +14,17 @@
 #  status               :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  company_id           :uuid
 #  role_id              :uuid
 #
 # Indexes
 #
-#  index_users_on_role_id  (role_id)
+#  index_users_on_company_id  (company_id)
+#  index_users_on_role_id     (role_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (role_id => roles.id)
 #
 class User < ApplicationRecord
@@ -33,6 +36,7 @@ class User < ApplicationRecord
   has_many :my_apps, dependent: :destroy
   has_many :user_polls
   belongs_to :roles, optional: true
+  belongs_to :company, optional: true
   has_many :user_options, dependent: :destroy
   has_many :options, through: :user_options
   has_many :user_privileges

@@ -14,14 +14,17 @@
 #  status               :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  company_id           :uuid
 #  role_id              :uuid
 #
 # Indexes
 #
-#  index_users_on_role_id  (role_id)
+#  index_users_on_company_id  (company_id)
+#  index_users_on_role_id     (role_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (role_id => roles.id)
 #
 

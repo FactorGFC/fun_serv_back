@@ -90,7 +90,7 @@ class Api::V1::UsersController < Api::V1::MasterApiController
   end
 
   def user_params
-    params.require(:auth).permit(:role_id, :email, :password, :name, :job, :gender, :status) # , :status) #(:email, :password, :name, :role_id)
+    params.require(:auth).permit(:role_id, :email, :password, :name, :job, :gender, :status, :company_id) # , :status) #(:email, :password, :name, :role_id)
   end
 
   def create_user_options
