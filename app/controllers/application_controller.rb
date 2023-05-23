@@ -445,7 +445,7 @@ class ApplicationController < ActionController::Base
     @lugar = 'Chihuahua, Chihuahua'
     @date = Time.now.strftime("%d/%m/%Y")
     @dia = Time.now.strftime("%d")
-    @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
+    @mes = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Noviembre", "December" => "Diciembre" }.fetch(Date.today.strftime("%B"))
     @anio = Time.now.strftime("%Y")
     @credit_analysis = CreditAnalysis.where(customer_credit_id: @customer_credit.id)
     unless @credit_analysis.blank?
@@ -550,11 +550,11 @@ class ApplicationController < ActionController::Base
         @status = @customer_credit.status
         @fecha_inicio = @customer_credit.start_date
         @dia_inicio = @fecha_inicio.strftime("%d")
-        @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
+        @mes_inicio = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Noviembre", "December" => "Diciembre" }.fetch(@fecha_inicio.strftime("%B"))
         @anio_inicio = @fecha_inicio.strftime("%Y")
         @fecha_fin = @customer_credit.end_date
         @dia_fin = @fecha_fin.strftime("%d")
-        @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Nobiembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
+        @mes_fin = { "January" => "Enero", "February" => "Febrero","March" => "Marzo","April" => "Abril","May" => "Mayo","June" => "Junio","July" => "Julio","August" => "Agosto","September" => "Septiembre","October" => "Octubre", "November" => "Noviembre", "December" => "Diciembre" }.fetch(@fecha_fin.strftime("%B"))
         @anio_fin = @fecha_fin.strftime("%Y")
         @tasa = @customer_credit.rate
         @person_id = @customer_credit_data[0]["person_id"]
