@@ -114,10 +114,15 @@ class Api::V1::ContributorsController < Api::V1::MasterApiController
           # REGRESAR EL CONTRIBUTOR DE ESA PERSONA FISICA
           @contributor = Contributor.where(person_id: @person[0].id)
           unless @contributor.blank?
-            render json: { message: "RFC encontrado como Persona", contributor: @contributor, person: @person, status: true }, status: 200
+            @company = Company.where(contributor_id: @contributor[0].id )
+            unless @company.blank?
+            render json: { message: "RFC encontrado como Persona",company: @company, contributor: @contributor, person: @person, status: true }, status: 200
             else
-              render json: { message: "El person id #{@person[0].id} no cuenta con registro en la tabla contributors" , status: false }, status: 206
+              render json: { message: "El no se encuentra el company", status: false }, status: 206
             end
+          else
+            render json: { message: "El person id #{@person[0].id} no cuenta con registro en la tabla contributors" , status: false }, status: 206
+          end
         else
           render json: { message: "RFC no encontrado en la base de datos", status: false }, status: 206
         end
