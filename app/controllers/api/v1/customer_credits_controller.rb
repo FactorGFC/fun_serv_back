@@ -582,7 +582,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           #email, name, subject, title, content
           SendMailMailer.send_mail_credit_file(mail_to,
             mailer_signatory['name'],
-            "Credi Global - Firma de expediente del Credito",
+            "Credi Global - firma del Contrato de Credito",
             # @current_user.name,
             "Hola",
             @file,

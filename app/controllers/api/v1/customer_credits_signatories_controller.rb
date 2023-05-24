@@ -92,7 +92,7 @@ class Api::V1::CustomerCreditsSignatoriesController < Api::V1::MasterApiControll
       #             # send_control_desk_mailer( @customer_credit_signatory[0].customer_credit_id)
       #           end
 
-      #           render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
+      #           render json: { message: 'Ok, Crédito actualizado con exito' }, status: 200
       #           else
       #           # @error_desc.push("El credito ya ha sido actualizado STATUS: #{@customer_credit_signatory.status}")
       #           # error_array!(@error_desc, :not_found)

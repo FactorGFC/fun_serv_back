@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
         #email, name, subject, title, content
         SendMailMailer.commitee(mail_to,
           mailer_signatory['name'],
-          "Factor GFC Global - Credi Global - Revisar Credito - #{mailer_signatory['tipo']}",
+          "Factor GFC Global - Credi Global - Revisar Crédito - #{mailer_signatory['tipo']}",
           "Revisar como #{mailer_signatory['tipo']}",
           [@callback_url_analyst,@customer_credit]
         ).deliver_now

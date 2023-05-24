@@ -54,7 +54,7 @@
           <tr class="row14">
             <td colspan="3">CAT PROMEDIO</td>
             <td ><%= @cat.blank? ? '' : @cat %>%</td>
-            <td >(<%= @cat.blank? ? '' : @cat.to_i.to_words %> por ciento)</td>
+            <td >( <%= @cat.to_i.to_words %> <%=  (@cat.to_s.split(".")[1] || 0).to_s.rjust(2,'0').to_i == 0 ? '' : ("punto " << (@cat.to_s.split(".")[1] || 0).to_s.rjust(2,'0').to_i.to_words) %> por ciento )</td>
             <td  colspan="3">SIN IVA INCLUIDO</td>
           </tr>
           <tr class="row16">

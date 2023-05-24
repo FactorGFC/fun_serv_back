@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
             @customer_credit.update(extra3: "#{params[:call_back_token]}-AC")
             #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
             send_control_desk_mailer(@customer_credit[0].id)
-            render json: { message: 'Ok, Credito actualizado con exito (ACEPTADO)', status: true }, status: 200
+            render json: { message: 'Ok, Crédito actualizado con exito (ACEPTADO)', status: true }, status: 200
           else
             render json: { message: "No es posible aceptar el crédito #{@customer_credit.status} contacte al administrador", status: false }, status: 206
           end
@@ -106,7 +106,7 @@ class SessionsController < ApplicationController
           # if @customer_credit[0].status == 'PA'
           @customer_credit.update(status: 'RE')
           @customer_credit.update(extra3: "#{params[:call_back_token]}-RE")
-          render json: { message: 'Ok, Credito actualizado con exito (RECHAZADO)' }, status: 200
+          render json: { message: 'Ok, Crédito actualizado con exito (RECHAZADO)' }, status: 200
           # else
             # render json: { message: "El credito ya ha sido actualizado por el cliente (#{@customer_credit[0].status})", status: false }, status: 206
           # end
@@ -220,7 +220,7 @@ class SessionsController < ApplicationController
               #METODO QUE MANDA NOTIFICACION A MESA DE CONTROL PARA QUE ANALICE A DETALLE EL CREDITO POR APROVAR CUANDO TODOS HAYAN FIRMADO INCLUYENDO AL CLIENTE
               # send_control_desk_mailer( @customer_credit_signatory[0].customer_credit_id)
             end
-            render json: { message: 'Ok, Credito actualizado con exito' }, status: 200
+            render json: { message: 'Ok, Crédito actualizado con exito' }, status: 200
           else
             render json: { message: "No se encuentran signatories: #{@customer_credit_signatory[0].status}"  }, status: 206
           end
