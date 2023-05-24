@@ -461,7 +461,7 @@ class ApplicationController < ActionController::Base
           @cantidad_pagos_al_mes = '5 MOVIMIENTOS'
           @pago_mas_alto = @pagos_fijos * 5
           @salario2 = @salario.to_f * 4.33
-        elsif @teplazo_typerm == 'Quincenal'
+        elsif @plazo_type == 'Quincenal'
           @cantidad_pagos_al_mes = '2 MOVIMIENTOS'
           @pago_mas_alto = @pagos_fijos * 2
           @salario2 = @salario.to_f * 2
