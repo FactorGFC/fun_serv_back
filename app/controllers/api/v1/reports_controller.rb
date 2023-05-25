@@ -2736,37 +2736,37 @@ end
   end
 
   # Reporte para mostrar los datos del cliente a partir de un credito
-def get_credit_customer_report
-  @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
-  cuc.destination ,cuc.start_date fecha_credito,cuc.credit_number, cuc.status status_credito, pap.value periodo_pago, pap.pp_type tipo_periodo_pago,
-   cus.id id_cliente,cus.name nombre_cliente,cus.customer_type tipo_cliente,cus.status status_cliente,cus.salary_period,cus.user_id id_usuario,
-   cus.file_type_id id_tipo_expediente,cus.other_income otros_ingresos,cus.net_expenses egresos_netos,cus.family_expenses gastos_familiares, 
-   cus.house_rent renta,cus.credit_cp creditos_cp, cus.credit_lp creditos_lp, cus.total_income ingreso_total, con.id id_contribuyente, 
-   con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, 
-   con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
-   peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name || ' ' || peo.last_name || ' ' || peo.second_last_name pf_nombre, 
-   peo.gender pf_genero, peo.nationality pf_nacionalidad, peo.birthplace pf_lugar_nacimiento, peo.birthdate pf_fecha_nacimiento, 
-   peo.martial_status pf_estado_civil, peo.id_type pf_tipo_identificacion, peo.identification pf_numero_identificacion, 
-   peo.phone pf_telefono, peo.mobile pf_celular, peo.email pf_correo, peo.fiel pf_fiel, lee.fiscal_regime pm_regimen_fiscal, 
-   lee.rfc pm_rfc, lee.rug pm_rug, lee.business_name pm_nombre, lee.phone pm_telefono, lee.mobile pm_celular, 
-   lee.email pm_correo, lee.business_email pm_correo_negocio, lee.main_activity pm_actividad_pricipal, lee.fiel pm_fiel, 
-   coa.street calle, coa.suburb suburb, coa.external_number numero_exterior, coa.postal_code codigo_postal,
-   sta.name estado, mun.name municipio, cou.name pais, com.business_name
-   FROM customer_credits cuc
-   JOIN customers cus ON (cus.id = cuc.customer_id)
-   JOIN contributors con ON (cus.contributor_id = con.id)
-   JOIN payment_periods pap ON (pap.id = cuc.payment_period_id)
-   JOIN companies com ON (com.id = cus.company_id)
-   LEFT JOIN people peo ON (peo.id = con.person_id)
-   LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
-   JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
-   JOIN states sta ON (sta.id = coa.state_id)
-   JOIN municipalities mun ON (mun.id = coa.municipality_id)
-   JOIN countries cou ON (cou.id = sta.country_id)
-           WHERE cuc.id = ':customer_credit_id';"
-  @query = @query.gsub ':customer_credit_id', params[:customer_credit_id].to_s
-  @get_credit_customer_report = execute_statement(@query)
-  render json: @get_credit_customer_report
+  def get_credit_customer_report
+    @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
+    cuc.destination ,cuc.start_date fecha_credito,cuc.credit_number, cuc.status status_credito, pap.value periodo_pago, pap.pp_type tipo_periodo_pago,
+    cus.id id_cliente,cus.name nombre_cliente,cus.customer_type tipo_cliente,cus.status status_cliente,cus.salary_period,cus.user_id id_usuario,
+    cus.file_type_id id_tipo_expediente,cus.other_income otros_ingresos,cus.net_expenses egresos_netos,cus.family_expenses gastos_familiares, 
+    cus.house_rent renta,cus.credit_cp creditos_cp, cus.credit_lp creditos_lp, cus.total_income ingreso_total, con.id id_contribuyente, 
+    con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, 
+    con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
+    peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name || ' ' || peo.last_name || ' ' || peo.second_last_name pf_nombre, 
+    peo.gender pf_genero, peo.nationality pf_nacionalidad, peo.birthplace pf_lugar_nacimiento, peo.birthdate pf_fecha_nacimiento, 
+    peo.martial_status pf_estado_civil, peo.id_type pf_tipo_identificacion, peo.identification pf_numero_identificacion, 
+    peo.phone pf_telefono, peo.mobile pf_celular, peo.email pf_correo, peo.fiel pf_fiel, lee.fiscal_regime pm_regimen_fiscal, 
+    lee.rfc pm_rfc, lee.rug pm_rug, lee.business_name pm_nombre, lee.phone pm_telefono, lee.mobile pm_celular, 
+    lee.email pm_correo, lee.business_email pm_correo_negocio, lee.main_activity pm_actividad_pricipal, lee.fiel pm_fiel, 
+    coa.street calle, coa.suburb suburb, coa.external_number numero_exterior, coa.postal_code codigo_postal,
+    sta.name estado, mun.name municipio, cou.name pais, com.business_name
+    FROM customer_credits cuc
+    JOIN customers cus ON (cus.id = cuc.customer_id)
+    JOIN contributors con ON (cus.contributor_id = con.id)
+    JOIN payment_periods pap ON (pap.id = cuc.payment_period_id)
+    JOIN companies com ON (com.id = cus.company_id)
+    LEFT JOIN people peo ON (peo.id = con.person_id)
+    LEFT JOIN legal_entities lee ON (lee.id = con.legal_entity_id)
+    JOIN contributor_addresses coa ON (coa.contributor_id = con.id)
+    JOIN states sta ON (sta.id = coa.state_id)
+    JOIN municipalities mun ON (mun.id = coa.municipality_id)
+    JOIN countries cou ON (cou.id = sta.country_id)
+            WHERE cuc.id = ':customer_credit_id';"
+    @query = @query.gsub ':customer_credit_id', params[:customer_credit_id].to_s
+    @get_credit_customer_report = execute_statement(@query)
+    render json: @get_credit_customer_report
  end
 
  # REPORTE DE LAS CONSULTAS REALIZADAS A BURO EN RANGO DE FECHAS

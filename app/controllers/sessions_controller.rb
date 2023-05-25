@@ -270,11 +270,12 @@ class SessionsController < ApplicationController
     end
   end
 
-  def get_credit_customer_report
-    @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
-    cuc.destination,cuc.start_date fecha_credito, cuc.status status_credito, pap.value periodo_pago, 
-     cus.id id_cliente, cus.name nombre_cliente, cus.customer_type tipo_cliente, cus.status status_cliente, 
-     cus.salary_period, cus.user_id id_usuario, cus.file_type_id id_tipo_expediente, con.id id_contribuyente, 
+   def get_credit_customer_report
+     @query = "SELECT cuc.id id_credito, cuc.rate tasa_empleado, cuc.total_requested total_solicitado, cuc.interests total_intereseses, 
+     cuc.destination ,cuc.start_date fecha_credito,cuc.credit_number, cuc.status status_credito, pap.value periodo_pago, pap.pp_type tipo_periodo_pago,
+     cus.id id_cliente,cus.name nombre_cliente,cus.customer_type tipo_cliente,cus.status status_cliente,cus.salary_period,cus.user_id id_usuario,
+     cus.file_type_id id_tipo_expediente,cus.other_income otros_ingresos,cus.net_expenses egresos_netos,cus.family_expenses gastos_familiares, 
+     cus.house_rent renta,cus.credit_cp creditos_cp, cus.credit_lp creditos_lp, cus.total_income ingreso_total, con.id id_contribuyente, 
      con.contributor_type tipo_contribuyente, con.bank banco, con.account_number cuenta_bancaria, con.clabe cuenta_clabe, 
      con.person_id id_persona_fisica, con.legal_entity_id id_persona_moral, peo.fiscal_regime pf_regimen_fiscal, 
      peo.rfc pf_rfc, peo.curp pf_curp, peo.imss pf_numero_seguro_social, peo.first_name || ' ' || peo.last_name || ' ' || peo.second_last_name pf_nombre, 

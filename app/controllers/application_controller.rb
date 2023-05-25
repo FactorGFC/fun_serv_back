@@ -230,7 +230,7 @@ class ApplicationController < ActionController::Base
           # @token_control_desk_expiry = Time.now + 7.day
           # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
           # end while CustomerCredit.where(extra3: @token_control_desk).any?
-        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        #PANTALLA EN EL FRONTEND PARA QUE FIRMANTES VEAN EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
         # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         mail_to = mailer_mode_to(mailer_signatory['email'])
@@ -267,7 +267,7 @@ class ApplicationController < ActionController::Base
           # @token_control_desk_expiry = Time.now + 7.day
           # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCredito/#{@token_control_desk}"
           # end while CustomerCredit.where(extra3: @token_control_desk).any?
-        #PANTALLA EN EL FRONTEND PARA QUE MESA DE CONTROL VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
+        #PANTALLA EN EL FRONTEND PARA QUE ANALISTA VEA EL CREDITO, LO ANALICE Y LO APRUEBE/RECHACE
         # @callback_url_committee = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         @callback_url_analyst = "#{@frontend_url}/#/panelcontrol/aprobarCreditos"
         mail_to = mailer_mode_to(mailer_signatory['email'])
