@@ -301,7 +301,7 @@ class SessionsController < ApplicationController
     @get_credit_customer_report = execute_statement(@query)
     render json: @get_credit_customer_report
    end
-=begin
+
    def sim_customer_payments
     @sim_customer_payment = SimCustomerPayment.where(customer_credit_id: params[:id])
     unless @sim_customer_payment.blank?
@@ -310,21 +310,6 @@ class SessionsController < ApplicationController
       render json: { message: "No se encuentra el sim customer payment id = #{params[:id]}", data:[]}, status: 206
     end
   end
-=end
-  def sim_customer_payments
-    @query = "SELECT pay_number, current_debt, remaining_debt, payment, capital, interests, iva,  
-    to_char(payment_date,'DD/MM/YYYY'), status, attached, extra1, extra2, extra3, customer_credit_id,
-    insurance, commission, aditional_payment from sim_customer_payments
-     WHERE sim_customer_payments.customer_credit_id = ':customer_credit_id';"
-
-    @query = @query.gsub ':customer_credit_id', params[:customer_credit_id].to_s
-    @sim_customer_payments = execute_statement(@query)
-    unless @sim_customer_payment.blank?
-      render json: { message: 'Ok', status: true , data: @sim_customer_payment}, status: 200
-    else
-      render json: { message: "No se encuentra el sim customer payment id = #{params[:id]}", data:[]}, status: 206
-    end
-   end
 
    def contributor_documents
     @contributor_documents = ContributorDocument.where( contributor_id: params[:id])
