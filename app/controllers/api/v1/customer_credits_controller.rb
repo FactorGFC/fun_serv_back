@@ -94,8 +94,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             @company_segment = @company_segments[0]  
           end
           @salary = @customer.salary.to_f
+          @total_income = @salary + @customer.food_vouchers.to_f + @customer.assist_bonus.to_f + @customer.ontime_bonus.to_f
           @total_requested = @customer_credit.total_requested.to_f
-          @anual_salary = @salary.to_f * @payment_period.value.to_f
+          @anual_salary = @total_income.to_f * @payment_period.value.to_f
           if(@total_requested > ((@company_segment.credit_limit.to_f * @anual_salary.to_f)/12))
             @error_desc.push("El total del credito no puede ser mayor #{@company_segment.credit_limit.to_f} meses de sueldo del empleado")
             error_array!(@error_desc, :not_found)
