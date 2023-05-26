@@ -620,17 +620,38 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def create_credit_signatories
     #NOMINA GPA
     @query_nomina = 
+    # "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+    # FROM users u, roles r
+    # WHERE u.role_id = r.id
+    # AND r.name IN ('Comité','Empresa','Director')"
+
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
     WHERE u.role_id = r.id
-    AND r.name IN ('Comité','Empresa','Director')"
+    AND r.name IN ('Comité','Director')
+	  union all 
+    select u.email as email,u.name as name,r.name as tipo, u.id
+    FROM users u, roles r
+    WHERE u.role_id = r.id
+    AND r.name IN ('Empresa')
+ 	  AND u.company_id = ':company_id';"
 
     #NOMINA ALSUPER
     @query_alsuper = 
+    # "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+    # FROM users u, roles r
+    # WHERE u.role_id = r.id
+    # AND r.name IN ('Empresa','Director')"
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
     WHERE u.role_id = r.id
-    AND r.name IN ('Empresa','Director')"
+    AND r.name IN ('Director')
+	  union all 
+    select u.email as email,u.name as name,r.name as tipo, u.id
+    FROM users u, roles r
+    WHERE u.role_id = r.id
+    AND r.name IN ('Empresa')
+ 	  AND u.company_id = ':company_id';"
 
     @alsuper_mode = GeneralParameter.where(key: 'ALSUPER_MODE')
     unless @alsuper_mode.blank?
@@ -640,6 +661,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         @query = @query_nomina
       end
 
+      @query = @query.gsub ':company_id', @company.id.to_s
       response = execute_statement(@query)
       # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
       unless response.blank?
