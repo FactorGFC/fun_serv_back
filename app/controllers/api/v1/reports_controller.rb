@@ -2783,8 +2783,8 @@ end
   ca.suburb colonia,
   mu.name ciudad,
   st.name edo,
-  cb.extra2 ingresonip,
-  cb.extra3 respuestaautorizacion,
+  ('VERDADERO') ingresonip,
+  ('VERDADERO') respuestaautorizacion,
   cb.customer_id cuenta,
   cb.bureau_report ->'results'->1->>'id' folioBC
   FROM credit_bureaus cb, contributors con, contributor_addresses ca, customers cus, states st, municipalities mu, people peo
