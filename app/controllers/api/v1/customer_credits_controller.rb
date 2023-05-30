@@ -362,12 +362,35 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           @payment_date = start_date + 7.day
         end
       when '24' #pagos por quincenas
+        @days_to_pay = GeneralParameter.where(key: 'DAYS_TOPAY') 
+        if @days_to_pay.blank?
+        @error_desc.push("Parametro general no encontrado DAYS_TOPAY")
+        error_array!(@error_desc, :not_found)
+        raise ActiveRecord::Rollback
+      end
         #Se valida si es el primer pago del credito
         #La fecha del primer pago va a sera al inicio del periodo siguiente a partir de la fecha actual mas los dias configurados en el parametro
         if i == 1
          #Si la fecha es menor o igual a 15 el primer pago sera el dia ultimo del mes, si no el pago sera el dia 15 del siguiente mes
-          if (start_date.day <= 15)
+
+         @day_date = start_date.day
+         #Nos traemos el parametro general para checar los dias si start date es del 1 al 5 o del 15 al 20 el pago es en la misma quincena
+         if (start_date.day <= 15) 
+          if (@day_date >= 1 && @day_date <=5)
+            if (start_date.month == 12)
+              @payment_date = DateTime.new(start_date.year + 1, start_date.month, 15) 
+            else
+              @payment_date = DateTime.new(start_date.year, start_date.month, 15) 
+            end 
+          else
             @payment_date = start_date.end_of_month 
+          end 
+         else 
+          #Le sumamos al 15 el parametros de dias
+          @day_date = 15 + 5
+
+          if (start_date.day <= @day_date )
+            @payment_date = start_date.end_of_month
           else
             if (start_date.month == 12)
               @payment_date = DateTime.new(start_date.year + 1, start_date.next_month.month, 15) 
@@ -375,6 +398,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               @payment_date = DateTime.new(start_date.year, start_date.next_month.month, 15) 
             end
           end
+          
+        end   
           #Si no es el primer pago se revisa en que fecha estamos
         else
           #Si el dia es 15 el pago es el fin de mes
@@ -404,7 +429,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         current_debt = total_requested.to_f
         remaining_debt = total_requested.to_f - capital.to_f
         payment = capital.to_f + interests.to_f + iva.to_f
-        puts 'raterate_with_iva' + rate_with_iva.inspect
       else
         distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
         interests = remaining_debt.to_f * (diary_rate.to_f * distance_in_days.to_f)

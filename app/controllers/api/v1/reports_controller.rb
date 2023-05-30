@@ -56,123 +56,39 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   def layout_banorte
     @query_supplier = "SELECT ':pr_folio' payment_report_folio, TO_CHAR(ROW_NUMBER () OVER (ORDER BY ab.cuenta_destino), '09') oper, ab.*
               FROM((SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
+                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
                   CASE
                     WHEN con.bank = 'BANORTE'
                     THEN con.account_number
                     ELSE con.clabe
                   END cuenta_destino,
-                  TO_CHAR(rei.total_used - rei.interests, 'FM9999999990.00') importe,
-                  inv.invoice_folio referencia,
-                  'PAGO ANTICIPADO DE FACTURAS A: ' || sup.business_name descripcion,
+                  TO_CHAR(cuc.total_requested, 'FM000000000000.00') importe,
+                  cuc.credit_folio referencia,
+                  'DISPERSION DE CREDITO: ' || cuc.credit_folio descripcion,
                   (select value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
                   0 iva,
-                  to_char(req.used_date,'DDMMYYYY') fecha_aplicacion,
+                  to_char(cuc.start_date,'DDMMYYYY') fecha_aplicacion,
                   (select value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  inv.id id_factura
-                  FROM invoices inv, requests req, request_invoices rei, suppliers sup, companies com, contributors con
-                  WHERE inv.id = rei.invoice_id
-                  AND req.id = rei.request_id
-                  AND inv.supplier_id = sup.id
-                  AND inv.company_id = com.id
-                  AND sup.contributor_id = con.id
-                  AND inv.status = 'PENDIENTE'
-                  AND req.status = 'APROBADA'
-                  AND req.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
-                  CASE
-                    WHEN con.bank = 'BANORTE'
-                    THEN con.account_number
-                    ELSE con.clabe
-                  END cuenta_destino,
-                  TO_CHAR(inv.total, 'FM9999999990.00') importe,
-                  inv.invoice_folio referencia,
-                  'PAGO DE FACTURAS A: ' || sup.business_name,
-                  (select value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
-                  0 iva,
-                  to_char(inv.used_date,'DDMMYYYY'),
-                  (select value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  inv.id id_factura
-                  FROM invoices inv, suppliers sup, companies com, contributors con
-                  WHERE inv.supplier_id = sup.id
-                  AND inv.company_id = com.id
-                  AND sup.contributor_id = con.id
-                  AND inv.id not in (SELECT invoice_id from request_invoices)
-                  AND inv.status IN ('PENDIENTE', 'PENDIENTE LIQUIDADA')
-                  AND inv.used_date = ':used_date'
-                ) UNION ALL
-                (SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
-                  CASE
-                    WHEN con.bank = 'BANORTE'
-                    THEN con.account_number
-                    ELSE con.clabe
-                  END cuenta_destino,
-                  TO_CHAR(inv.total - inv.total_used, 'FM9999999990.00') importe,
-                  inv.invoice_folio referencia,
-                  'PAGO DE SALDO DE FACTURAS A: ' || sup.business_name,
-                  (select value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
-                  0 iva,
-                  to_char(inv.used_date,'DDMMYYYY'),
-                  (select value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  inv.id id_factura
-                  FROM invoices inv, suppliers sup, companies com, contributors con
-                  WHERE inv.supplier_id = sup.id
-                  AND inv.company_id = com.id
-                  AND sup.contributor_id = con.id
-                  AND inv.id in (SELECT invoice_id from request_invoices)
-                  AND inv.status IN ('CON SALDO', 'CON SALDO LIQUIDADA')
-                  AND inv.used_date = ':used_date'
-                )
+                  cuc.id id_credito
+                  FROM customer_credits cuc, customers cus, companies com, contributors con
+                  WHERE cuc.customer_id = cus.id
+                  AND cus.company_id = com.id
+                  AND cus.contributor_id = con.id
+                  AND cuc.status = 'VA'
+                  AND cuc.start_date = ':start_date'
+                ) 
                 ) ab;"
 
-    @query_funder = "SELECT ':pr_folio' payment_report_folio, TO_CHAR(ROW_NUMBER () OVER (ORDER BY ab.cuenta_destino), '09') oper, ab.*
-                FROM((SELECT con.extra1 clave_id,
-                (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen,
-                  CASE
-                  WHEN con.bank = 'BANORTE'
-                  THEN con.account_number
-                  ELSE con.clabe
-                  END cuenta_destino,
-                  TO_CHAR(fri.total_used, 'FM9999999990.00') importe,
-                  inv.invoice_folio referencia,
-                  'PAGO DE REFACTORAJE A: ' || fun.name descripcion,
-                  (select value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
-                  0 iva,
-                  to_char(inv.used_date,'DDMMYYYY') fecha_aplicacion,
-                  (select value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  inv.id id_factura
-                  FROM invoices inv, requests req, request_invoices rei, funding_requests fre, funding_request_invoices fri, funders fun, contributors con
-                  WHERE fri.invoice_id = inv.id
-                  AND fre.id = fri.funding_request_id
-                  AND fre.funder_id = fun.id
-                  AND fun.contributor_id = con.id
-                  AND inv.id = rei.invoice_id
-                  AND req.id = rei.request_id
-                  AND inv.status IN ('LIQUIDADA', 'CON SALDO LIQUIDADA')
-                  AND fri.status = 'FONDEADA'
-                  AND inv.used_date = ':used_date'
-                )
-                ) ab;"
-    @query = if params[:type].blank?
-               @query_supplier
-             elsif params[:type] == 'funder'
-               @query_funder
-             else
-               @query_supplier
-             end
     t = Time.now
     @folio = t.to_i
     @pr_folio = "PR#{@folio}"
-    @query = @query.gsub ':used_date', params[:used_date].to_s
+    @query = @query.gsub ':start_date', params[:start_date].to_s
     @query = @query.gsub ':pr_folio', @pr_folio
     @layout_banorte = execute_statement(@query)
     unless @layout_banorte.blank?
       @layout_banorte.each do |report_row|
-        @invoice = Invoice.where(id: report_row['id_factura'].to_s)
-        @invoice.update(payment_report_folio: report_row['payment_report_folio'].to_s)
+          @customer_credit = CustomerCredit.where(id: report_row['id_customer_credit'].to_s)
+          @customer_credit.update(extra1: report_row['payment_report_folio'].to_s)      
       end
     end
     render json: @layout_banorte
