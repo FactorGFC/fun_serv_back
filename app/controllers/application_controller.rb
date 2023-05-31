@@ -586,7 +586,7 @@ class ApplicationController < ActionController::Base
         raise ActiveRecord::Rollback
       end
     else
-      @error_desc.push("No se ha capturaro el analisis de credito")
+      @error_desc.push("No se ha capturado el analisis de credito")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end

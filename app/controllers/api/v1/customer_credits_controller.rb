@@ -173,6 +173,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   
       if customer_credits_params['status'] == 'PR'
         customer_credit_mailer
+      elsif customer_credits_params['status'] == 'RZ'
+        customer_credit_rejected_mailer
       end
       
       unless customer_credits_params['destination'].blank?
@@ -496,24 +498,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   # DIRECTOR Y EMPRESA ACEPTA EL CREDITO PARA NOTIFICAR AL CLIENTE Y ESTE LO ACEPTE.
   def customer_credit_mailer
     @error_desc = [];
-    unless @customer_credit.blank?
-      @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
-        FROM contributors con, people peo, customers cus
-        WHERE con.person_id = peo.id
-        AND cus.contributor_id = con.id
-        AND cus.id = ':customer_id'"
-      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
-    else
-      @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email, peo.extra1
-        FROM contributors con, people peo, customers cus
-        WHERE con.person_id = peo.id
-        AND cus.contributor_id = con.id
-        AND cus.id = ':customer_id'"
-      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
-    end  
-    response = execute_statement(@query)
+    response = get_customer_mail_data
     unless response.blank?
       @term = Term.find_by_id(@customer_credit.term_id)
       unless @term.nil?
@@ -556,26 +541,33 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     end
   end
 
+  # DIRECTOR Y EMPRESA O ADMIN RECHAZA EL CREDITO Y SE LE NOTIFICA AL CLIENTE.
+  def customer_credit_rejected_mailer
+    @error_desc = [];
+    response = get_customer_mail_data
+    unless response.blank?
+        @mailer_signatories = response.to_a
+        # Correo para el cliente
+        @mailer_signatories.each do |mailer_signatory|
+          mail_to = mailer_mode_to(mailer_signatory['email'])
+          #email, name, subject, title, content
+          SendMailMailer.send_mail_rejected_credit(mail_to,
+            mailer_signatory['name'],
+            "Nomina GFC - Notificación de Solicitud de Crédito Rechazado",
+            "SOLICITUD RECHAZADA",
+            [@customer_credit],
+          ).deliver_now
+        end
+    else
+      @error_desc.push("No se encontraron datos del credito")
+      error_array!(@error_desc, :unprocessable_entity)
+      raise ActiveRecord::Rollback
+    end
+  end
+
   def customer_credit_file_mailer
     @error_desc = [];
-    unless @customer_credit.blank?
-      @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
-        FROM contributors con, people peo, customers cus
-        WHERE con.person_id = peo.id
-        AND cus.contributor_id = con.id
-        AND cus.id = ':customer_id'"
-      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
-    else
-      @query = 
-      "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name name), peo.rfc, peo.email, peo.extra1
-        FROM contributors con, people peo, customers cus
-        WHERE con.person_id = peo.id
-        AND cus.contributor_id = con.id
-        AND cus.id = ':customer_id'"
-      @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s
-    end  
-    response = execute_statement(@query)
+    response = get_customer_mail_data
     unless response.blank?
       @term = Term.find_by_id(@customer_credit.term_id)
       unless @term.nil?
@@ -632,6 +624,18 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       error_array!(@error_desc, :unprocessable_entity)
       raise ActiveRecord::Rollback
     end
+  end
+
+  def get_customer_mail_data
+    @query = 
+    "SELECT (peo.first_name||' ' ||peo.last_name||' '||peo.second_last_name )as name, peo.rfc, peo.email,  peo.extra1
+      FROM contributors con, people peo, customers cus
+      WHERE con.person_id = peo.id
+      AND cus.contributor_id = con.id
+      AND cus.id = ':customer_id'"
+    @query = @query.gsub ':customer_id', @customer_credit.customer_id.to_s 
+    response = execute_statement(@query)
+    return response
   end
 
   def token

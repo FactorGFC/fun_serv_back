@@ -18,6 +18,13 @@ class SendMailMailer < ApplicationMailer
     mail(to: email, subject: subject)
   end
 
+  def send_mail_rejected_credit(email, name,subject, title, content)
+    @email_name = name
+    @content = content
+    @title = title
+    mail(to: email, subject: subject)
+  end
+
   def send_mail_credit_file(email, name,subject, title,file, content,term)
     @email_name = name
     @content = content
