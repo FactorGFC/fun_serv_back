@@ -128,6 +128,7 @@ Rails.application.routes.draw do
       get '/get_credit_customer_report', to: 'reports#get_credit_customer_report'
       get '/buroConsultsRreport', to: 'reports#buro_consults_report'
       get '/reports/start_date/:start_date/currency/:currency/layout_base/', to: 'reports#layout_base'
+      get '/reports/start_date/:start_date/layout_banorte/', to: 'reports#layout_banorte'
       get '/reports/job/:job/financial_workers', to: 'reports#financial_workers'
       get '/reports/user_id/:user_id/user_requests', to: 'reports#user_requests'
       get '/reports/user_id/:user_id/user_company', to: 'reports#user_company'

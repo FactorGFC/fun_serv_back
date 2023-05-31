@@ -78,7 +78,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                   AND cuc.start_date = ':start_date'
                 ) 
                 ) ab;"
-
+    @query = @query_supplier
     t = Time.now
     @folio = t.to_i
     @pr_folio = "PR#{@folio}"
