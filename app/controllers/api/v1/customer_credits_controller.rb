@@ -200,7 +200,11 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
     @old = CustomerCredit.where(id: old_credit_id)
     unless @old.blank?
       if @old[0]['status'] == 'PA'
+        unless @old[0]['credit_number'].blank?
         @credit_number = @old[0]['credit_number']
+        else
+          generate_credit_number
+        end
       end
     else
       generate_credit_number
