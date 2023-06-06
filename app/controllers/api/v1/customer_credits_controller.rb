@@ -199,7 +199,9 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def recover_old_credit_number(old_credit_id)
     @old = CustomerCredit.where(id: old_credit_id)
     unless @old.blank?
-      if @old[0]['status'] == 'PA'
+      if @old[0]['status'] == 'SO'
+        generate_credit_number
+      else
         unless @old[0]['credit_number'].blank?
         @credit_number = @old[0]['credit_number']
         else
