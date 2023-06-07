@@ -88,7 +88,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
                     raise ActiveRecord::Rollback
                 end
               end
-              
           else
             @company_segments = CompanySegment.where(company_id: @company.id, key: @customer.extra3)
             @company_segment = @company_segments[0]  
@@ -117,7 +116,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         end
             calculate_customer_payment(term,@payment_amount,@anuality,@anuality_date)
             @months = (@end_date.year * 12 + @end_date.month) - (@date.year * 12 + @date.month)
-           
             @debt_time = (@months.to_f/12)
             @insurance_percent = GeneralParameter.get_general_parameter_value('SEGURO')
             total_requested = @customer_credit.total_requested
@@ -140,15 +138,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           if @customer_credit.status == 'SI' # SI = SIMULAR
                 render 'api/v1/customer_credits/show'
                 raise ActiveRecord::Rollback
-          # elsif @customer_credit.status == 'PR' #PR = PROPUESTO
-            # MANDA CORREO AL CLIENTE PARA QUE LO APRUEBE
-            # TO DO: MODIFICAR MAILER PARA QUE NO ADJUNTE EL DOCUMENTO EXPEDIENTE
-                # customer_credit_mailer
-                # render 'api/v1/customer_credits/show'
           elsif @customer_credit.status == 'PA' #PA = POR APROBAR
-                # if documents_mode
-                #   generate_customer_credit_request_report_pdf
-                # end
                 # CREA SIGNATORIES
                 create_credit_signatories
                 # METODO QUE VA A MANDARLE UN CORREO A TESORERIA PARA QUE DE DE ALTA LA CUENTA BANCARIA DEL EMPLEADO(CLIENTE)
@@ -170,7 +160,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       # VALIDA QUE VENGA DE STATUS PR Y CON EL CREDIT ID Y MANDE EL MAILER AL CLIENTE.
       @customer_credit.update(customer_credits_params)
       #  MAILER AL CLIENTE PARA ACEPTAR O RECHAZAR CREDITO. 
-  
       if customer_credits_params['status'] == 'PR'
         customer_credit_mailer
       elsif customer_credits_params['status'] == 'RZ'
@@ -221,7 +210,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       unless @gpa_sequence.blank?
         @credit_number = @gpa_sequence[0]['value']
         @gpa_sequence.update(value: ('00000' + (@credit_number.to_i + 1).to_s) )
-        # @credit_number = '000004000'
       else
         @error_desc.push("Parametro general no encontrado GPA_SEQUENCE")
         error_array!(@error_desc, :not_found)
@@ -350,7 +338,7 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       raise ActiveRecord::Rollback
     else
         @date += 1 until @date.strftime('%u').to_i == @pay_date.to_i
-      end
+    end
     start_date = @date
     1.upto(term) do |i|
       #Se revisa si Los periodos de pagos deben de ser mensuales, quincenales o semanales
@@ -655,10 +643,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   def create_credit_signatories
     #NOMINA GPA
     @query_nomina = 
-    # "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-    # FROM users u, roles r
-    # WHERE u.role_id = r.id
-    # AND r.name IN ('Comité','Empresa','Director')"
 
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
@@ -673,10 +657,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
 
     #NOMINA ALSUPER
     @query_alsuper = 
-    # "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-    # FROM users u, roles r
-    # WHERE u.role_id = r.id
-    # AND r.name IN ('Empresa','Director')"
     "SELECT u.email as email,u.name as name,r.name as tipo, u.id
     FROM users u, roles r
     WHERE u.role_id = r.id
@@ -727,13 +707,11 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
             p "File saved"
           end
         else
-          # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
           @error_desc.push("No se encontró parametro general FRONTEND_URL")
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         end
       else
-        # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
         @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
         error_array!(@error_desc, :not_found)
         raise ActiveRecord::Rollback
