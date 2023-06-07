@@ -143,7 +143,7 @@ class ApplicationController < ActionController::Base
       @capital += capital
       @interests += interests
       @iva += iva
-      #Los periodos de pagos deben de ser mensuales, quincenales o semanales
+      # Los periodos de pagos deben de ser mensuales, quincenales o semanales 
       case payment_period.to_s
       when '12'
         payment_date = start_date + i.months
