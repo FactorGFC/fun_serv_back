@@ -54,7 +54,7 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def layout_banorte
-    @query_supplier = "SELECT ':pr_folio' payment_report_folio, TO_CHAR(ROW_NUMBER () OVER (ORDER BY ab.cuenta_destino), '09') oper, ab.*
+    @query_supplier = "SELECT ':pr_folio' payment_report_folio, '04' oper, ab.*
               FROM((SELECT con.extra1 clave_id,
                 (select value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
                   CASE
@@ -62,14 +62,14 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
                     THEN con.account_number
                     ELSE con.clabe
                   END cuenta_destino,
-                  TO_CHAR(cuc.total_requested, 'FM000000000000.00') importe,
-                  cuc.credit_folio referencia,
-                  'DISPERSION DE CREDITO: ' || cuc.credit_folio descripcion,
+                  TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe,
+                  cuc.credit_number referencia,
+                  'DISPERSION CREDITO: ' || cuc.credit_number descripcion,
                   (select value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
                   0 iva,
                   to_char(cuc.start_date,'DDMMYYYY') fecha_aplicacion,
                   (select value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  cuc.id id_credito
+                  0 clave_tipo_cambio
                   FROM customer_credits cuc, customers cus, companies com, contributors con
                   WHERE cuc.customer_id = cus.id
                   AND cus.company_id = com.id
