@@ -48,7 +48,7 @@ class SessionsController < ApplicationController
   def file_callback
       @customer = Customer.where(file_token: params[:call_back_token])
       unless @customer.blank?
-        @customer_credit = CustomerCredit.where(customer_id: @customer[0].id,status:'AP') 
+        @customer_credit = CustomerCredit.where(customer_id: @customer[0].id,status:'AC') 
         unless @customer_credit.blank?
           if @customer[0].file_token_expiration > Time.now
                 @customer.update(file_token: "#{params[:call_back_token]}-AC")
