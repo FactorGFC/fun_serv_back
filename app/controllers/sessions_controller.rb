@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
     end
   end
 
-# CUANDO EL CLIENTE/EMPLEADO ACEPTA EL CREDITO 
+# CUANDO EL CLIENTE/EMPLEADO FIRMA LOS DOCUMENTOS DEL CREDITO 
   def file_callback
       @customer = Customer.where(file_token: params[:call_back_token])
       unless @customer.blank?
@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
             render json: { message: "Token expiró el #{@customer[0].file_callback}", status: false }, status: 206
           end
         else 
-          render json: { message: "No encuentra el credito del customer #{@customer[0].id} con status AP ", place: "file_callback",status: false }, status: 206
+          render json: { message: "No encuentra el credito del customer #{@customer[0].id} con status AC", place: "file_callback",status: false }, status: 206
         end
       else 
         render json: { message: "No encuentra el customer ", place: "file_callback",status: false }, status: 206
