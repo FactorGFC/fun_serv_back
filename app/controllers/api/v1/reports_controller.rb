@@ -54,27 +54,27 @@ class Api::V1::ReportsController < Api::V1::MasterApiController
   end
 
   def layout_banorte
-    @query_supplier = "SELECT ':pr_folio' payment_report_folio, '04' oper, ab.*
-              FROM((SELECT chr(9)||con.extra1 clave_id,
-                (select chr(9)||value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
-                  CASE
-                    WHEN con.bank = 'BANORTE'
-                    THEN chr(9)||con.account_number
-                    ELSE chr(9)||con.clabe
-                  END cuenta_destino,
-                  chr(9)||TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe,
-                  chr(9)||cuc.credit_number referencia,
-                  chr(9)||'DISPERSION CREDITO: ' || cuc.credit_number descripcion,
-                  (select chr(9)||value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
-                  chr(9)||0 iva,
-                  chr(9)||to_char(cuc.start_date,'DDMMYYYY') fecha_aplicacion,
-                  (select chr(9)||value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
-                  chr(9)||0 clave_tipo_cambio
-                  FROM customer_credits cuc, customers cus, companies com, contributors con
-                  WHERE cuc.customer_id = cus.id
-                  AND cus.company_id = com.id
-                  AND cus.contributor_id = con.id
-                  AND cuc.status = 'VA'
+    @query_supplier = "SELECT ':pr_folio' payment_report_folio, ' '''||'04' oper, ab.*
+    FROM((SELECT chr(9)||con.extra1 clave_id,
+      (select chr(9)||' '''||value from general_parameters WHERE KEY = 'CUENTA_ORIGEN_BANORTE') cuenta_origen, 
+        CASE
+          WHEN con.bank = 'BANORTE'
+          THEN chr(9)||' '''||con.account_number
+          ELSE chr(9)||' '''||con.clabe
+        END cuenta_destino,
+        chr(9)||TO_CHAR(cuc.total_requested, 'FM9999999990.00') importe,
+        chr(9)||cuc.credit_number referencia,
+        chr(9)||'DISPERSION CREDITO: ' || cuc.credit_number descripcion,
+        (select chr(9)||value from general_parameters WHERE KEY = 'RFC_FINANCIERA') rfc_ordenante,
+        chr(9)||0 iva,
+        chr(9)||to_char(cuc.start_date,'DDMMYYYY') fecha_aplicacion,
+        (select chr(9)||value from general_parameters WHERE KEY = 'NOMBRE_FINANCIERA') instruccion_pago,
+        chr(9)||0 clave_tipo_cambio
+        FROM customer_credits cuc, customers cus, companies com, contributors con
+        WHERE cuc.customer_id = cus.id
+        AND cus.company_id = com.id
+        AND cus.contributor_id = con.id
+        AND cuc.status = 'VA'
                   AND cuc.start_date = ':start_date'
                 ) 
                 ) ab;"
