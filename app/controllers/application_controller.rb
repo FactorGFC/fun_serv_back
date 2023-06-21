@@ -177,47 +177,6 @@ class ApplicationController < ActionController::Base
       FROM users u, roles r
       WHERE u.role_id = r.id
       AND r.name IN ('Mesa de control')"
-
-      @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit.id)
-      unless @customer_credit_data.blank?
-        @date = Time.now.strftime("%d/%m/%Y %H:%M:%S")
-        @email = @customer_credit_data[0]["pf_correo"]
-        @nombre = @customer_credit_data[0]["nombre"]
-        @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
-        @apellido_materno = @customer_credit_data[0]["apellido_materno"]
-        @person_id = @customer_credit_data[0]["person_id"]
-        @folio = @customer_credit.credit_folio
-
-        URI.open("a.pdf", "wb") do |cd_file|
-          cd_file.write open(@customer_credit.attached, "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
-        end
-        pdf = CombinePDF.new
-        pdf << CombinePDF.load(Rails.root.join("a.pdf"), allow_optional_content: true)
-
-        # CREA UN TEXTBOX Y LO AGREGA AL PDF EN TODAS SUS PAGINAS
-        pdf.pages.each { |page| page.textbox "Firmado digitalmente por #{@nombre} #{@apellido_paterno} #{@apellido_materno} mediante la cuenta de correo #{@email} el #{@date}", font_color: [0.5, 0.5, 0.5], height: 0, width: 0, y: -750, x: 50, font_size: 8, box_color: nil, text_align: :left, text_padding: 0 }
-        pdf.pages.each { |page| page.textbox "Firmado digitalmente por #{@nombre} #{@apellido_paterno} #{@apellido_materno} mediante la cuenta de correo #{@email} el #{@date}", font_color: [0.5, 0.5, 0.5], height: 0, width: 0, y: 750, x: 50, font_size: 8, box_color: nil, text_align: :left, text_padding: 0 }
-        
-        # GUARDA EL PDF LOCALMENTE CON LA NUEVA INFORMACION
-        pdf.save "#{Rails.root}/output_#{@folio}.pdf"
-        
-        # GUARDA EL NUEVO PDF EN S3 Y ACTUALIZA EN DB 
-        file = URI.open(Rails.root.join("output_#{@folio}.pdf")).read
-        @final_filename = "customer_credit_signed_final_report_#{@folio}.pdf"
-        path_final = "nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
-        s3_save(file,path_final)
-        
-        @url_final = "https://#{bucket_name}.s3.amazonaws.com/nomina_customer_documents/#{nomina_env}/#{@folio}/#{@final_filename}"
-        @person = Person.find_by_id(@person_id)
-        @person.update(extra1: @url_final)
-
-        File.delete(Rails.root.join('a.pdf'))if File.exist?(Rails.root.join('a.pdf'))
-        File.delete(Rails.root.join("output_#{@folio}.pdf"))if File.exist?(Rails.root.join("output_#{@folio}.pdf"))
-      else
-        render json: { message:"No se encontró la informacion del cliente (customer_credit_data)" }
-        # error_array!(@error_desc, :not_found)
-        # raise ActiveRecord::Rollback
-      end
     else
       error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
     end
