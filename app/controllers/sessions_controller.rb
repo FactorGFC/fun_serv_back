@@ -56,7 +56,7 @@ class SessionsController < ApplicationController
               #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
               send_control_desk_mailer(@customer_credit[0].id)
             else
-            render json: { message: "Token expiró el #{@customer[0].file_callback}", status: false }, status: 206
+            render json: { message: "Token expiró el #{@customer[0].file_token}", status: false }, status: 206
           end
         else 
           render json: { message: "No encuentra el credito del customer #{@customer[0].id} con status AC", place: "file_callback",status: false }, status: 206
