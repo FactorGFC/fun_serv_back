@@ -62,7 +62,7 @@ class SessionsController < ApplicationController
           render json: { message: "No encuentra el credito del customer #{@customer[0].id} con status AC", place: "file_callback",status: false }, status: 206
         end
       else 
-        render json: { message: "No encuentra el customer ", place: "file_callback",status: false }, status: 206
+        render json: { message: "No encuentra el customer con el token #{params[:call_back_token]} ", place: "file_callback",status: false }, status: 206
       end
   end
 
