@@ -50,13 +50,15 @@ class SessionsController < ApplicationController
       unless @customer.blank?
         @customer_credit = CustomerCredit.where(customer_id: @customer[0].id,status:'AC') 
         unless @customer_credit.blank?
+          @id = @customer_credit[0].id
+          @folio = @customer_credit[0].credit_folio
+          @attached = @customer_credit[0].attached
           if @customer[0].file_token_expiration > Time.now
                 @customer.update(file_token: "#{params[:call_back_token]}-AC")
                 render json: { message: 'Ok, Expediente firmado (ACEPTADO)', status: true }, status: 200
               #MANDA UN MAILER A MESA DE CONTROL PARA QUE ANALICE Y PASE EL CREDITO A FINANZAS/TESORERIA
-              send_control_desk_mailer(@customer_credit[0].id)
-
-              @customer_credit_data = CustomerCredit.get_customer_credit_data(@customer_credit[0].id)
+              send_control_desk_mailer(@id)
+              @customer_credit_data = CustomerCredit.get_customer_credit_data(@id)
               unless @customer_credit_data.blank?
                 @date = Time.now.strftime("%d/%m/%Y %H:%M:%S")
                 @email = @customer_credit_data[0]["pf_correo"]
@@ -64,10 +66,9 @@ class SessionsController < ApplicationController
                 @apellido_paterno = @customer_credit_data[0]["apellido_paterno"]
                 @apellido_materno = @customer_credit_data[0]["apellido_materno"]
                 @person_id = @customer_credit_data[0]["person_id"]
-                @folio = @customer_credit[0].credit_folio
         
                 URI.open("a.pdf", "wb") do |cd_file|
-                  cd_file.write open(@customer_credit.attached, "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
+                  cd_file.write open(@attached, "User-Agent"=> "Ruby/#{RUBY_VERSION}").read
                 end
                 pdf = CombinePDF.new
                 pdf << CombinePDF.load(Rails.root.join("a.pdf"), allow_optional_content: true)
