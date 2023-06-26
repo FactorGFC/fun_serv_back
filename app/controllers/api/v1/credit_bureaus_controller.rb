@@ -125,13 +125,13 @@ class Api::V1::CreditBureausController < ApplicationController
                 end
               else
               # STATUS FAIL EN BURO PERSONA FISICA 
-              render json: { message: "No se encontró un status en buroo", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]}", status: false
+              render json: { message: "No se encontró un status en buro", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]}", status: false
               }, status: 206
               end
 
             else
             # NO SE ENCONTRÓ 
-            render json: { message: "Error desde buró: #{ @credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['Error']['UR']}", status: false, razon:"Credenciales de buró expiradas en Moffin" }, status: 206
+            render json: { message: "Credenciales de buró expiradas en Moffin", status: false, razon:"#{ @credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['Error']['UR']}" }, status: 206
             end
           else
           # NO SE ENCONTRÓ BURÓ
