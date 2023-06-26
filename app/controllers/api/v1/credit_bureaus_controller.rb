@@ -22,41 +22,24 @@ class Api::V1::CreditBureausController < ApplicationController
     end
   
     # POST /credit_bureaus or /credit_bureaus.json
-    def create
-      @credit_bureau = CreditBureau.new(credit_bureau_params)
+    # def create
+    #   @credit_bureau = CreditBureau.new(credit_bureau_params)
   
-      respond_to do |format|
-        if @credit_bureau.save
-          format.html { redirect_to credit_bureau_url(@credit_bureau), notice: "Credit bureau was successfully created." }
-          format.json { render :show, status: :created, location: @credit_bureau }
-        else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @credit_bureau.errors, status: :unprocessable_entity }
-        end
-      end
-    end
+    # end
   
     # PATCH/PUT /credit_bureaus/1 or /credit_bureaus/1.json
-    def update
-      respond_to do |format|
-        if @credit_bureau.update(credit_bureau_params)
-          format.html { redirect_to credit_bureau_url(@credit_bureau), notice: "Credit bureau was successfully updated." }
-          format.json { render :show, status: :ok, location: @credit_bureau }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @credit_bureau.errors, status: :unprocessable_entity }
-        end
-      end
-    end
+    # def update
+    #     if @credit_bureau.update(credit_bureau_params)
+
+    #     else
+
+    #     end
+    # end
   
     # DELETE /credit_bureaus/1 or /credit_bureaus/1.json
     def destroy
       @credit_bureau.destroy
-  
-      respond_to do |format|
-        format.html { redirect_to credit_bureaus_url, notice: "Credit bureau was successfully destroyed." }
-        format.json { head :no_content }
-      end
+      render json: { message: 'Registro de buró eliminado', status: true }, status: 200
     end
 
     # DEVUELVE TRUE SI EL NIP ES VIGENTE
@@ -128,10 +111,9 @@ class Api::V1::CreditBureausController < ApplicationController
               render json: { message: "No se encontró un status en buro", status_de_Buro: "#{@credit_bureau[0]['bureau_report']['results'][1]}", status: false
               }, status: 206
               end
-
             else
             # NO SE ENCONTRÓ 
-            render json: { message: "Credenciales de buró expiradas en Moffin", status: false, razon:"#{ @credit_bureau[0]['bureau_report']['results'][1]['response']['return']['Personas']['Persona'][0]['Error']['UR']}" }, status: 206
+            render json: { message: "Credenciales de buró expiradas en Moffin", status: false, id:"#{ @credit_bureau[0]['id']}" }, status: 206
             end
           else
           # NO SE ENCONTRÓ BURÓ
