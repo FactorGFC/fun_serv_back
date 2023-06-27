@@ -418,7 +418,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
       end
 
       if i == 1
-        distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
+        resta_de_dias = distance_of_time_in_days(start_date,@payment_date,false)
+        distance_in_days = ((@payment_date.strftime("%F").to_time - start_date.strftime("%F").to_time)/86400).to_i
         interests = total_requested.to_f * (diary_rate.to_f * distance_in_days.to_f)
         iva = interests.to_f * (iva_percent.to_f/ 100)
         capital = payment_amount.to_f - interests.to_f - iva.to_f
@@ -426,7 +427,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
         remaining_debt = total_requested.to_f - capital.to_f
         payment = capital.to_f + interests.to_f + iva.to_f
       else
-        distance_in_days = distance_of_time_in_days(start_date,@payment_date,false)
+        resta_de_dias = distance_of_time_in_days(start_date,@payment_date,false)
+        distance_in_days = ((@payment_date.strftime("%F").to_time - start_date.strftime("%F").to_time)/86400).to_i
         interests = remaining_debt.to_f * (diary_rate.to_f * distance_in_days.to_f)
         iva = interests.to_f * (iva_percent.to_f / 100)
         current_debt = remaining_debt.to_f
