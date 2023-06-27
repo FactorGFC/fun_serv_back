@@ -331,16 +331,24 @@ class ApplicationController < ActionController::Base
         unless @cliente.blank?
           @contributor = Contributor.find_by_id(@customer.contributor_id)
           unless @contributor.blank?
-            @mailers = response.to_a
+            @person = Person.find_by_id(@contributor.person_id)
+            unless @person.blank?
+              @mailers = response.to_a
               @mailers.each do |mailer|
                   mail_to = mailer_mode_to(mailer['email'])
                   SendMailMailer.tesoreria(mail_to,
                   mailer['name'],
                     "Factor GFC Global - Credi Global - Cuenta Bancaria de cliente - #{mailer['tipo']}",
                     "Datos para dar de alta cuenta bancaria del cliente",
-                    [@contributor,@customer_credit,@cliente.name]
+                    [@contributor,@customer_credit,@cliente.name,@person]
                   ).deliver_now
               end
+            else
+              # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
+              @error_desc.push("No se encontró person")
+              error_array!(@error_desc, :not_found)
+              raise ActiveRecord::Rollback
+            end
           else
             # error_array!(@customer_credit.errors.full_messages, :unprocessable_entity)
             @error_desc.push("No se encontró contributor")
