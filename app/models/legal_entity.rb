@@ -28,6 +28,7 @@ class LegalEntity < ApplicationRecord
   has_many :contributor_addresses, through: :contributors
   has_many :customers, through: :contributors
   has_many :companies,  through: :contributors
+  has_many :company_segments, through: :companies
 
   validates :fiscal_regime, presence: true
   validates :rfc, presence: true, uniqueness: true

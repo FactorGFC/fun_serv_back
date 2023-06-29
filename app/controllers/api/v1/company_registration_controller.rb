@@ -58,6 +58,19 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
                               sector: company_params[:sector], subsector: company_params[:subsector], company_rate: company_params[:company_rate] )
             #create_contributor_documents
             if @company.save
+                company_segments = []
+                company_segments = params[:company_segments] 
+                puts 'company_segment' + company_segments.inspect
+                  for i in (0..2)
+                    company_seg = company_segments[i]
+                    @company_segment = CompanySegment.new(key: company_seg["key"], company_rate: company_seg["company_rate"], credit_limit: company_seg["credit_limit"],
+                                                       max_period: company_seg["max_period"], commission: company_seg["commission"], currency: company_seg["currency"], extra1: company_seg["extra1"], company_id: @company.id )
+                    @company_segment.save
+                  end
+                  unless @company_segment.save
+                  render json: { error: @company_segment.errors }, status: :unprocessable_entity
+                  raise ActiveRecord::Rollback
+                  end
               unless @legal_entity.blank?
                 render 'api/v1/company_registers/pm_company'
               else
@@ -79,11 +92,12 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
   end
 
   def people_params
-    params.require(:person).permit(:fiscal_regime, :rfc, :curp, :imss, 
-                   :first_name, :last_name, :second_last_name, :gender, 
-                   :nationality, :birth_country, :birthplace, :birthdate, 
-                   :martial_status, :id_type, :identification, :phone, 
-                   :mobile, :email, :fiel, :extra1, :extra2, :extra3)
+    params.require(:person).permit(:fiscal_regime, :rfc, :curp, :imss,
+                                   :first_name, :last_name, :second_last_name, :gender,
+                                   :nationality, :birth_country, :birthplace, :birthdate,
+                                   :martial_status, :martial_regime, :minior_dependents, :senior_dependents,
+                                   :housing_type, :id_type, :identification, :phone,
+                                   :mobile, :email, :fiel, :extra1, :extra2, :extra3)
   end
 
   def contributors_params
@@ -97,6 +111,10 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
 
   def company_params
     params.require(:company).permit(:business_name, :start_date, :credit_limit, :credit_available, :document, :sector, :subsector, :company_rate)
+  end
+
+  def company_segment_params
+    params.require(:company_segment).permit(:key, :company_rate, :credit_limit, :max_period, :commission, :currency, :extra1)
   end
 
   def create_contributor_documents
