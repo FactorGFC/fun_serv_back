@@ -57,6 +57,7 @@ class Api::V1::CompanyRegistrationController < Api::V1::MasterApiController
                               credit_limit: company_params[:credit_limit], credit_available: company_params[:credit_available], document: company_params[:document], 
                               sector: company_params[:sector], subsector: company_params[:subsector], company_rate: company_params[:company_rate] )
             #create_contributor_documents
+            
             if @company.save
                 company_segments = []
                 company_segments = params[:company_segments] 
