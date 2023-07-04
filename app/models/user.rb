@@ -5,6 +5,7 @@
 # Table name: users
 #
 #  id                   :uuid             not null, primary key
+#  company_signatory    :string
 #  email                :string           default(""), not null
 #  gender               :string
 #  job                  :string
@@ -45,6 +46,7 @@ class User < ApplicationRecord
   validates :email, presence: true, email: true, uniqueness: true
   validates :password, presence: true, on: :create
   validates :name, presence: true
+  validates :company_signatory, presence: false
   #ver que hace esto
   has_secure_password
 

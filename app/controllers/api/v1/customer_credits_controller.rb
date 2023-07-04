@@ -643,55 +643,49 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def create_credit_signatories
-    #NOMINA GPA
-    @query_nomina = 
+    @user = User.find_by_id(@customer.user_id)
+    unless @user.blank?
+      #NOMINA GPA
+      @query_1 = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Comité','Director')
+      union all 
+      select u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Empresa')
+      AND u.company_id = ':company_id';"
 
-    "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-    FROM users u, roles r
-    WHERE u.role_id = r.id
-    AND r.name IN ('Comité','Director')
-	  union all 
-    select u.email as email,u.name as name,r.name as tipo, u.id
-    FROM users u, roles r
-    WHERE u.role_id = r.id
-    AND r.name IN ('Empresa')
- 	  AND u.company_id = ':company_id';"
+      #NOMINA ALSUPER
+      @query_2 = 
+      "SELECT u.email as email,u.name as name,r.name as tipo, u.id
+      FROM users u, roles r
+      WHERE u.role_id = r.id
+      AND r.name IN ('Comité','Director')"
 
-    #NOMINA ALSUPER
-    @query_alsuper = 
-    "SELECT u.email as email,u.name as name,r.name as tipo, u.id
-    FROM users u, roles r
-    WHERE u.role_id = r.id
-    AND r.name IN ('Director')
-	  union all 
-    select u.email as email,u.name as name,r.name as tipo, u.id
-    FROM users u, roles r
-    WHERE u.role_id = r.id
-    AND r.name IN ('Empresa')
- 	  AND u.company_id = ':company_id';"
+        unless @user.company_signatory.blank?
+          @query = @query_2 
+          @special_user = User.where(email: @user.company_signatory)
+            @token_commitee =  validated_token_signatory
+            # TOKEN CON VIDA UTIL DE 7 DIAS
+            @token_commitee_expiry = Time.now + 7.day
+            customer_special_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: @special_user[0].id)
+        else
+          @query = @query_1
+          @query = @query.gsub ':company_id', @company.id.to_s
+        end
 
-    @alsuper_mode = GeneralParameter.where(key: 'ALSUPER_MODE')
-    unless @alsuper_mode.blank?
-      if @alsuper_mode == 'TRUE'
-        @query = @query_alsuper 
-      else
-        @query = @query_nomina
-      end
-
-      @query = @query.gsub ':company_id', @company.id.to_s
-      response = execute_statement(@query)
-      # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
-      unless response.blank?
-        @mailer_signatories = response.to_a
-        @frontend_url = GeneralParameter.where(key: 'FRONTEND_URL')
-        unless @frontend_url.blank?
+        response = execute_statement(@query)
+        # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
+        unless response.blank?
+          @mailer_signatories = response.to_a
           begin
             @mailer_signatories.each do |mailer_signatory|
               @token_commitee =  validated_token_signatory
               # TOKEN CON VIDA UTIL DE 7 DIAS
               @token_commitee_expiry = Time.now + 7.day
-              #VISTA EN EL FRONTEND PARA QUE EL COMITE VEA EL CREDITO/EMPRESA, LO ANALICE Y LO APRUEBE/RECHACE(SI MANDAR UN TOKEN PARA QUE EL COMITE/EMPRESA TENGA CIERTO TIEMPO PARA DAR DICTAMEN)
-              @callback_url_committee = "#{@frontend_url}/#/aprobarCredito/#{@token_commitee}"
               #CREA UN REGISTRO EN CUSTOMERCREDITSIGNATORIES
               customer_credit_signatory = CustomerCreditsSignatory.create(customer_credit_id: @customer_credit.id, signatory_token: @token_commitee, signatory_token_expiration: @token_commitee_expiry,status: 'PE',user_id: mailer_signatory['id'])
               if customer_credit_signatory.blank?
@@ -701,25 +695,17 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
               end
             end
           rescue Errno::ENOENT
-            p "File not found"
             @error_desc.push("Hubo un error al tratar de generar los firmantes")
             error_array!(@error_desc, :not_found)
             raise ActiveRecord::Rollback
-          else
-            p "File saved"
           end
         else
-          @error_desc.push("No se encontró parametro general FRONTEND_URL")
+          @error_desc.push("No se encontraron Firmantes asignados")
           error_array!(@error_desc, :not_found)
           raise ActiveRecord::Rollback
         end
-      else
-        @error_desc.push("No se encontraron Analistas,Empresa o Comité asignados")
-        error_array!(@error_desc, :not_found)
-        raise ActiveRecord::Rollback
-      end
     else
-      @error_desc.push("No se encontró parametro general ALSUPER_MODE")
+      @error_desc.push("No se encontró registro del cliente en tabla users")
       error_array!(@error_desc, :not_found)
       raise ActiveRecord::Rollback
     end

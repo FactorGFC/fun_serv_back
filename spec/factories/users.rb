@@ -5,6 +5,7 @@
 # Table name: users
 #
 #  id                   :uuid             not null, primary key
+#  company_signatory    :string
 #  email                :string           default(""), not null
 #  gender               :string
 #  job                  :string
