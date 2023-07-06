@@ -643,11 +643,8 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
   end
 
   def create_credit_signatories
-    puts "1"
     @user = User.find_by_id(@customer.user_id)
-    puts "2"
     unless @user.blank?
-      puts "3"
       #NOMINA GPA
       @query_1 = 
       "SELECT u.email as email,u.name as name,r.name as tipo, u.id
@@ -679,8 +676,6 @@ class Api::V1::CustomerCreditsController < Api::V1::MasterApiController
           @query = @query_1
           @query = @query.gsub ':company_id', @company.id.to_s
         end
-        puts "@query"
-        puts @query
         response = execute_statement(@query)
         # ESTA CONDICION DEBE SER UNLESS CUANDO NO HAGA PRUEBAS
         unless response.blank?
