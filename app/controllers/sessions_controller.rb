@@ -60,6 +60,7 @@ class SessionsController < ApplicationController
               send_control_desk_mailer(@id)
               @customer_credit_data = CustomerCredit.get_customer_credit_data(@id)
               unless @customer_credit_data.blank?
+                Time.zone = "America/Mexico_City"
                 @date = Time.now.strftime("%d/%m/%Y %H:%M:%S")
                 @email = @customer_credit_data[0]["pf_correo"]
                 @nombre = @customer_credit_data[0]["nombre"]
