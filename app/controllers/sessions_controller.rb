@@ -60,7 +60,7 @@ class SessionsController < ApplicationController
               send_control_desk_mailer(@id)
               @customer_credit_data = CustomerCredit.get_customer_credit_data(@id)
               unless @customer_credit_data.blank?
-                Time.zone = "America/Mexico_City"
+                Time.zone = "America/Chihuahua"
                 @date = Time.now.strftime("%d/%m/%Y %H:%M:%S")
                 @email = @customer_credit_data[0]["pf_correo"]
                 @nombre = @customer_credit_data[0]["nombre"]
@@ -95,7 +95,7 @@ class SessionsController < ApplicationController
                 File.delete(Rails.root.join("output_#{@folio}.pdf"))if File.exist?(Rails.root.join("output_#{@folio}.pdf"))
               else
                 puts "Error: No se encontró la informacion del cliente, no cuenta con Analisis de credito"
-                # render json: { message:"No se encontró la informacion del cliente, no cuenta con Analisis de credito" }
+                render json: { message:"No se encontró la informacion del cliente, no cuenta con Analisis de credito" }
                 # error_array!(@error_desc, :not_found)
                 # raise ActiveRecord::Rollback
               end
