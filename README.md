@@ -1,4 +1,4 @@
-# NOMINA BACKEND
+# NOMINA MAUSOLEOS BACKEND
 
 Necessary steps to get the
 application up and running:
